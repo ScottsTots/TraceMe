@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.parse.GetCallback;
+import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -35,20 +36,25 @@ public class SignUpOrLogInActivity extends Activity {
     private boolean usernameValid;
     Button logInButton;
     Button signUpButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up_or_log_in);
         usernameValid = false;
 
-        // Set up the signup form.
+        // Set up the signup form
         signUpButton = (Button) findViewById(R.id.signUpButton);
         signUpButton.setEnabled(false);
+
+        // Set up the login button
+        logInButton = (Button) findViewById(R.id.logInButton);
 
         validFormDrawable = (ImageView) findViewById(R.id.validFormDrawable);
         usernameView = (EditText) findViewById(R.id.usernameField);
         passwordView = (EditText) findViewById(R.id.passwordField);
-       // passwordAgainView = (EditText) findViewById(R.id.passwordAgain);
+        // passwordAgainView = (EditText) findViewById(R.id.passwordAgain);
+
         usernameView.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
                 final String text = s.toString();
@@ -78,6 +84,67 @@ public class SignUpOrLogInActivity extends Activity {
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {}
         });
+
+        // Set up the sign in button click handler
+        logInButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                // Validate the log in data
+                boolean validationError = false;
+                StringBuilder validationErrorMessage =
+                        new StringBuilder("Error logging in.");
+
+                // Check the username textview for data
+                if (isEmpty(usernameView)) {
+                    validationError = true;
+                    validationErrorMessage.append("Username field was blank. Idiot.");
+                }
+
+                // Check the password textview for data
+                if (isEmpty(passwordView)) {
+                    if (validationError)
+                        validationErrorMessage.append("Password field blank too. Dummy.");
+                    else
+                        validationError = true;
+                    validationErrorMessage.append("Password field left blank. Idiot");
+                }
+
+                // If there is an error at this point display it and return
+                if (validationError) {
+                    Toast.makeText(SignUpOrLogInActivity.this,
+                            validationErrorMessage.toString(),
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+
+                // Logging in waiting dialog
+                final ProgressDialog dlg = new ProgressDialog(SignUpOrLogInActivity.this);
+                dlg.setTitle("Please wait..");
+                dlg.setMessage("Logging in..");
+                dlg.show();
+
+                // Attempt to log in through Parse
+                ParseUser.logInInBackground(usernameView.getText().toString(),
+                        passwordView.getText().toString(),
+                        new LogInCallback() {
+                            @Override
+                            public void done(ParseUser parseUser, ParseException e) {
+                                dlg.dismiss();      // Get rid of the loading dlg
+                                if (e != null) {    // Uh oh! Login messed up.
+                                    Toast.makeText(SignUpOrLogInActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                                } else {
+                                    // Fire up an intent for the next activity
+                                    Intent i = new Intent(SignUpOrLogInActivity.this, MainScreen.class);
+                                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    startActivity(i);
+                                }
+                            }
+                        });
+
+            }
+        }
+        );
+
 
         // Set up the submit button click handler
         signUpButton.setOnClickListener(new View.OnClickListener() {
