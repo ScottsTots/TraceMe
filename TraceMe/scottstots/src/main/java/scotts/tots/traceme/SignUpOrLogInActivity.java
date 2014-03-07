@@ -69,10 +69,12 @@ public class SignUpOrLogInActivity extends Activity {
                                     R.drawable.valid_form_green));
                             usernameValid = true;
                             signUpButton.setEnabled(true);
+                            logInButton.setEnabled(false);
 
                         } else {
                             usernameValid = false;
                             signUpButton.setEnabled(false);
+                            logInButton.setEnabled(true);
                             validFormDrawable.setImageDrawable(getResources().getDrawable(
                                     R.drawable.valid_form_red));
                         }
@@ -81,7 +83,6 @@ public class SignUpOrLogInActivity extends Activity {
             }
 
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
             public void onTextChanged(CharSequence s, int start, int before, int count) {}
         });
 
