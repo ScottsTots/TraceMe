@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.parse.ParseUser;
 
@@ -25,6 +26,7 @@ public class HomeScreenFrag extends Fragment {// implements View.OnClickListener
     public static final String ARG_PLANET_NUMBER = "planet_number";
 
     Button logOutButton;
+    Button newGameButton;
     public HomeScreenFrag() {
         // Empty constructor required for fragment subclasses
     }
@@ -38,12 +40,10 @@ public class HomeScreenFrag extends Fragment {// implements View.OnClickListener
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        logOutButton = (Button) view.findViewById(R.id.logOutButton);
-        logOutButton.setOnClickListener(new View.OnClickListener() {
+        newGameButton = (Button) view.findViewById(R.id.newGameButton);
+        newGameButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                ParseUser.logOut();
-                Intent intent = new Intent(getActivity(), SignUpOrLogInActivity.class);
-                startActivity(intent);
+                Toast.makeText(getActivity(), "AINT NO GAMES HERE YO", Toast.LENGTH_SHORT).show();
             }
         });
     }

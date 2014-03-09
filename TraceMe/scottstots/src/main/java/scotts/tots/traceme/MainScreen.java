@@ -19,6 +19,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.parse.ParseUser;
+
 import gamescreens.HomeScreenFrag;
 
 public class MainScreen extends Activity {
@@ -99,6 +101,7 @@ public class MainScreen extends Activity {
         return super.onPrepareOptionsMenu(menu);
     }
 
+    /** This is for the actual items on the action bar **/
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // The action bar home/up action should open or close the drawer.
@@ -132,7 +135,21 @@ public class MainScreen extends Activity {
         }
     }
 
+    /** This handles the items that we click on the left menu (the opened drawer) **/
     private void selectItem(int position) {
+
+
+        String choiceStr = getResources().getStringArray(R.array.nav_drawer_array)[position];
+        if(choiceStr.equals("Logout")) {
+            ParseUser.logOut();
+            Intent intent = new Intent(this, SignUpOrLogInActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
+        // If we're not trying to logout, we might try to change our content_view fragment based
+        // on the item we clicked, so we do the following steps:
+
         // update the main content by replacing fragments
         Fragment fragment = new HomeScreenFrag();
         Bundle args = new Bundle();
