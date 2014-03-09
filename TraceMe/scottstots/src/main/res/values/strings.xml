@@ -13,7 +13,7 @@
     <string name="app_id">1477514169137067</string>
    <string name="title_activity_main_screen">Home</string>
 
-    <string-array name="planets_array">
+    <string-array name="nav_drawer_array">
         <item>Settings</item>
         <item>Highscores</item>
         <item>About</item>
