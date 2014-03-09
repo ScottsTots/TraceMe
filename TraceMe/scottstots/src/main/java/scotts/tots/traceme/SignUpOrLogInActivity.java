@@ -17,9 +17,12 @@ import android.widget.Toast;
 import com.parse.GetCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
+import com.parse.ParseFacebookUtils;
 import com.parse.ParseQuery;
+import com.parse.ParseTwitterUtils;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
+
 
 /**
  * Activity which displays a registration screen to the user.
@@ -36,7 +39,8 @@ public class SignUpOrLogInActivity extends Activity {
     private boolean usernameValid;
     Button logInButton;
     Button signUpButton;
-
+    Button facebookButton;
+    Button twitterButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +53,11 @@ public class SignUpOrLogInActivity extends Activity {
 
         // Set up the login button
         logInButton = (Button) findViewById(R.id.logInButton);
+        logInButton.setEnabled(false);
+
+        // Set up the facebook / twitter button
+        facebookButton = (Button) findViewById(R.id.facebookButton);
+        twitterButton  = (Button) findViewById(R.id.twitterButton);
 
         validFormDrawable = (ImageView) findViewById(R.id.validFormDrawable);
         usernameView = (EditText) findViewById(R.id.usernameField);
@@ -226,6 +235,106 @@ public class SignUpOrLogInActivity extends Activity {
                         }
                     }
                 });
+            }
+        });
+
+        // Set up the facebook button click event
+        facebookButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                loginWithFacebook();
+            }
+        });
+
+        // Set up the twitter button click event
+        twitterButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                loginWithTwitter();
+            }
+        });
+    }
+
+    public void loginWithFacebook() {
+        final ProgressDialog dlg = new ProgressDialog(SignUpOrLogInActivity.this);
+        dlg.setTitle("Please wait..");
+        dlg.setMessage("Logging in..");
+        dlg.show();
+
+
+        ParseFacebookUtils.logIn(this, new LogInCallback() {
+            @Override
+            public void done(ParseUser parseUser, ParseException e) {
+                if (parseUser == null) {
+                    Toast.makeText(SignUpOrLogInActivity.this,
+                            "Uh oh. The user cancelled the Facebook login.",
+                            Toast.LENGTH_LONG
+                    ).show();
+                    dlg.dismiss();
+                } else if (parseUser.isNew()) {
+                    dlg.dismiss();
+                    Toast.makeText(SignUpOrLogInActivity.this,
+                            "User signed up and logged in through Facebook!",
+                            Toast.LENGTH_LONG
+                            ).show();
+
+                    Intent intent = new Intent(SignUpOrLogInActivity.this, MainScreen.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                } else {
+                    dlg.dismiss();
+                    Toast.makeText(SignUpOrLogInActivity.this,
+                            "User logged in through Facebook!",
+                            Toast.LENGTH_LONG
+                    ).show();
+
+                    Intent intent = new Intent(SignUpOrLogInActivity.this, MainScreen.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                }
+            }
+        });
+    }
+
+    public void loginWithTwitter() {
+        final ProgressDialog dlg = new ProgressDialog(SignUpOrLogInActivity.this);
+        dlg.setTitle("Please wait..");
+        dlg.setMessage("Logging in..");
+        dlg.show();
+
+
+        ParseTwitterUtils.logIn(this, new LogInCallback() {
+            @Override
+            public void done(ParseUser parseUser, ParseException e) {
+                if (parseUser == null) {
+                    Toast.makeText(SignUpOrLogInActivity.this,
+                            "Uh oh. The user cancelled the Twitter login.",
+                            Toast.LENGTH_LONG
+                    ).show();
+                    dlg.dismiss();
+                } else if (parseUser.isNew()) {
+                    dlg.dismiss();
+                    Toast.makeText(SignUpOrLogInActivity.this,
+                            "User signed up and logged in through Twitter!",
+                            Toast.LENGTH_LONG
+                    ).show();
+
+                    Intent intent = new Intent(SignUpOrLogInActivity.this, MainScreen.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                } else {
+                    dlg.dismiss();
+                    Toast.makeText(SignUpOrLogInActivity.this,
+                            "User logged in through Twitter!",
+                            Toast.LENGTH_LONG
+                    ).show();
+
+                    Intent intent = new Intent(SignUpOrLogInActivity.this, MainScreen.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                }
             }
         });
     }

@@ -1,1 +1,1 @@
-include ':scottstots'
+include ':libraries:facebook', ':scottstots'

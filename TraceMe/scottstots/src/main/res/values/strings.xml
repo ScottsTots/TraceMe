@@ -10,6 +10,7 @@
     <string name="host_game">New Game</string>
     <string name="join_game">Join Random Game</string>
     <string name="game_options">Game Options</string>
+    <string name="app_id">1477514169137067</string>
 
     <string-array name="frames_per_turn">
         <item>5</item>
