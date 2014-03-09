@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 
 import com.parse.Parse;
 import com.parse.ParseACL;
+import com.parse.ParseInstallation;
 import com.parse.ParseTwitterUtils;
 import com.parse.PushService;
 import com.parse.ParseFacebookUtils;
@@ -25,7 +26,7 @@ public class TraceMeApplication extends Application {
 
         // Enable to receive push
         PushService.setDefaultPushCallback(this, DispatchActivity.class);
-
+        ParseInstallation.getCurrentInstallation().saveInBackground();
         // Defines permissions
         ParseACL defaultACL = new ParseACL();
 

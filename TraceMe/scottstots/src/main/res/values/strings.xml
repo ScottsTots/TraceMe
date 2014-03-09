@@ -11,22 +11,18 @@
     <string name="join_game">Join Random Game</string>
     <string name="game_options">Game Options</string>
     <string name="app_id">1477514169137067</string>
+   <string name="title_activity_main_screen">Home</string>
 
-    <string-array name="frames_per_turn">
-        <item>5</item>
-        <item>10</item>
-        <item>15</item>
-        <item>20</item>
+    <string-array name="planets_array">
+        <item>Settings</item>
+        <item>Highscores</item>
+        <item>About</item>
+        <item>Logout</item>
     </string-array>
-    <string-array name="number_of_turns">
-        <item>4</item>
-        <item>6</item>
-        <item>8</item>
-        <item>10</item>
-        <item>12</item>
-    </string-array>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="action_websearch">Web search</string>
+    <string name="app_not_available">Sorry, there\'s no web browser available</string>
 
-    <string name="title_activity_main_screen">MainScreen</string>
-    <string name="hello_world">Hello world!</string>
 
 </resources>

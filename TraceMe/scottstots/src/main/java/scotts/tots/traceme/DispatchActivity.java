@@ -37,7 +37,7 @@ public class DispatchActivity extends Activity {
 
             // Start an intent for the logged in activity
             Log.d("parseNetwork", "user" + ParseUser.getCurrentUser().getUsername());
-           // startActivity(new Intent(this, MainMenuActivity.class));
+            startActivity(new Intent(this, MainScreen.class));
             finish();
 
         } else {
