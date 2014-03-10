@@ -4,10 +4,21 @@
     android:layout_height="match_parent">
 
 
-    <gamescreens.DrawingBoard
-        android:id ="@+id/draw"
+    <ViewFlipper
+        android:id="@+id/viewFlipper"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"></gamescreens.DrawingBoard>
+        android:layout_height="wrap_content">
+
+        <gamescreens.DrawingBoard
+            android:id="@+id/draw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"></gamescreens.DrawingBoard>
+
+        <gamescreens.ViewingBoard
+            android:id="@+id/view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"></gamescreens.ViewingBoard>
+    </ViewFlipper>
 
     <TextView
         android:layout_width="wrap_content"
@@ -18,6 +29,15 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="43dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Play"
+        android:id="@+id/playButton"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
 
 </RelativeLayout>

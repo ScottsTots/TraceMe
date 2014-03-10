@@ -21,7 +21,12 @@
 
 package gamescreens;
 
+import android.content.res.Configuration;
+import android.graphics.DashPathEffect;
+import android.graphics.PathEffect;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 
 import android.content.Context;
@@ -32,9 +37,13 @@ import android.graphics.EmbossMaskFilter;
 import android.graphics.MaskFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.os.Bundle;
 import android.view.MotionEvent;
-import android.view.View;
+import android.view.WindowManager;
+
+import java.util.ArrayList;
+
+import helperClasses.DataPoint;
+import helperClasses.PointManager;
 
 
 /**
@@ -55,39 +64,76 @@ public class DrawingBoard extends View {
     private Path mPath;
     private Paint mBitmapPaint;
 
+    float scaleX;
+    float scaleY;
+    int width;
+    int height;
+    int frameBufferWidth;
+    int frameBufferHeight;
+
+
+
+
+    private static PathEffect makeDash(float phase) {
+        return new DashPathEffect(new float[] { 15, 15}, 0);
+    }
+
     public DrawingBoard(Context c, AttributeSet attributeSet) {
         super(c,attributeSet);
+
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mPaint.setDither(true);
-        mPaint.setColor(0xFFFF0000);
+        mPaint.setColor(0xFF000000);
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeJoin(Paint.Join.ROUND);
         mPaint.setStrokeCap(Paint.Cap.ROUND);
         mPaint.setStrokeWidth(12);
-
-        mEmboss = new EmbossMaskFilter(new float[]{1, 1, 1},
-                0.4f, 6, 3.5f);
-
-        mBlur = new BlurMaskFilter(8, BlurMaskFilter.Blur.NORMAL);
+        mPaint.setPathEffect(makeDash(0));
 
         mPath = new Path();
+
         mBitmapPaint = new Paint(Paint.DITHER_FLAG);
+
+
+
+        // For scaling to different screen sizes
+        WindowManager wm = (WindowManager) c.getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics metrics = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(metrics);
+
+        height = metrics.heightPixels;
+        width = metrics.widthPixels;
+
+        // Scale the canvas for all devices based on the screen dimensions
+        boolean isPortrait = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
+        frameBufferWidth = isPortrait ? 480 : 800;
+        frameBufferHeight = isPortrait ? 800 : 480;
+        scaleX = (float) frameBufferWidth / width;
+        scaleY = (float) frameBufferHeight / height;
+
+
+        mBitmap = Bitmap.createBitmap(frameBufferWidth, frameBufferHeight, Bitmap.Config.ARGB_8888);
+        mCanvas = new Canvas(mBitmap);
+
+        GameActivity.pathsArray = new ArrayList<PointManager>();
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        mBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-        mCanvas = new Canvas(mBitmap);
+        boolean isPortrait = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
+        frameBufferWidth = isPortrait ? 480 : 800;
+        frameBufferHeight = isPortrait ? 800 : 480;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawColor(0xFFAAAAAA);
-
+        Log.d("view", "Drawing on");
+        // TODO for some reason the xml file doesn't compile if we scale the canvas...
+        canvas.scale((float) width / 480.0f, (float) height / 800.0f);
+        canvas.drawColor(0xFAAAAAAA);
         canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
-
         canvas.drawPath(mPath, mPaint);
     }
 
@@ -99,6 +145,9 @@ public class DrawingBoard extends View {
         mPath.moveTo(x, y);
         mX = x;
         mY = y;
+
+        GameActivity.pathsArray.add(new PointManager(x, y));
+        Log.d("view",  "size" + GameActivity.pathsArray.size());
     }
 
     private void touch_move(float x, float y) {
@@ -108,6 +157,8 @@ public class DrawingBoard extends View {
             mPath.quadTo(mX, mY, (x + mX) / 2, (y + mY) / 2);
             mX = x;
             mY = y;
+            // Insert the next point in our current path, which should be at the end of the stack.
+            GameActivity.pathsArray.get(GameActivity.pathsArray.size() - 1).addPoint(x, y);
         }
     }
 
@@ -121,8 +172,8 @@ public class DrawingBoard extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        float x = event.getX();
-        float y = event.getY();
+        float x = event.getX() * scaleX;
+        float y = event.getY() * scaleY;
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -140,5 +191,8 @@ public class DrawingBoard extends View {
         }
         return true;
     }
+
+
+
 
 }
