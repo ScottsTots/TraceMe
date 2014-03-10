@@ -71,8 +71,16 @@ public class DrawingBoard extends View {
     int frameBufferWidth;
     int frameBufferHeight;
 
-
-
+    // TODO: another way to get the point data of each path (useful for scoring), is to:
+    //  1. get the length of a path using:
+    //          PathMeasure measure = new PathMeasure(path, false);
+    //          float length = measure.getLength();
+    //  2. Now that we have the lenght, we can find coordinates on the path at specific segments by using:
+    //          measure.getPosTan(float distance, float[] pos, float[] tan)
+    //          Pins distance to 0 <= distance <= getLength(), and then computes the corresponding position and tangent.
+    // 3. We finally have points through the path at equal intervals. We can now get the user's trace and do
+    //          the same thing. Then we check for distances between original trace and user trace and
+    //          start cancelling out points and giving the user points.
 
     private static PathEffect makeDash(float phase) {
         return new DashPathEffect(new float[] { 15, 15}, 0);
@@ -151,14 +159,15 @@ public class DrawingBoard extends View {
     }
 
     private void touch_move(float x, float y) {
+        // Insert the next point in our current path, which should be at the end of the stack.
+        GameActivity.pathsArray.get(GameActivity.pathsArray.size() - 1).addPoint(x, y);
         float dx = Math.abs(x - mX);
         float dy = Math.abs(y - mY);
         if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
             mPath.quadTo(mX, mY, (x + mX) / 2, (y + mY) / 2);
             mX = x;
             mY = y;
-            // Insert the next point in our current path, which should be at the end of the stack.
-            GameActivity.pathsArray.get(GameActivity.pathsArray.size() - 1).addPoint(x, y);
+
         }
     }
 

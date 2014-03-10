@@ -56,5 +56,4 @@ public class GameActivity extends Activity {
             }
         });
     }
-
 }

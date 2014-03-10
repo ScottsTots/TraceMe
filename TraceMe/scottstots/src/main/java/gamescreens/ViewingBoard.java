@@ -8,6 +8,7 @@ import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PathEffect;
+import android.graphics.PathMeasure;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -72,7 +73,7 @@ public class ViewingBoard extends View {
         mPaint.setStrokeJoin(Paint.Join.ROUND);
         mPaint.setStrokeCap(Paint.Cap.ROUND);
         mPaint.setStrokeWidth(12);
-        mPaint.setPathEffect(makeDash(0));
+        //mPaint.setPathEffect(makeDash(0));
 
         mBitmapPaint = new Paint(Paint.DITHER_FLAG);
 
@@ -111,7 +112,6 @@ public class ViewingBoard extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        Log.d("view", currPathNumber + "  " + GameActivity.pathsArray.size());
         canvas.scale((float) width / 480.0f, (float) height / 800.0f);
 
 
@@ -126,7 +126,7 @@ public class ViewingBoard extends View {
                 canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
                 // draw the current path on top of that.
                 drawPath(canvas);
-               // canvas.drawPoint(point.x, point.y, mPaint);
+                // canvas.drawPoint(point.x, point.y, mPaint);
                 // See if enough time has passed to move on to the next point:
                 long timeNow = System.currentTimeMillis();
                 if(timeNow - previous > point.time) {
@@ -147,7 +147,7 @@ public class ViewingBoard extends View {
             // that have been drawn so far).
             currPathNumber = 0;
             currPointNumber = 0;
-            // TODO everytime we reset the canvas there's an empty frame and it flashes...
+            // TODO every time we reset the canvas there's an empty frame and it flashes all white.
 
             // Clear/Reset our actual Bitmap buffer, which had our saved paths
             mBitmap = Bitmap.createBitmap(frameBufferWidth, frameBufferHeight, Bitmap.Config.ARGB_8888);
@@ -162,6 +162,9 @@ public class ViewingBoard extends View {
      * touch_start, touch_move, and touch_up. We simulate these stages by figuring out which point
      * we're drawing.
     **/
+    float mX;
+    float mY;
+    private static final float TOUCH_TOLERANCE = 4;
     public void drawPath(Canvas canvas) {
         DataPoint point = currentPath.get(currPointNumber);
 
@@ -169,19 +172,24 @@ public class ViewingBoard extends View {
         if(currPointNumber == 0) {
             mPath.reset();
             mPath.moveTo(point.x, point.y);
+
+            mX = point.x;
+            mY = point.y;
         }
         // touch_move
         else {
-            // Since we're drawing smooth curves we need the previous point to get a good average.
-            DataPoint prevPoint = currentPath.get(currPointNumber-1);
-            mPath.quadTo(point.x, point.y, (point.x + prevPoint.x) / 2, (point.y + prevPoint.y) / 2);
-        }
-        // TODO fix path disappearing when drawing the next path...
+            float dx = Math.abs(point.x - mX);
+            float dy = Math.abs(point.y - mY);
+            if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
 
-        // TODO also fix dashed lines not being the same as original drawing. This might be because
-        // on touch_move in DrawingBoard, we only save points that go past our tolerance level,
-        // however mX and mY are based on all points (even if they didn't get past the tolerance).
-        // So we have lost some data, or there's some weird dark magic going on here.
+                // Since we're drawing smooth curves we need the previous point to get a good average.
+                DataPoint prevPoint = currentPath.get(currPointNumber-1); //same thing as mx,mY
+                mPath.quadTo(point.x, point.y, (point.x + prevPoint.x) / 2, (point.y + prevPoint.y) / 2);
+            }
+        }
+
+        // TODO also fix dashed lines not being the same as original drawing...
+        // touch_up
         if(currPointNumber == currentPath.size() - 1)
         {
             mPath.lineTo(point.x, point.y);
@@ -194,14 +202,10 @@ public class ViewingBoard extends View {
         canvas.drawPath(mPath, mPaint);
     }
 
-    private void touch_up() {
-    }
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         return true;
     }
-
 
     public void startDrawing() {
         paths = GameActivity.pathsArray;
