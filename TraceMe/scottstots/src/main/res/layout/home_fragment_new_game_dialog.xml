@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Single Player"
-        android:id="@+id/button"
+        android:id="@+id/singlePlayer"
         android:layout_marginTop="30dp"
         android:layout_below="@+id/textView"
         android:layout_centerHorizontal="true" />
@@ -30,27 +30,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Random Opponent"
-        android:id="@+id/button2"
-        android:layout_below="@+id/button"
-        android:layout_alignLeft="@+id/button"
-        android:layout_alignStart="@+id/button"
+        android:id="@+id/randomOpponentButton"
+        android:layout_below="@+id/singlePlayer"
+        android:layout_alignLeft="@+id/singlePlayer"
+        android:layout_alignStart="@+id/singlePlayer"
         android:layout_marginTop="47dp"
-        android:layout_alignRight="@+id/button"
-        android:layout_alignEnd="@+id/button" />
+        android:layout_alignRight="@+id/singlePlayer"
+        android:layout_alignEnd="@+id/singlePlayer" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Challenge a Friend"
-        android:id="@+id/button3"
+        android:id="@+id/challengeButton"
         android:layout_marginTop="43dp"
-        android:layout_below="@+id/button2"
+        android:layout_below="@+id/randomOpponentButton"
         android:layout_centerHorizontal="true" />
 
     <Space
         android:layout_width="20px"
         android:layout_height="20px"
-        android:layout_below="@+id/button3"
+        android:layout_below="@+id/challengeButton"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="36dp" />
 
