@@ -4,8 +4,11 @@ package gamescreens;
  * Created by Aaron on 3/9/14.
  */
 
+import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,6 +46,12 @@ public class HomeScreenFrag extends Fragment {// implements View.OnClickListener
         newGameButton = (Button) view.findViewById(R.id.newGameButton);
         newGameButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
+                final Dialog dlog = new Dialog(getActivity(),
+                        android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth);
+                dlog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+                dlog.setContentView(R.layout.home_fragment_new_game_dialog);
+                dlog.show();
                 Toast.makeText(getActivity(), "AINT NO GAMES HERE YO", Toast.LENGTH_SHORT).show();
             }
         });
