@@ -24,6 +24,7 @@ package gamescreens;
 import android.content.res.Configuration;
 import android.graphics.DashPathEffect;
 import android.graphics.PathEffect;
+import android.graphics.PathMeasure;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -31,9 +32,7 @@ import android.view.View;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
-import android.graphics.EmbossMaskFilter;
 import android.graphics.MaskFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -71,16 +70,8 @@ public class DrawingBoard extends View {
     int frameBufferWidth;
     int frameBufferHeight;
 
-    // TODO: another way to get the point data of each path (useful for scoring), is to:
-    //  1. get the length of a path using:
-    //          PathMeasure measure = new PathMeasure(path, false);
-    //          float length = measure.getLength();
-    //  2. Now that we have the lenght, we can find coordinates on the path at specific segments by using:
-    //          measure.getPosTan(float distance, float[] pos, float[] tan)
-    //          Pins distance to 0 <= distance <= getLength(), and then computes the corresponding position and tangent.
-    // 3. We finally have points through the path at equal intervals. We can now get the user's trace and do
-    //          the same thing. Then we check for distances between original trace and user trace and
-    //          start cancelling out points and giving the user points.
+
+
 
     private static PathEffect makeDash(float phase) {
         return new DashPathEffect(new float[] { 15, 15}, 0);
@@ -175,6 +166,9 @@ public class DrawingBoard extends View {
         mPath.lineTo(mX, mY);
         // commit the path to our offscreen
         mCanvas.drawPath(mPath, mPaint);
+
+        convertToPoints(new Path(mPath));
+
         // kill this so we don't double draw
         mPath.reset();
     }
@@ -202,6 +196,29 @@ public class DrawingBoard extends View {
     }
 
 
+
+    // This is the method we can use for scoring purposes:
+    //  1. get the length of a path using:
+    //          PathMeasure measure = new PathMeasure(path, false);
+    //          float length = measure.getLength();
+    //  2. Now that we have the length, we can find coordinates on the path at specific intervals using:
+    //          measure.getPosTan(float distance, float[] pos, float[] tan)
+    //          (Pins distance to 0 <= distance <= getLength(), and then computes the corresponding position and tangent.)
+    // 3. We finally have points through the path at equal intervals. We can now get the user's trace and do
+    //          the same thing. Then we check for distances between original trace and user trace and
+    //          start cancelling out points and giving the user points.
+
+    /** Creates equally divided points along an android path, to be used for scoring trace accuracy, NOT
+     * drawing. The drawing data is saved in the pathsArray **/
+    public void convertToPoints(Path p) {
+        PathMeasure measure = new PathMeasure(p, false);
+        float length = measure.getLength();
+        float[] pos = new float[2];
+        for(int j = 0; j < length; j+= 10) {
+            measure.getPosTan(j, pos, null);
+            GameActivity.pointsArray.add(new DataPoint(pos[0], pos[1], 0));
+        }
+    }
 
 
 }

@@ -10,6 +10,7 @@ import android.widget.ViewFlipper;
 
 import java.util.ArrayList;
 
+import helperClasses.DataPoint;
 import helperClasses.PointManager;
 import scotts.tots.traceme.R;
 
@@ -26,8 +27,13 @@ import scotts.tots.traceme.R;
  * and DrawingBoard.java for more info.
  */
 public class GameActivity extends Activity {
-
+    // Contains all points for the trace separated by the path they were at.
+    // This array is used to do the drawing animation in ViewingBoard
     public static ArrayList<PointManager> pathsArray;
+
+    // Contains all the points for the original trace, equidistant from each other.
+    // This is used for scoring purposes, to see whether the user's trace aligns with this set of points.
+    public static ArrayList<DataPoint> pointsArray;
     DrawingBoard drawingBoard;
     ViewingBoard viewingBoard;
     Button playButton;
@@ -40,6 +46,7 @@ public class GameActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_activity);
         pathsArray = new ArrayList<PointManager>();
+        pointsArray = new ArrayList<DataPoint>();
         drawingBoard = (DrawingBoard) findViewById(R.id.draw);
         viewingBoard = (ViewingBoard) findViewById(R.id.view);
 

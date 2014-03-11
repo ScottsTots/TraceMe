@@ -110,9 +110,24 @@ public class ViewingBoard extends View {
         mCanvas = new Canvas(mBitmap);
     }
 
+    int pointCounter = 0;
     @Override
     protected void onDraw(Canvas canvas) {
         canvas.scale((float) width / 480.0f, (float) height / 800.0f);
+
+        /* Uncomment this and comment out the rest of the canvas.draws() below
+           to see how the scoring mechanism looks (shows all points equidistant in the drawing)
+
+        if(pointCounter < GameActivity.pointsArray.size()) {
+            DataPoint point = GameActivity.pointsArray.get(pointCounter);
+            mCanvas.drawPoint(point.x, point.y, mPaint);
+            // canvas.drawPoint(point.x, point.y, mPaint);
+            pointCounter++;
+        }
+        */
+
+
+
 
 
         // If we still have paths to draw
@@ -126,8 +141,8 @@ public class ViewingBoard extends View {
                 canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
                 // draw the current path on top of that.
                 drawPath(canvas);
-                // canvas.drawPoint(point.x, point.y, mPaint);
                 // See if enough time has passed to move on to the next point:
+                //TODO need to also take into account time passed between two paths...
                 long timeNow = System.currentTimeMillis();
                 if(timeNow - previous > point.time) {
                     previous = System.currentTimeMillis();
@@ -176,6 +191,7 @@ public class ViewingBoard extends View {
             mX = point.x;
             mY = point.y;
         }
+
         // touch_move
         else {
             float dx = Math.abs(point.x - mX);
