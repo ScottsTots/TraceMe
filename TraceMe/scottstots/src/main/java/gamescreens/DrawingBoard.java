@@ -39,6 +39,8 @@ import android.graphics.Path;
 import android.view.MotionEvent;
 import android.view.WindowManager;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 
 import helperClasses.DataPoint;
@@ -59,6 +61,7 @@ public class DrawingBoard extends View {
     private static final float MAXP = 0.75f;
 
     private Bitmap mBitmap;
+    private Bitmap traceBitmap;
     private Canvas mCanvas;
     private Path mPath;
     private Paint mBitmapPaint;
@@ -69,9 +72,6 @@ public class DrawingBoard extends View {
     int height;
     int frameBufferWidth;
     int frameBufferHeight;
-
-
-
 
     private static PathEffect makeDash(float phase) {
         return new DashPathEffect(new float[] { 15, 15}, 0);
@@ -94,8 +94,6 @@ public class DrawingBoard extends View {
 
         mBitmapPaint = new Paint(Paint.DITHER_FLAG);
 
-
-
         // For scaling to different screen sizes
         WindowManager wm = (WindowManager) c.getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics metrics = new DisplayMetrics();
@@ -114,7 +112,6 @@ public class DrawingBoard extends View {
 
         mBitmap = Bitmap.createBitmap(frameBufferWidth, frameBufferHeight, Bitmap.Config.ARGB_8888);
         mCanvas = new Canvas(mBitmap);
-
         GameActivity.pathsArray = new ArrayList<PointManager>();
     }
 
@@ -126,14 +123,17 @@ public class DrawingBoard extends View {
         frameBufferHeight = isPortrait ? 800 : 480;
     }
 
+
     @Override
     protected void onDraw(Canvas canvas) {
         Log.d("view", "Drawing on");
         // TODO for some reason the xml file doesn't compile if we scale the canvas...
         canvas.scale((float) width / 480.0f, (float) height / 800.0f);
         canvas.drawColor(0xFAAAAAAA);
+
         canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
         canvas.drawPath(mPath, mPaint);
+       // postInvalidate();
     }
 
     private float mX, mY;
@@ -195,6 +195,28 @@ public class DrawingBoard extends View {
         return true;
     }
 
+    public Bitmap getCanvasBitmap() {
+       // Bitmap b = Bitmap.createBitmap(mBitmap, 0, 0, mBitmap.getWidth(), mBitmap.getHeight(), null, true);
+        return mBitmap.copy(Bitmap.Config.ARGB_8888, true);
+
+
+    }
+
+    // Used to draw the trace points (the score data)
+    public void drawTrace(ArrayList<DataPoint> tracePoints) {
+        DataPoint point;
+        for(int i = 0; i < tracePoints.size(); i++) {
+            point = tracePoints.get(i);
+            mCanvas.drawPoint(point.x, point.y, mPaint);
+        }
+    }
+
+    // Used to draw the trace image
+    public void drawTrace(Bitmap bitmap) {
+        Log.d("loading", "set trace");
+        mBitmap = bitmap;
+        mCanvas = new Canvas(mBitmap);
+    }
 
 
     // This is the method we can use for scoring purposes:

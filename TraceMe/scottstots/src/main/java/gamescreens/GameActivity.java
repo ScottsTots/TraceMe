@@ -1,17 +1,28 @@
 package gamescreens;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
+
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
 import helperClasses.DataPoint;
 import helperClasses.PointManager;
+import helperClasses.TraceFile;
 import scotts.tots.traceme.R;
 
 /**
@@ -39,6 +50,12 @@ public class GameActivity extends Activity {
     Button playButton;
     ViewFlipper flipper;
 
+    Button saveTraceButton;
+    TraceFile trace;
+
+    ProgressDialog loadingDialog;
+    SharedPreferences mPrefs;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -52,6 +69,16 @@ public class GameActivity extends Activity {
 
         flipper = (ViewFlipper) findViewById(R.id.viewFlipper);
 
+        loadingDialog = new ProgressDialog(GameActivity.this);
+        loadingDialog.setMessage("Loading...");
+
+        // Load level, if any
+        mPrefs = getSharedPreferences("gameprefs", MODE_PRIVATE);
+
+
+        new LoadOrSaveTask().execute("load");
+
+
         // Switch into the viewingBoard using the viewFlipper.
         playButton = (Button) findViewById(R.id.playButton);
         playButton.setOnClickListener(new View.OnClickListener() {
@@ -62,5 +89,69 @@ public class GameActivity extends Activity {
                 viewingBoard.startDrawing(); // this updates our viewingBoard to the current data.
             }
         });
+
+
+        // Save a trace to be used as the initial trace in the next game.
+        saveTraceButton = (Button) findViewById(R.id.saveTraceButton);
+        saveTraceButton.setOnClickListener(new View.OnClickListener() {
+            // When we click save, all the points in pointsArray, AND the bitmap we drew will get saved
+            // into a traceFile object.
+            @Override
+            public void onClick(View view) {
+                new LoadOrSaveTask().execute("save");
+            }
+        });
+
+    }
+
+
+
+    public void loadTrace() {
+        // If there is a game level/trace present in our shared prefs
+        Gson gson = new Gson();
+        String json = mPrefs.getString("Trace1", "");
+        Log.d("loading", "got json");
+        if (json != null) {
+            trace = gson.fromJson(json, TraceFile.class);
+            Log.d("loading", "got trace");
+            // draw it on the canvas with transparent paint if it was present.
+            if (trace != null) {
+                Log.d("loading", "drawing trace...");
+                drawingBoard.drawTrace(trace.getBitmap());
+                // drawingBoard.drawTrace(trace.points);
+            }
+        }
+    }
+
+    public void saveTrace() {
+        Bitmap bmp = drawingBoard.getCanvasBitmap();
+        trace = new TraceFile(bmp, pointsArray);
+        SharedPreferences.Editor prefsEditor = mPrefs.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(trace);
+        prefsEditor.putString("Trace1", json);
+        prefsEditor.commit();
+        Toast.makeText(GameActivity.this, "Trace saved, start a new game for it to load", Toast.LENGTH_LONG).show();
+    }
+
+    private class LoadOrSaveTask extends AsyncTask<String, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            loadingDialog.show();
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+            if(params[0].equals("load"))
+                loadTrace();
+            else if(params[0].equals("save"))
+                saveTrace();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void param) {
+            loadingDialog.dismiss();
+        }
     }
 }

@@ -10,17 +10,31 @@ import android.graphics.Bitmap;
 import java.util.ArrayList;
 
 /**
- * Represents a trace object, composed of a bitmap, and the datapoints associated with it.
+ * Represents a trace object, composed of a bitmap, the datapoints associated with it and
+ * we could possibly save more info, such as android paths, animation points (which are not equidistant)
  */
 public class TraceFile {
     // What we draw on the screen.
-    Bitmap bmp;
-
+    //public Bitmap bitmap;
+    public int[] pixels;
+    int width;
+    int height;
     // What we use to score a trace.
-    // Saves the actual data points that make up the bitmap drawing.
-    ArrayList<PointManager> paths;
-    public TraceFile(Bitmap bitmap, ArrayList<PointManager> paths) {
-        bmp = bitmap;
-        this.paths = paths;
+    // Saves the equidistant points that make up the bitmap drawing, used for scoring purposes
+    public ArrayList<DataPoint> points;
+    public TraceFile(Bitmap bitmap, ArrayList<DataPoint> points) {
+        pixels = new int[bitmap.getWidth() * bitmap.getHeight()];
+        bitmap.getPixels(pixels, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
+        this.points = points;
+        width = bitmap.getWidth();
+        height = bitmap.getHeight();
     }
+
+    public Bitmap getBitmap() {
+        // The one we retrieve from a resource is immutable, so we have to make a mutable copy.
+        Bitmap bmp = Bitmap.createBitmap(pixels, width, height, Bitmap.Config.ARGB_8888);
+        Bitmap mutable= bmp.copy(Bitmap.Config.ARGB_8888, true);
+        return mutable;
+    }
+
 }
