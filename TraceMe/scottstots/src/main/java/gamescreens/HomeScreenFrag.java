@@ -84,7 +84,6 @@ public class HomeScreenFrag extends Fragment {// implements View.OnClickListener
 */
 
                 dlog.show();
-                Toast.makeText(getActivity(), "this game is about pressing buttons. Press as many buttons as you want.", Toast.LENGTH_SHORT).show();
             }
         });
     }

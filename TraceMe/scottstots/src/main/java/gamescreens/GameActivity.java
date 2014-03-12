@@ -6,13 +6,17 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
@@ -22,6 +26,7 @@ import java.util.ArrayList;
 
 import helperClasses.DataPoint;
 import helperClasses.PointManager;
+import helperClasses.ScoreManager;
 import helperClasses.TraceFile;
 import scotts.tots.traceme.R;
 
@@ -49,6 +54,7 @@ public class GameActivity extends Activity {
     ViewingBoard viewingBoard;
     Button playButton;
     ViewFlipper flipper;
+    TextView scoreText;
 
     Button saveTraceButton;
     TraceFile trace;
@@ -56,30 +62,37 @@ public class GameActivity extends Activity {
     ProgressDialog loadingDialog;
     SharedPreferences mPrefs;
 
+    public static ScoreManager score;
+
+    Handler handler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_activity);
+
         pathsArray = new ArrayList<PointManager>();
         pointsArray = new ArrayList<DataPoint>();
+
         drawingBoard = (DrawingBoard) findViewById(R.id.draw);
         viewingBoard = (ViewingBoard) findViewById(R.id.view);
-
+        scoreText = (TextView) findViewById(R.id.scoreText);
         flipper = (ViewFlipper) findViewById(R.id.viewFlipper);
 
         loadingDialog = new ProgressDialog(GameActivity.this);
         loadingDialog.setMessage("Loading...");
 
+
         // Load level, if any
+        trace = new TraceFile(null, new ArrayList<DataPoint>());
         mPrefs = getSharedPreferences("gameprefs", MODE_PRIVATE);
-
-
         new LoadOrSaveTask().execute("load");
 
 
-        // Switch into the viewingBoard using the viewFlipper.
+
+        // Switch into the viewingBoard using the viewFlipper if we press "play"
         playButton = (Button) findViewById(R.id.playButton);
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,39 +112,13 @@ public class GameActivity extends Activity {
             @Override
             public void onClick(View view) {
                 new LoadOrSaveTask().execute("save");
+                drawingBoard.setPaintColor(Color.BLACK);
             }
         });
 
-    }
 
 
 
-    public void loadTrace() {
-        // If there is a game level/trace present in our shared prefs
-        Gson gson = new Gson();
-        String json = mPrefs.getString("Trace1", "");
-        Log.d("loading", "got json");
-        if (json != null) {
-            trace = gson.fromJson(json, TraceFile.class);
-            Log.d("loading", "got trace");
-            // draw it on the canvas with transparent paint if it was present.
-            if (trace != null) {
-                Log.d("loading", "drawing trace...");
-                drawingBoard.drawTrace(trace.getBitmap());
-                // drawingBoard.drawTrace(trace.points);
-            }
-        }
-    }
-
-    public void saveTrace() {
-        Bitmap bmp = drawingBoard.getCanvasBitmap();
-        trace = new TraceFile(bmp, pointsArray);
-        SharedPreferences.Editor prefsEditor = mPrefs.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(trace);
-        prefsEditor.putString("Trace1", json);
-        prefsEditor.commit();
-        Toast.makeText(GameActivity.this, "Trace saved, start a new game for it to load", Toast.LENGTH_LONG).show();
     }
 
     private class LoadOrSaveTask extends AsyncTask<String, Void, Void> {
@@ -151,7 +138,47 @@ public class GameActivity extends Activity {
 
         @Override
         protected void onPostExecute(Void param) {
+
+           // Log.d("score", "siiiize" + trace.getPointArray().size());
+            score = new ScoreManager(trace, handler);
             loadingDialog.dismiss();
         }
     }
+
+
+    public void loadTrace() {
+        // If there is a game level/trace present in our shared prefs
+        Gson gson = new Gson();
+        String json = mPrefs.getString("Trace1", "");
+        Log.d("loading", "got json");
+        if (json != null) {
+            trace = gson.fromJson(json, TraceFile.class);
+            Log.d("loading", "got trace");
+            // draw it on the canvas with transparent paint if it was present.
+            if (trace != null) {
+                Log.d("loading", "drawing trace...");
+                drawingBoard.drawTrace(trace.getBitmap());
+                // drawingBoard.drawTrace(trace.points);
+            }
+            else {
+                trace = new TraceFile(null, new ArrayList<DataPoint>());
+
+                drawingBoard.setPaintColor(Color.BLUE);
+            }
+
+        }
+    }
+
+    public void saveTrace() {
+        Bitmap bmp = drawingBoard.getCanvasBitmap();
+        trace = new TraceFile(bmp, pointsArray);
+        SharedPreferences.Editor prefsEditor = mPrefs.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(trace);
+        prefsEditor.putString("Trace1", json);
+        prefsEditor.commit();
+       // Toast.makeText(GameActivity.this, "Trace saved, start a new game for it to load", Toast.LENGTH_LONG).show();
+    }
+
+
 }

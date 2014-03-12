@@ -22,6 +22,7 @@
 package gamescreens;
 
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.PathEffect;
 import android.graphics.PathMeasure;
@@ -65,6 +66,7 @@ public class DrawingBoard extends View {
     private Canvas mCanvas;
     private Path mPath;
     private Paint mBitmapPaint;
+    private Paint textPaint;
 
     float scaleX;
     float scaleY;
@@ -73,12 +75,16 @@ public class DrawingBoard extends View {
     int frameBufferWidth;
     int frameBufferHeight;
 
+    ArrayList<DataPoint> playerTraceData;
+
     private static PathEffect makeDash(float phase) {
         return new DashPathEffect(new float[] { 15, 15}, 0);
     }
 
     public DrawingBoard(Context c, AttributeSet attributeSet) {
         super(c,attributeSet);
+
+        playerTraceData = new ArrayList<DataPoint>();
 
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
@@ -87,8 +93,12 @@ public class DrawingBoard extends View {
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeJoin(Paint.Join.ROUND);
         mPaint.setStrokeCap(Paint.Cap.ROUND);
-        mPaint.setStrokeWidth(12);
-        mPaint.setPathEffect(makeDash(0));
+        mPaint.setStrokeWidth(20);
+       // mPaint.setPathEffect(makeDash(0));
+
+        textPaint = new Paint();
+        textPaint.setColor(Color.BLACK);
+        textPaint.setTextSize(30);
 
         mPath = new Path();
 
@@ -133,7 +143,15 @@ public class DrawingBoard extends View {
 
         canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
         canvas.drawPath(mPath, mPaint);
-       // postInvalidate();
+
+        if(GameActivity.score != null) {
+            textPaint.setTextSize(GameActivity.score.getCombo());
+            canvas.drawText("Score: " + Integer.toString(GameActivity.score.getScore()), 20, 120, textPaint);
+        }
+      /*  for(int i =0; i < playerTraceData.size(); i++) {
+            DataPoint point = playerTraceData.get(i);
+            canvas.drawPoint(point.x, point.y, mPaint);
+        }*/
     }
 
     private float mX, mY;
@@ -180,10 +198,12 @@ public class DrawingBoard extends View {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                GameActivity.score.update(new DataPoint(x, y));
                 touch_start(x, y);
                 invalidate();
                 break;
             case MotionEvent.ACTION_MOVE:
+                GameActivity.score.update(new DataPoint(x, y));
                 touch_move(x, y);
                 invalidate();
                 break;
@@ -192,6 +212,7 @@ public class DrawingBoard extends View {
                 invalidate();
                 break;
         }
+        //convertToPoints2(mPath);
         return true;
     }
 
@@ -240,6 +261,23 @@ public class DrawingBoard extends View {
             measure.getPosTan(j, pos, null);
             GameActivity.pointsArray.add(new DataPoint(pos[0], pos[1], 0));
         }
+    }
+
+
+    public void convertToPoints2(Path p) {
+        playerTraceData.clear();
+        PathMeasure measure = new PathMeasure(p, false);
+        float length = measure.getLength();
+        float[] pos = new float[2];
+        for(int j = 0; j < length; j+= 10) {
+            measure.getPosTan(j, pos, null);
+            playerTraceData.add(new DataPoint(pos[0], pos[1], 0));
+        }
+    }
+
+    public void setPaintColor(int color) {
+        mPaint.setColor(color);
+
     }
 
 

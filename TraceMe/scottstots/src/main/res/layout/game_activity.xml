@@ -48,5 +48,16 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Score: "
+        android:id="@+id/scoreText"
+        android:layout_alignTop="@+id/saveTraceButton"
+        android:layout_alignLeft="@+id/textView"
+        android:layout_alignStart="@+id/textView"
+        android:layout_toLeftOf="@+id/playButton" />
+
 
 </RelativeLayout>
