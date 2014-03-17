@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+     android:interpolator="@anim/overshoot_interpolator">
+    <translate 
+       
+        android:startOffset="300"
+        android:fromYDelta="600"
+        android:toYDelta="0"
+        android:fillAfter="true"
+        android:duration="500" />
+</set>
