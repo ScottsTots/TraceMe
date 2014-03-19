@@ -23,8 +23,6 @@ package gamescreens;
 
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.graphics.DashPathEffect;
-import android.graphics.PathEffect;
 import android.graphics.PathMeasure;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -40,12 +38,10 @@ import android.graphics.Path;
 import android.view.MotionEvent;
 import android.view.WindowManager;
 
-import com.google.gson.Gson;
-
 import java.util.ArrayList;
 
+import helperClasses.CustomPath;
 import helperClasses.DataPoint;
-import helperClasses.PointManager;
 
 
 /**
@@ -56,13 +52,9 @@ import helperClasses.PointManager;
 public class DrawingBoard extends View {
 
     private Paint mPaint;
-    private MaskFilter mEmboss;
-    private MaskFilter mBlur;
-    private static final float MINP = 0.25f;
-    private static final float MAXP = 0.75f;
+
 
     private Bitmap mBitmap;
-    private Bitmap traceBitmap;
     private Canvas mCanvas;
     private Path mPath;
     private Paint mBitmapPaint;
@@ -96,7 +88,7 @@ public class DrawingBoard extends View {
         textPaint.setColor(Color.BLACK);
         textPaint.setTextSize(30);
 
-        mPath = new Path();
+
 
         mBitmapPaint = new Paint(Paint.DITHER_FLAG);
 
@@ -115,10 +107,14 @@ public class DrawingBoard extends View {
         scaleX = (float) frameBufferWidth / width;
         scaleY = (float) frameBufferHeight / height;
 
-
+        // When we finish drawing a path, we "save" it by just drawing it to this bitmap.
         mBitmap = Bitmap.createBitmap(frameBufferWidth, frameBufferHeight, Bitmap.Config.ARGB_8888);
+        // This is only path object we use to draw. on touch_up, we save it by drawing it in mBitmap.
+        mPath = new Path();
         mCanvas = new Canvas(mBitmap);
-        GameActivity.pathsArray = new ArrayList<PointManager>();
+        // The array that we will use to draw our trace. It contains time info + datapoints.
+        // This is not the array we use for scoring.
+        GameActivity.pathsArray = new ArrayList<CustomPath>();
     }
 
     @Override
@@ -140,14 +136,11 @@ public class DrawingBoard extends View {
         canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
         canvas.drawPath(mPath, mPaint);
 
+        // Draw the score.
         if(GameActivity.score != null) {
             textPaint.setTextSize(GameActivity.score.getCombo());
             canvas.drawText("Score: " + Integer.toString(GameActivity.score.getScore()), 20, 120, textPaint);
         }
-      /*  for(int i =0; i < playerTraceData.size(); i++) {
-            DataPoint point = playerTraceData.get(i);
-            canvas.drawPoint(point.x, point.y, mPaint);
-        }*/
     }
 
     private float mX, mY;
@@ -159,12 +152,15 @@ public class DrawingBoard extends View {
         mX = x;
         mY = y;
 
-        GameActivity.pathsArray.add(new PointManager(x, y));
+        // This is an array of CustomPaths, which contains points. We are currently adding a new CustomPath
+        // That starts at x,y
+        GameActivity.pathsArray.add(new CustomPath(x, y));
         Log.d("view",  "size" + GameActivity.pathsArray.size());
     }
 
     private void touch_move(float x, float y) {
-        // Insert the next point in our current path, which should be at the end of the stack.
+        // Insert the next point in our current CustomPath, which should be at the end of the stack.
+        // This is an array of CustomPaths, which contains points. We are currently adding points.
         GameActivity.pathsArray.get(GameActivity.pathsArray.size() - 1).addPoint(x, y);
         float dx = Math.abs(x - mX);
         float dy = Math.abs(y - mY);
@@ -208,18 +204,18 @@ public class DrawingBoard extends View {
                 invalidate();
                 break;
         }
-        //convertToPoints2(mPath);
+
         return true;
     }
 
     public Bitmap getCanvasBitmap() {
-       // Bitmap b = Bitmap.createBitmap(mBitmap, 0, 0, mBitmap.getWidth(), mBitmap.getHeight(), null, true);
+        // Returns all the stuff that has been drawn so far.
         return mBitmap.copy(Bitmap.Config.ARGB_8888, true);
 
 
     }
 
-    // Used to draw the trace points (the score data)
+    // Used to draw the trace points (the score data). These should all be equidistant points
     public void drawTrace(ArrayList<DataPoint> tracePoints) {
         DataPoint point;
         for(int i = 0; i < tracePoints.size(); i++) {
@@ -259,21 +255,8 @@ public class DrawingBoard extends View {
         }
     }
 
-
-    public void convertToPoints2(Path p) {
-        playerTraceData.clear();
-        PathMeasure measure = new PathMeasure(p, false);
-        float length = measure.getLength();
-        float[] pos = new float[2];
-        for(int j = 0; j < length; j+= 10) {
-            measure.getPosTan(j, pos, null);
-            playerTraceData.add(new DataPoint(pos[0], pos[1], 0));
-        }
-    }
-
     public void setPaintColor(int color) {
         mPaint.setColor(color);
-
     }
 
 

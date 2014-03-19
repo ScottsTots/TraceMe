@@ -1,31 +1,27 @@
 package gamescreens;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
+import helperClasses.CustomPath;
 import helperClasses.DataPoint;
-import helperClasses.PointManager;
 import helperClasses.ScoreManager;
 import helperClasses.TraceFile;
 import scotts.tots.traceme.R;
@@ -36,19 +32,21 @@ import scotts.tots.traceme.R;
 
 /**
  * Manages the DrawingBoard and ViewingBoard, which are connected to this via xml.
- * The pathsArray is an object full of arrays of points. This is the buffer we use
- * to save our point data and redraw it. We could possibly transmit this data to a score manager to score
- * traces
- * See the helperClasses package
- * and DrawingBoard.java for more info.
+ * The pathsArray is an object full of arrays of points that are probably not equidistant.
+ * This is the buffer we use to save our point data and redraw it in ViewingBoard
+ *
+ * The pointsArray is used for saving a trace's points.
+ * It is different from a regular DataPoint array in that all points we compute are equidistant
+ * See DrawingBoard.convertToPoints for the details.
  */
 public class GameActivity extends Activity {
     // Contains all points for the trace separated by the path they were at.
     // This array is used to do the drawing animation in ViewingBoard
-    public static ArrayList<PointManager> pathsArray;
+    public static ArrayList<CustomPath> pathsArray;
 
-    // Contains all the points for the original trace, equidistant from each other.
-    // This is used for scoring purposes, to see whether the user's trace aligns with this set of points.
+    // When we load, we put our points here. The scoring manager uses this
+    // to calculate score. When we save, this array should already be full with
+    // the trace data.
     public static ArrayList<DataPoint> pointsArray;
     DrawingBoard drawingBoard;
     ViewingBoard viewingBoard;
@@ -73,7 +71,7 @@ public class GameActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_activity);
 
-        pathsArray = new ArrayList<PointManager>();
+        pathsArray = new ArrayList<CustomPath>();
         pointsArray = new ArrayList<DataPoint>();
 
         drawingBoard = (DrawingBoard) findViewById(R.id.draw);

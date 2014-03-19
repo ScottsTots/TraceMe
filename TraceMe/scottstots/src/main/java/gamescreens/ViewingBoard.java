@@ -4,11 +4,8 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PathEffect;
-import android.graphics.PathMeasure;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -18,8 +15,8 @@ import android.view.WindowManager;
 
 import java.util.ArrayList;
 
+import helperClasses.CustomPath;
 import helperClasses.DataPoint;
-import helperClasses.PointManager;
 
 /**
  * Created by Aaron on 3/9/14.
@@ -28,8 +25,8 @@ import helperClasses.PointManager;
 
 
 public class ViewingBoard extends View {
-    ArrayList<PointManager> paths;
-    PointManager currentPath;
+    ArrayList<CustomPath> paths;
+    CustomPath currentPath;
 
     public Bitmap mBitmap;
     public Canvas mCanvas;
@@ -57,7 +54,7 @@ public class ViewingBoard extends View {
     public ViewingBoard(Context c, AttributeSet attrs) {
         super(c, attrs);
         paths = GameActivity.pathsArray;
-        currentPath = new PointManager(0, 0);
+        currentPath = new CustomPath(0, 0);
         Log.d("view", "ViewingBoard start");
         mPath = new Path();
         mBitmapPaint = new Paint(Paint.DITHER_FLAG);
