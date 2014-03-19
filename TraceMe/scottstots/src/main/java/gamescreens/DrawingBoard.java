@@ -77,9 +77,6 @@ public class DrawingBoard extends View {
 
     ArrayList<DataPoint> playerTraceData;
 
-    private static PathEffect makeDash(float phase) {
-        return new DashPathEffect(new float[] { 15, 15}, 0);
-    }
 
     public DrawingBoard(Context c, AttributeSet attributeSet) {
         super(c,attributeSet);
@@ -94,7 +91,6 @@ public class DrawingBoard extends View {
         mPaint.setStrokeJoin(Paint.Join.ROUND);
         mPaint.setStrokeCap(Paint.Cap.ROUND);
         mPaint.setStrokeWidth(20);
-       // mPaint.setPathEffect(makeDash(0));
 
         textPaint = new Paint();
         textPaint.setColor(Color.BLACK);

@@ -29,6 +29,7 @@ import com.parse.SignUpCallback;
 /**
  * Activity which displays a registration screen to the user.
  * Based on the Parse "Anywall App" tutorial
+ * https://www.parse.com/anywall
  */
 public class SignUpOrLogInActivity extends Activity {
 

@@ -53,10 +53,6 @@ public class ViewingBoard extends View {
 
 
 
-    private static PathEffect makeDash(float phase) {
-        return new DashPathEffect(new float[] { 15, 15}, 0);
-    }
-
 
     public ViewingBoard(Context c, AttributeSet attrs) {
         super(c, attrs);
@@ -73,7 +69,6 @@ public class ViewingBoard extends View {
         mPaint.setStrokeJoin(Paint.Join.ROUND);
         mPaint.setStrokeCap(Paint.Cap.ROUND);
         mPaint.setStrokeWidth(12);
-        //mPaint.setPathEffect(makeDash(0));
 
         mBitmapPaint = new Paint(Paint.DITHER_FLAG);
 
