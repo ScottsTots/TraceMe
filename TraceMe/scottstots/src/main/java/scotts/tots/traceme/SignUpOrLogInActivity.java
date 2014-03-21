@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.parse.GetCallback;
 import com.parse.LogInCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseQuery;
@@ -25,115 +26,135 @@ import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
 
+import java.util.Arrays;
+import java.util.List;
+
 
 /**
- * Activity which displays a registration screen to the user.
- * Based on the Parse "Anywall App" tutorial
- * https://www.parse.com/anywall
+ * SignUpOrLoginActivity --
+ * Displays the login screen for the application. General flow involves username and
+ * password field, FB sign(in|up), and Twitter sign(in|up). Also allows user registration.
+ *
+ * TL;DR: This activity presents the MainScreenActivity after user authentication.
+ *
  */
+
 public class SignUpOrLogInActivity extends Activity {
 
-    // UI references.
+    static final String TAG = "SignUpOrLogInActivity";
+
+    // UI References
     private EditText usernameView;
     private EditText passwordView;
     private EditText passwordAgainView;
     private ImageView validFormDrawable;
 
-    private boolean usernameValid;
+    private boolean usernameValid;  // Tests username for validity
+
+    // Buttons on the screen
     Button logInButton;
     Button signUpButton;
     Button facebookButton;
     Button twitterButton;
-    @Override
+
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         setContentView(R.layout.activity_sign_up_or_log_in);
 
+        usernameValid = false;      // Beginning username (empty) isn't valid
 
-        usernameValid = false;
-
-        // Set up the signup form
+        // Connect SignUp Button
         signUpButton = (Button) findViewById(R.id.signUpButton);
         signUpButton.setEnabled(false);
 
-        // Set up the login button
+        // Connect LogIn Button
         logInButton = (Button) findViewById(R.id.logInButton);
         logInButton.setEnabled(false);
 
-        // Set up the facebook / twitter button
+        // Connect Twitter/Facebook Buttons
         facebookButton = (Button) findViewById(R.id.facebookButton);
         twitterButton  = (Button) findViewById(R.id.twitterButton);
 
+        // Connect EditText Views and Validation Img
         validFormDrawable = (ImageView) findViewById(R.id.validFormDrawable);
         usernameView = (EditText) findViewById(R.id.usernameField);
         passwordView = (EditText) findViewById(R.id.passwordField);
         // passwordAgainView = (EditText) findViewById(R.id.passwordAgain);
 
+
+        // Username Text Change Listener
         usernameView.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
                 final String text = s.toString();
+
+                // Query for a username with that name
                 ParseQuery<ParseUser> query = ParseUser.getQuery();
                 query.whereEqualTo("username", s.toString());
                 Log.d("parseNetwork", "verifying username availability");
                 query.getFirstInBackground(new GetCallback<ParseUser>() {
                     @Override
                     public void done(ParseUser object, ParseException e) {
-                        if (e != null && text.length() > 0) { // username available, so set green symbol
+                        if (e != null && text.length() > 0) {       // Username Available
                             validFormDrawable.setImageDrawable(getResources().getDrawable(
                                     R.drawable.valid_form_green));
                             usernameValid = true;
                             signUpButton.setEnabled(true);
                             logInButton.setEnabled(false);
 
-                        } else {
+                        } else {                                    // Username Taken
+                            validFormDrawable.setImageDrawable(getResources().getDrawable(
+                                    R.drawable.valid_form_red));
                             usernameValid = false;
                             signUpButton.setEnabled(false);
                             logInButton.setEnabled(true);
-                            validFormDrawable.setImageDrawable(getResources().getDrawable(
-                                    R.drawable.valid_form_red));
                         }
                     }
                 });
             }
 
+            // Must implement these methods
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             public void onTextChanged(CharSequence s, int start, int before, int count) {}
         });
 
-        // Set up the sign in button click handler
+        // Login Button ClickHandler
         logInButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                // Validate the log in data
                 boolean validationError = false;
+
+                // Initialize error msg
                 StringBuilder validationErrorMessage =
                         new StringBuilder("Error logging in.");
 
-                // Check the username textview for data
+                // Check username text input
                 if (isEmpty(usernameView)) {
                     validationError = true;
                     validationErrorMessage.append("Username field was blank. Idiot.");
                 }
 
-                // Check the password textview for data
+                // Check password for input
                 if (isEmpty(passwordView)) {
-                    if (validationError)
+                    if (validationError) {
                         validationErrorMessage.append("Password field blank too. Dummy.");
-                    else
+                    } else {
                         validationError = true;
-                    validationErrorMessage.append("Password field left blank. Idiot");
+                        validationErrorMessage.append("Password field left blank. Idiot");
+                    }
                 }
 
-                // If there is an error at this point display it and return
+                // Display error and terminate here if validationError
                 if (validationError) {
                     Toast.makeText(SignUpOrLogInActivity.this,
                             validationErrorMessage.toString(),
                             Toast.LENGTH_LONG).show();
-                    return;
+                    return; // No reason to attempt to login
                 }
 
 
-                // Logging in waiting dialog
+                // LogIn Process Dialog
                 final ProgressDialog dlg = new ProgressDialog(SignUpOrLogInActivity.this);
                 dlg.setTitle("Please wait..");
                 dlg.setMessage("Logging in..");
@@ -149,10 +170,7 @@ public class SignUpOrLogInActivity extends Activity {
                                 if (e != null) {    // Uh oh! Login messed up.
                                     Toast.makeText(SignUpOrLogInActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                                 } else {
-                                    // Fire up an intent for the next activity
-                                    Intent i = new Intent(SignUpOrLogInActivity.this, MainScreen.class);
-                                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    startActivity(i);
+                                    showMainScreenActivity();
                                 }
                             }
                         });
@@ -166,6 +184,7 @@ public class SignUpOrLogInActivity extends Activity {
         signUpButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Log.d("parseNetwork", "user: " + usernameView.toString());
+
                 // Validate the sign up data
                 boolean validationError = false;
 
@@ -209,7 +228,7 @@ public class SignUpOrLogInActivity extends Activity {
                     Log.d("parseNetwork",   "Validation Error!");
                     Toast.makeText(SignUpOrLogInActivity.this, validationErrorMessage.toString(),
                             Toast.LENGTH_LONG).show();
-                    return;
+                    return;     // Return early -> error
                 }
 
                 // Set up a progress dialog
@@ -222,22 +241,18 @@ public class SignUpOrLogInActivity extends Activity {
                 ParseUser user = new ParseUser();
                 user.setUsername(usernameView.getText().toString());
                 user.setPassword(passwordView.getText().toString());
+
                 // Call the Parse signup method
                 user.signUpInBackground(new SignUpCallback() {
 
                     @Override
                     public void done(ParseException e) {
                         dlg.dismiss();
-                        if (e != null) {
-                            // Show the error message
+                        if (e != null) { // Show the error message
                             Toast.makeText(SignUpOrLogInActivity.this, e.getMessage(), Toast.LENGTH_LONG)
                                     .show();
                         } else {
-                            // Start an intent for the dispatch activity
-                            Intent intent = new Intent(SignUpOrLogInActivity.this, MainScreen.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                    | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
+                            showMainScreenActivity();
                         }
                     }
                 });
@@ -259,44 +274,43 @@ public class SignUpOrLogInActivity extends Activity {
         });
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        ParseFacebookUtils.finishAuthentication(requestCode, resultCode, data);
+    }
+
     public void loginWithFacebook() {
         final ProgressDialog dlg = new ProgressDialog(SignUpOrLogInActivity.this);
         dlg.setTitle("Please wait..");
         dlg.setMessage("Logging in..");
         dlg.show();
 
+        List<String> permissions = Arrays.asList("basic_info", "user_about_me",
+                "user_relationships", "user_birthday", "user_location");
 
-        ParseFacebookUtils.logIn(this, new LogInCallback() {
+        ParseFacebookUtils.logIn(permissions, this, new LogInCallback() {
             @Override
-            public void done(ParseUser parseUser, ParseException e) {
-                if (parseUser == null) {
+            public void done(ParseUser user, ParseException err) {
+                dlg.dismiss();
+
+                if (user == null) {
                     Toast.makeText(SignUpOrLogInActivity.this,
-                            "Uh oh. The user cancelled the Facebook login.",
+                            "Unable to log in with Facebook.",
                             Toast.LENGTH_LONG
                     ).show();
-                    dlg.dismiss();
-                } else if (parseUser.isNew()) {
-                    dlg.dismiss();
+                } else if (user.isNew()) {
                     Toast.makeText(SignUpOrLogInActivity.this,
-                            "User signed up and logged in through Facebook!",
+                            "New user created through Facebook.",
                             Toast.LENGTH_LONG
-                            ).show();
-
-                    Intent intent = new Intent(SignUpOrLogInActivity.this, MainScreen.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
-                            | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
+                    ).show();
+                    showMainScreenActivity();
                 } else {
-                    dlg.dismiss();
                     Toast.makeText(SignUpOrLogInActivity.this,
-                            "User logged in through Facebook!",
+                            "User logged in with Facebook.",
                             Toast.LENGTH_LONG
                     ).show();
-
-                    Intent intent = new Intent(SignUpOrLogInActivity.this, MainScreen.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
-                            | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
+                    showMainScreenActivity();
                 }
             }
         });
@@ -312,39 +326,39 @@ public class SignUpOrLogInActivity extends Activity {
         ParseTwitterUtils.logIn(this, new LogInCallback() {
             @Override
             public void done(ParseUser parseUser, ParseException e) {
+                dlg.dismiss();
+
                 if (parseUser == null) {
                     Toast.makeText(SignUpOrLogInActivity.this,
                             "Uh oh. The user cancelled the Twitter login.",
                             Toast.LENGTH_LONG
                     ).show();
-                    dlg.dismiss();
                 } else if (parseUser.isNew()) {
-                    dlg.dismiss();
                     Toast.makeText(SignUpOrLogInActivity.this,
                             "User signed up and logged in through Twitter!",
                             Toast.LENGTH_LONG
                     ).show();
-
-                    Intent intent = new Intent(SignUpOrLogInActivity.this, MainScreen.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
-                            | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
+                    showMainScreenActivity();
                 } else {
-                    dlg.dismiss();
                     Toast.makeText(SignUpOrLogInActivity.this,
                             "User logged in through Twitter!",
                             Toast.LENGTH_LONG
                     ).show();
-
-                    Intent intent = new Intent(SignUpOrLogInActivity.this, MainScreen.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
-                            | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
+                    showMainScreenActivity();
                 }
             }
         });
     }
 
+    // Helper method that presents MainScreen
+    private void showMainScreenActivity() {
+        Intent i = new Intent(this, MainScreen.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
+                | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(i);
+    }
+
+    // Helper method that checks for empty EditText field
     private boolean isEmpty(EditText etText) {
         if (etText.getText().toString().trim().length() > 0) {
             return false;
@@ -353,6 +367,7 @@ public class SignUpOrLogInActivity extends Activity {
         }
     }
 
+    // Helper method that tests 2 EditText fields for equality
     private boolean isMatching(EditText etText1, EditText etText2) {
         if (etText1.getText().toString().equals(etText2.getText().toString())) {
             return true;

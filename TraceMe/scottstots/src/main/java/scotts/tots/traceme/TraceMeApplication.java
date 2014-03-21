@@ -36,7 +36,7 @@ public class TraceMeApplication extends Application {
         ParseACL.setDefaultACL(defaultACL, true);
 
         // Parse Facebook
-        ParseFacebookUtils.initialize("1477514169137067");
+        ParseFacebookUtils.initialize(getString(R.string.app_id));
         ParseTwitterUtils.initialize("2vmfAXn3w7wEd4EvXwEeow", "RHEerGkxhDBkLVz3JF6eFlAac1JzSIebndD9FOIPhg");
 
         preferences = getSharedPreferences("scotts.tots.traceme", Context.MODE_PRIVATE);
