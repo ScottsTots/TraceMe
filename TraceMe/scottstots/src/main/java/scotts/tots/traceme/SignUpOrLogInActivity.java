@@ -274,12 +274,6 @@ public class SignUpOrLogInActivity extends Activity {
         });
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        ParseFacebookUtils.finishAuthentication(requestCode, resultCode, data);
-    }
-
     public void loginWithFacebook() {
         final ProgressDialog dlg = new ProgressDialog(SignUpOrLogInActivity.this);
         dlg.setTitle("Please wait..");
@@ -374,5 +368,11 @@ public class SignUpOrLogInActivity extends Activity {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        ParseFacebookUtils.finishAuthentication(requestCode, resultCode, data);
     }
 }
