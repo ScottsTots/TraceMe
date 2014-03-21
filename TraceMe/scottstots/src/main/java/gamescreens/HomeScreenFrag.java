@@ -116,7 +116,7 @@ public class HomeScreenFrag extends Fragment {// implements View.OnClickListener
             switch(v.getId()) {
                 case R.id.logOutButton:
                     ParseUser.logOut();
-                    Intent intent = new Intent(getActivity(), SignUpOrLogInActivity.class);
+                    Intent intent = new Intent(getActivity(), LoginNewUserActivity.class);
                     startActivity(intent);
                     getActivity().finish();
                     break;

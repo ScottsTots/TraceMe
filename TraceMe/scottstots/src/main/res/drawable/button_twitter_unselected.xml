@@ -4,8 +4,8 @@
     <!-- Bottom 2dp Shadow -->
     <item>
         <shape>
-            <solid android:color="@color/dark_red"/>
-            <corners android:radius="3dip"/>
+            <solid android:color="@color/twitter_dark_blue"/>
+            <corners android:radius="5dip"/>
         </shape>
     </item>
 
@@ -13,8 +13,8 @@
     <item android:bottom="5dp">
 
         <shape>
-            <solid android:color="@color/red"/>
-            <corners android:radius="3dip"/>
+            <solid android:color="@color/twitter_blue"/>
+            <corners android:radius="5dip"/>
         </shape>
 
     </item>

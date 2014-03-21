@@ -1,28 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
-
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:text="New Game!"
-        android:textSize="25sp"
-        android:background="@drawable/new_game_selector"
-        android:textColor="@color/white"
-        android:id="@+id/newGameButton" />
+    android:scrollbars="none">
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="120dp"
-        android:layout_margin="10dp"
-        android:background="@drawable/layout_background"
+        android:minHeight="300dp"
+        android:background="@drawable/layout_bg"
         android:orientation="vertical">
+
+        <Button
+            android:id="@+id/newGameButton"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="New Game!"
+            android:textSize="25sp"
+            android:background="@drawable/new_game_selector"
+            android:textColor="@color/white"/>
+
 
         <TextView
             android:layout_width="wrap_content"
@@ -42,13 +45,23 @@
             android:layout_height="wrap_content"/>
 
         </LinearLayout>
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="15dip"
+        android:layout_marginTop="-15dp"
+        android:background="@drawable/divider_line" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="2dip"
+        android:layout_marginTop="-1dip"
+        android:background="@color/black" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="120dp"
-        android:layout_margin="10dp"
-        android:background="@drawable/layout_background"
+        android:minHeight="240dp"
+        android:background="@color/light_blue"
         android:orientation="vertical">
 
         <TextView
@@ -71,12 +84,23 @@
 
     </LinearLayout>
 
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="15dip"
+        android:layout_marginTop="-15dp"
+        android:background="@drawable/divider_line" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_marginTop="-1dip"
+        android:layout_height="2dip"
+        android:background="@color/black" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="120dp"
-        android:layout_margin="10dp"
-        android:background="@drawable/layout_background"
+        android:minHeight="240dp"
+        android:background="@color/green"
         android:orientation="vertical">
 
         <TextView
@@ -100,3 +124,4 @@
     </LinearLayout>
 
 </LinearLayout>
+</ScrollView>
