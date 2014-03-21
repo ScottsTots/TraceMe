@@ -1,0 +1,3 @@
+[submodule "TraceMe/libraries/facebook"]
+	path = TraceMe/libraries/facebook
+	url = https://github.com/ScottsTots/facebook.git
