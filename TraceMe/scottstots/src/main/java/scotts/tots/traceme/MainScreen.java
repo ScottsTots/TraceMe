@@ -142,7 +142,7 @@ public class MainScreen extends Activity {
         String choiceStr = getResources().getStringArray(R.array.nav_drawer_array)[position];
         if(choiceStr.equals("Logout")) {
             ParseUser.logOut();
-            Intent intent = new Intent(this, SignUpOrLogInActivity.class);
+            Intent intent = new Intent(this, LoginNewUserActivity.class);
             startActivity(intent);
             finish();
         }

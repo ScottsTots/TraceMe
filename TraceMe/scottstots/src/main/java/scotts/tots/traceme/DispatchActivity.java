@@ -1,19 +1,10 @@
 package scotts.tots.traceme;
 
 import android.app.Activity;
-import android.app.ActionBar;
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.os.Build;
 
-import com.parse.Parse;
 import com.parse.ParseAnalytics;
 import com.parse.ParseUser;
 
@@ -42,7 +33,8 @@ public class DispatchActivity extends Activity {
 
         } else {
             // Start and intent for the logged out activity
-            startActivity(new Intent(this, SignUpOrLogInActivity.class));
+            startActivity(new Intent(this, LoginMenuActivity.class));
+            finish();
         }
     }
 
