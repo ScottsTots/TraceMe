@@ -18,7 +18,7 @@ import android.widget.ImageView;
 
 public class Splash extends Activity {
 
-    final int SPLASH_TIME_OUT = 5000;
+    final int SPLASH_TIME_OUT = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
