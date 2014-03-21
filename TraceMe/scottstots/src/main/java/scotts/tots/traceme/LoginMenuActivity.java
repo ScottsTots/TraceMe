@@ -43,8 +43,8 @@ public class LoginMenuActivity extends Activity {
 
         signUpButton.setOnClickListener(buttonListener);
         loginButton.setOnClickListener(buttonListener);
-        facebookButton.setOnClickListener(facebookButtonListener);
-        twitterButton.setOnClickListener(twitterButtonListener);
+        facebookButton.setOnClickListener(buttonListener);
+        twitterButton.setOnClickListener(buttonListener);
     }
 
 
@@ -78,22 +78,18 @@ public class LoginMenuActivity extends Activity {
     View.OnClickListener buttonListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Intent i = new Intent(LoginMenuActivity.this, LoginNewUserActivity.class);
-            startActivity(i);
-        }
-    };
-
-    View.OnClickListener facebookButtonListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            loginWithFacebook();
-        }
-    };
-
-    View.OnClickListener twitterButtonListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            loginWithTwitter();
+            switch (view.getId()) {
+                case R.id.facebook_button:
+                    loginWithFacebook();
+                    break;
+                case R.id.twitter_button:
+                    loginWithTwitter();
+                    break;
+                default:
+                    Intent i = new Intent(LoginMenuActivity.this, LoginNewUserActivity.class);
+                    startActivity(i);
+                    break;
+            }
         }
     };
 
