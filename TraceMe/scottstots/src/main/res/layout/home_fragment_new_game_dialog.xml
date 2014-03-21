@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -9,50 +9,57 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Start a New Game?"
+        android:text="Select Game Type"
         android:id="@+id/textView"
         android:gravity="fill_vertical"
         android:layout_marginTop="20dp"
         android:textSize="25sp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_gravity="center" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Single Player"
         android:id="@+id/singlePlayer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/new_game_selector"
+        android:text="Single Player"
+        android:textSize="20sp"
+        android:textColor="@color/white"
         android:layout_marginTop="30dp"
-        android:layout_below="@+id/textView"
-        android:layout_centerHorizontal="true" />
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_gravity="center" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Random Opponent"
         android:id="@+id/randomOpponentButton"
-        android:layout_below="@+id/singlePlayer"
-        android:layout_alignLeft="@+id/singlePlayer"
-        android:layout_alignStart="@+id/singlePlayer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/new_game_selector"
+        android:text="Random Opponent"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:layout_gravity="center"
         android:layout_marginTop="47dp"
-        android:layout_alignRight="@+id/singlePlayer"
-        android:layout_alignEnd="@+id/singlePlayer" />
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Challenge a Friend"
         android:id="@+id/challengeButton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/new_game_selector"
+        android:text="Challenge a Friend"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_marginTop="43dp"
-        android:layout_below="@+id/randomOpponentButton"
-        android:layout_centerHorizontal="true" />
+        android:layout_gravity="center" />
 
     <Space
         android:layout_width="20px"
         android:layout_height="20px"
-        android:layout_below="@+id/challengeButton"
-        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
         android:layout_marginTop="36dp" />
 
 
-</RelativeLayout>
+</LinearLayout>
