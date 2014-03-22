@@ -21,7 +21,9 @@ import android.widget.Toast;
 
 import com.parse.ParseUser;
 
+import gamescreens.AboutFrag;
 import gamescreens.HomeScreenFrag;
+import gamescreens.HighScoreFragment;
 
 public class MainScreen extends Activity {
 
@@ -142,32 +144,60 @@ public class MainScreen extends Activity {
         String choiceStr = getResources().getStringArray(R.array.nav_drawer_array)[position];
         if(choiceStr.equals("Logout")) {
             ParseUser.logOut();
-            Intent intent = new Intent(this, LoginNewUserActivity.class);
+            Intent intent = new Intent(this, LoginMenuActivity.class);
             startActivity(intent);
             finish();
         }
 
-        // If we're not trying to logout, we might try to change our content_view fragment based
-        // on the item we clicked, so we do the following steps:
+        if (position == 0) {
+            // If we're not trying to logout, we might try to change our content_view fragment based
+            // on the item we clicked, so we do the following steps:
 
-        // update the main content by replacing fragments
-        Fragment fragment = new HomeScreenFrag();
-        Bundle args = new Bundle();
 
-        // We send an int containing which item on the list was pressed.
-        // The "planet_number" stuff is from the tutorial.
-        args.putInt(HomeScreenFrag.ARG_PLANET_NUMBER, position);
-        fragment.setArguments(args);
+            // update the main content by replacing fragments
+            Fragment fragment = new HomeScreenFrag();
+            Bundle args = new Bundle();
 
-        // We replace the fragment
-        FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+            // We send an int containing which item on the list was pressed.
+            // The "planet_number" stuff is from the tutorial.
+            args.putInt(HomeScreenFrag.ARG_PLANET_NUMBER, position);
+            fragment.setArguments(args);
 
-        // update selected item and title so it doesn't show up in the menu if we reopen it, then close the drawer
-        mDrawerList.setItemChecked(position, true);
-        // now the actionbar will have the same title as the item name.
-        //setTitle(navMenuTitles[position]);
-        mDrawerLayout.closeDrawer(mDrawerList);
+            // We replace the fragment
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
+            // update selected item and title so it doesn't show up in the menu if we reopen it, then close the drawer
+            mDrawerList.setItemChecked(position, true);
+            // now the actionbar will have the same title as the item name.
+            //setTitle(navMenuTitles[position]);
+            mDrawerLayout.closeDrawer(mDrawerList);
+
+        } else if (position == 1) {            // Highscore
+            Fragment fragment = new HighScoreFragment();
+            Bundle args = new Bundle();
+
+            args.putInt("Foo", 0);
+            fragment.setArguments(args);
+
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
+            mDrawerList.setItemChecked(position, true);
+            mDrawerLayout.closeDrawer(mDrawerList);
+        } else if (position == 2) {     // About
+            Fragment fragment = new AboutFrag();
+            Bundle args = new Bundle();
+
+            args.putInt("Foo", 0);
+            fragment.setArguments(args);
+
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
+            mDrawerList.setItemChecked(position, true);
+            mDrawerLayout.closeDrawer(mDrawerList);
+        }
     }
 
     @Override
