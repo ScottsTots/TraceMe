@@ -129,9 +129,7 @@ public class ViewingBoard extends View {
             // If there's still points in this path to draw
             if(currPointNumber < currentPath.size()) {        // WE'RE GOOD TO DRAW
                 DataPoint point = currentPath.get(currPointNumber);
-                // Draw the saved paths from the framebuffer.
-                canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
-                // draw the current path on top of that.
+                // draw all path stuff to our framebuffer: mBitmap
                 drawPath(canvas);
                 // See if enough time has passed to move on to the next point:
                 //TODO need to also take into account time passed between two paths...
@@ -148,6 +146,7 @@ public class ViewingBoard extends View {
                 currPathNumber++;
             }
         }
+
         else {
             // no more paths, no mo points!!
             // Reset to 0 so we loop around once more, and reset the canvas buffer (which saves paths
@@ -161,6 +160,8 @@ public class ViewingBoard extends View {
             // Now we set this new, clear buffer to the mCanvas, which is used to save our paths into a bitmap.
             mCanvas = new Canvas(mBitmap);
         }
+        // Draw the actual framebuffer.
+        canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
         postInvalidate(); //force a redraw
     }
 
