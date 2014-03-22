@@ -192,7 +192,7 @@ public class ViewingBoard extends View {
 
                 // Since we're drawing smooth curves we need the previous point to get a good average.
                 DataPoint prevPoint = currentPath.get(currPointNumber-1); //same thing as mx,mY
-                mPath.quadTo(point.x, point.y, (point.x + prevPoint.x) / 2, (point.y + prevPoint.y) / 2);
+                mPath.quadTo(prevPoint.x, prevPoint.y, (point.x + prevPoint.x) / 2, (point.y + prevPoint.y) / 2);
             }
         }
 

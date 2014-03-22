@@ -152,7 +152,7 @@ public class GameActivity extends Activity {
         if (json != null) {
             trace = gson.fromJson(json, TraceFile.class);
             Log.d("loading", "got trace");
-            // draw it on the canvas with transparent paint if it was present.
+            // draw it on the canvas.
             if (trace != null) {
                 Log.d("loading", "drawing trace...");
                 drawingBoard.drawTrace(trace.getBitmap());
