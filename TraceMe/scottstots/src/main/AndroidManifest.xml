@@ -31,10 +31,9 @@
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name=".LoginNewUserActivity"
-            android:label="@string/app_name"
+            android:name="scotts.tots.traceme.LoginNewUserActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Light" >
+            android:theme="@style/NoActionBarTheme" >
         </activity>
         <activity
             android:name="scotts.tots.traceme.MainScreen"

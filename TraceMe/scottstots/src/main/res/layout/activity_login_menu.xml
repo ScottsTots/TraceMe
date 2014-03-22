@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:src="@drawable/traceme_logo2"
-        android:layout_marginTop="40dp"/>
+        android:layout_marginTop="80dp"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -36,6 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Sign Up"
+            android:padding="17dp"
             android:background="@drawable/sign_up_selector"
             android:layout_marginRight="10dp"
             android:textColor="@color/white"/>
@@ -44,6 +45,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:padding="17dp"
             android:text="Login"
             android:background="@drawable/login_selector"
             android:layout_marginLeft="10dp"
@@ -55,17 +57,19 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Sign in with Facebook"
+        android:padding="17dp"
         android:textColor="@color/white"
         android:background="@drawable/facebook_selector"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="15dp"/>
 
     <Button
         android:id="@+id/twitter_button"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Sign in with Twitter"
+        android:padding="17dp"
         android:textColor="@color/white"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         android:background="@drawable/twitter_selector"/>
 
 </LinearLayout>
