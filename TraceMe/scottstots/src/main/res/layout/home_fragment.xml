@@ -7,13 +7,13 @@
 <LinearLayout
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/layout_bg">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="300dp"
-        android:background="@color/blue"
         android:orientation="vertical">
 
         <Button
@@ -23,7 +23,7 @@
             android:layout_margin="10dp"
             android:text="New Game!"
             android:textSize="25sp"
-            android:background="@drawable/new_game_selector"
+            android:background="@drawable/sign_up_selector"
             android:textColor="@color/white"/>
 
 
@@ -33,7 +33,7 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Challenges"
             android:textSize="25sp"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:layout_margin="10dp"
             android:layout_gravity="center"
             android:id="@+id/challengesText"
@@ -47,21 +47,17 @@
         </LinearLayout>
     <View
         android:layout_width="fill_parent"
-        android:layout_height="15dip"
-        android:layout_marginTop="-15dp"
-        android:background="@drawable/divider_line" />
+        android:layout_height="11dip"
+        android:layerType="software"
+        android:layout_gravity="center"
+        android:background="@drawable/divider_line_dotted" />
 
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="2dip"
-        android:layout_marginTop="-1dip"
-        android:background="#000000" />
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="240dp"
-        android:background="@color/dark_blue"
         android:orientation="vertical">
 
         <TextView
@@ -71,7 +67,7 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Current Games"
             android:textSize="25sp"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:layout_margin="10dp"
             android:layout_gravity="center"
             />
@@ -86,21 +82,16 @@
 
     <View
         android:layout_width="fill_parent"
-        android:layout_height="15dip"
-        android:layout_marginTop="-15dp"
-        android:background="@drawable/divider_line" />
+        android:layout_height="11dip"
+        android:layerType="software"
+        android:layout_gravity="center"
+        android:background="@drawable/divider_line_dotted" />
 
-    <View
-        android:layout_width="fill_parent"
-        android:layout_marginTop="-1dip"
-        android:layout_height="2dip"
-        android:background="#000000" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="240dp"
-        android:background="@color/darker_blue"
         android:orientation="vertical">
 
         <TextView
@@ -110,7 +101,7 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Past Games"
             android:textSize="25sp"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:layout_margin="10dp"
             android:layout_gravity="center"
             />

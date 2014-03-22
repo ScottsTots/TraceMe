@@ -23,5 +23,6 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:textColor="#fff"
+    android:textSize="22sp"
     android:background="?android:attr/activatedBackgroundIndicator"
     android:minHeight="?android:attr/listPreferredItemHeightSmall"/>
