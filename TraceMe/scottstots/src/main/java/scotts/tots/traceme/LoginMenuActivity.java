@@ -87,11 +87,15 @@ public class LoginMenuActivity extends Activity {
                     break;
                 case R.id.login_in_button:
                     Intent lIntent = new Intent(LoginMenuActivity.this, LoginNewUserActivity.class);
+                    lIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(lIntent);
+                    overridePendingTransition(R.anim.enter_left, R.anim.exit_left );
                     break;
                 case R.id.sign_up_button:
                     Intent sIntent = new Intent(LoginMenuActivity.this, SignUpActivity.class);
+                    sIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(sIntent);
+                    overridePendingTransition(R.anim.enter_left, R.anim.exit_left );
                     break;
             }
         }

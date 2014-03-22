@@ -2,11 +2,10 @@
 
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
      android:shape="line">
-
     <padding android:bottom="0dp" android:left="0dp" android:right="0dp" android:top="0dp"/>
      <stroke
          android:color="@color/black"
          android:width="10dp"
-         android:dashGap="20dp"
+         android:dashGap="10dp"
          android:dashWidth="60dp"/>
 </shape>
