@@ -23,6 +23,7 @@ package gamescreens;
 
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.PathMeasure;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -81,8 +82,8 @@ public class DrawingBoard extends View {
         mPaint.setColor(0xFF000000);
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeJoin(Paint.Join.ROUND);
-        mPaint.setStrokeCap(Paint.Cap.ROUND);
-        mPaint.setStrokeWidth(20);
+       // mPaint.setStrokeCap(Paint.Cap.ROUND);
+        mPaint.setStrokeWidth(16);
 
         textPaint = new Paint();
         textPaint.setColor(Color.BLACK);
@@ -142,7 +143,6 @@ public class DrawingBoard extends View {
             canvas.drawText("Score: " + Integer.toString(GameActivity.score.getScore()), 20, 120, textPaint);
         }
     }
-
     private float mX, mY;
     private static final float TOUCH_TOLERANCE = 4;
 
@@ -211,8 +211,6 @@ public class DrawingBoard extends View {
     public Bitmap getCanvasBitmap() {
         // Returns all the stuff that has been drawn so far.
         return mBitmap.copy(Bitmap.Config.ARGB_8888, true);
-
-
     }
 
     // Used to draw the trace points (the score data). These should all be equidistant points
@@ -259,5 +257,7 @@ public class DrawingBoard extends View {
         mPaint.setColor(color);
     }
 
-
+    public void setDashEffect() {
+        mPaint.setPathEffect(new DashPathEffect(new float[] {30, 15}, 0));
+    }
 }
