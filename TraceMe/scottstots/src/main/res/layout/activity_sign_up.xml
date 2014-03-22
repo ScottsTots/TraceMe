@@ -26,7 +26,7 @@
 
 
         <EditText
-            android:id="@+id/usernameField"
+            android:id="@+id/signUpUsernameField"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:padding="17dp"
@@ -38,7 +38,7 @@
 
 
         <EditText
-            android:id="@+id/passwordField"
+            android:id="@+id/signUpPasswordField"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:padding="17dp"
@@ -50,7 +50,7 @@
             android:ems="10"/>
 
     <EditText
-        android:id="@+id/passwordFieldAgain"
+        android:id="@+id/signUpPasswordAgainField"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:padding="17dp"

@@ -85,9 +85,13 @@ public class LoginMenuActivity extends Activity {
                 case R.id.twitter_button:
                     loginWithTwitter();
                     break;
-                default:
-                    Intent i = new Intent(LoginMenuActivity.this, LoginNewUserActivity.class);
-                    startActivity(i);
+                case R.id.login_in_button:
+                    Intent lIntent = new Intent(LoginMenuActivity.this, LoginNewUserActivity.class);
+                    startActivity(lIntent);
+                    break;
+                case R.id.sign_up_button:
+                    Intent sIntent = new Intent(LoginMenuActivity.this, SignUpActivity.class);
+                    startActivity(sIntent);
                     break;
             }
         }
