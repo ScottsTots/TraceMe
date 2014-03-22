@@ -135,12 +135,10 @@ public class GameActivity extends Activity {
         @Override
         protected Void doInBackground(String... params) {
             if(params[0].equals("load")) {
-              //  loadTrace();
-                loadFile();
+                loadFromResources();
             }
             else if(params[0].equals("save")) {
-                //saveTrace();
-                saveExternal();
+                saveToExternal();
             }
             return null;
         }
@@ -156,7 +154,7 @@ public class GameActivity extends Activity {
 
 
     // loads from shared prefs
-    public void loadTrace() {
+    public void loadFromPrefs() {
         // If there is a game level/trace present in our shared prefs
         Gson gson = new Gson();
         String json = mPrefs.getString("Trace1", "");
@@ -179,7 +177,7 @@ public class GameActivity extends Activity {
     }
 
     // Saves in shared prefs
-    public void saveTrace() {
+    public void saveToPrefs() {
         Bitmap bmp = drawingBoard.getCanvasBitmap();
         trace = new TraceFile(bmp, pointsArray);
         SharedPreferences.Editor prefsEditor = mPrefs.edit();
@@ -187,11 +185,11 @@ public class GameActivity extends Activity {
         String json = gson.toJson(trace);
         prefsEditor.putString("Trace1", json);
         prefsEditor.commit();
-       // Toast.makeText(GameActivity.this, "Trace saved, start a new game for it to load", Toast.LENGTH_LONG).show();
     }
 
 
-    public void saveExternal() {
+    // Save in external folder Android/data/scotts.tots.traceme/files/trace_files/
+    public void saveToExternal() {
         // Convert to a string
         Bitmap bmp = drawingBoard.getCanvasBitmap();
         trace = new TraceFile(bmp, pointsArray);
@@ -216,8 +214,8 @@ public class GameActivity extends Activity {
         MediaScannerConnection.scanFile(this, new String[]{file.getAbsolutePath()}, null, null);
     }
 
-
-    public void loadFile() {
+    // load from external folder
+    public void loadFromExternal() {
         StringBuilder total = new StringBuilder();
         try {
             File inputFile = new File(getExternalFilesDir(null) + "/trace_files/", "trace8.txt");
@@ -239,6 +237,45 @@ public class GameActivity extends Activity {
         if (trace != null) {
             Log.d("loading", "drawing trace...");
             drawingBoard.drawTrace(trace.getBitmap());
+        }
+        else {
+            trace = new TraceFile(null, new ArrayList<DataPoint>());
+            drawingBoard.setPaintColor(Color.BLUE);
+        }
+
+    }
+
+
+    // load from the raw folder in this project.
+    // We can't save into the raw folder.. we must save into external, then
+    // transfer to raw if we want to add more levels.
+    public void loadFromResources() {
+        // current level to load would be something like "game.getCurrLevel()"
+
+        // For now we use the drawingBoards curr level.
+        String traceFileName = "trace" + drawingBoard.currentLevel;
+        StringBuilder total = new StringBuilder();
+        try {
+            InputStream inputStream = this.getResources().openRawResource(getResources().getIdentifier(traceFileName,
+                    "raw", getPackageName()));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                total.append(line);
+            }
+            reader.close();
+            inputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Gson gson = new Gson();
+        trace = gson.fromJson(total.toString(), TraceFile.class);
+        Log.d("loading", "got trace");
+        // draw it on the canvas.
+        if (trace != null) {
+            Log.d("loading", "drawing trace...");
+            drawingBoard.drawTrace(trace.getBitmap());
+           // drawingBoard.drawTrace(trace.points);
         }
         else {
             trace = new TraceFile(null, new ArrayList<DataPoint>());

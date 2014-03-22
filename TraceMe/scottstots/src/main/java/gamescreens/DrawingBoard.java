@@ -69,20 +69,20 @@ public class DrawingBoard extends View {
     int frameBufferHeight;
 
     ArrayList<DataPoint> playerTraceData;
-
+    public int currentLevel;
 
     public DrawingBoard(Context c, AttributeSet attributeSet) {
         super(c,attributeSet);
 
         playerTraceData = new ArrayList<DataPoint>();
-
+        currentLevel = 1; // this would be inside the "game class"
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mPaint.setDither(true);
         mPaint.setColor(0xFF000000);
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeJoin(Paint.Join.ROUND);
-       // mPaint.setStrokeCap(Paint.Cap.ROUND);
+          mPaint.setStrokeCap(Paint.Cap.ROUND);
         mPaint.setStrokeWidth(16);
 
         textPaint = new Paint();
@@ -142,6 +142,7 @@ public class DrawingBoard extends View {
             textPaint.setTextSize(GameActivity.score.getCombo());
             canvas.drawText("Score: " + Integer.toString(GameActivity.score.getScore()), 20, 120, textPaint);
         }
+
     }
     private float mX, mY;
     private static final float TOUCH_TOLERANCE = 4;
