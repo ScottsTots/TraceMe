@@ -58,7 +58,7 @@ public class LoginNewUserActivity extends Activity {
 
         // Set up the login button
         logInButton = (Button) findViewById(R.id.logInButton);
-        
+
         // Set up the facebook / twitter button
 //        facebookButton = (Button) findViewById(R.id.facebookButton);
 //        twitterButton  = (Button) findViewById(R.id.twitterButton);

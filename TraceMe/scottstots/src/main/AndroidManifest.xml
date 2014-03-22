@@ -88,6 +88,10 @@
             android:name="scotts.tots.traceme.LoginMenuActivity"
             android:theme="@style/NoActionBarTheme" >
         </activity>
+        <activity
+            android:name="scotts.tots.traceme.SignUpActivity"
+            android:label="@string/title_activity_sign_up" >
+        </activity>
     </application>
 
 </manifest>
