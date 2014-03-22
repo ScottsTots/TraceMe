@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
@@ -48,6 +49,8 @@ public class ViewingBoard extends View {
     int frameBufferWidth;
     int frameBufferHeight;
 
+    // The current point of a path being drawn.
+    DataPoint point;
 
 
 
@@ -92,6 +95,7 @@ public class ViewingBoard extends View {
         previous = System.currentTimeMillis();
         mBitmap = Bitmap.createBitmap(frameBufferWidth, frameBufferHeight, Bitmap.Config.ARGB_8888);
         mCanvas = new Canvas(mBitmap);
+
     }
 
 
@@ -103,6 +107,7 @@ public class ViewingBoard extends View {
     }
 
     int pointCounter = 0;
+    long timeNow = 0;
     @Override
     protected void onDraw(Canvas canvas) {
         canvas.scale((float) width / 480.0f, (float) height / 800.0f);
@@ -119,21 +124,19 @@ public class ViewingBoard extends View {
         */
 
 
-
-
-
         // If we still have paths to draw
         if(currPathNumber < paths.size()) {
             // Retrieve the current path
             currentPath = paths.get(currPathNumber);
             // If there's still points in this path to draw
             if(currPointNumber < currentPath.size()) {        // WE'RE GOOD TO DRAW
-                DataPoint point = currentPath.get(currPointNumber);
+                // Get the latest point on this path.
+                point = currentPath.get(currPointNumber);
                 // draw all path stuff to our framebuffer: mBitmap
                 drawPath(canvas);
                 // See if enough time has passed to move on to the next point:
                 //TODO need to also take into account time passed between two paths...
-                long timeNow = System.currentTimeMillis();
+                timeNow = System.currentTimeMillis();
                 if(timeNow - previous > point.time) {
                     previous = System.currentTimeMillis();
                     currPointNumber++;
@@ -156,9 +159,10 @@ public class ViewingBoard extends View {
             // TODO every time we reset the canvas there's an empty frame and it flashes all white.
 
             // Clear/Reset our actual Bitmap buffer, which had our saved paths
+            // mBitmap.eraseColor(Color.WHITE); // doesn't work, we need to create a new bitmap to clear it well...(not sure why)
             mBitmap = Bitmap.createBitmap(frameBufferWidth, frameBufferHeight, Bitmap.Config.ARGB_8888);
-            // Now we set this new, clear buffer to the mCanvas, which is used to save our paths into a bitmap.
-            mCanvas = new Canvas(mBitmap);
+            // Now we set this new, clear buffer to the mCanvas, which is used to draw into our bitmap.
+            mCanvas.setBitmap(mBitmap);
         }
         // Draw the actual framebuffer.
         canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
@@ -173,10 +177,11 @@ public class ViewingBoard extends View {
     float mX;
     float mY;
     private static final float TOUCH_TOLERANCE = 4;
-    public void drawPath(Canvas canvas) {
-        DataPoint point = currentPath.get(currPointNumber);
 
-        // touch_start
+    public void drawPath(Canvas canvas) {
+        if(currentPath.size() < 3)
+            return;
+        // touch_start ---------------------------
         if(currPointNumber == 0) {
             mPath.reset();
             mPath.moveTo(point.x, point.y);
@@ -185,27 +190,27 @@ public class ViewingBoard extends View {
             mY = point.y;
         }
 
-        // touch_move
-        else {
+        // touch_move ----------------------------
+        if(currPointNumber > 0 && currPointNumber < currentPath.size() -1) {
             float dx = Math.abs(point.x - mX);
             float dy = Math.abs(point.y - mY);
             if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
-
                 // Since we're drawing smooth curves we need the previous point to get a good average.
                 DataPoint prevPoint = currentPath.get(currPointNumber-1); //same thing as mx,mY
                 mPath.quadTo(prevPoint.x, prevPoint.y, (point.x + prevPoint.x) / 2, (point.y + prevPoint.y) / 2);
             }
         }
-
-        // TODO also fix dashed lines not being the same as original drawing...
-        // touch_up
+        // touch_up ------------------------------
         if(currPointNumber == currentPath.size() - 1)
         {
-            mPath.lineTo(point.x, point.y);
+            // For some strange reason we don't do these 2 lines or it glitches out.. but seems to work fine without them.
+            // DataPoint prevPoint = currentPath.get(currPointNumber-1);
+            // mPath.lineTo(prevPoint.x, prevPoint.y);
             // This saves the path we have into the buffer, so we don't lose this path when we
             // go to the next.
             mCanvas.drawPath(mPath, mPaint);
             mPath.reset();
+            return;
         }
         //draw path on the actual canvas.
         canvas.drawPath(mPath, mPaint);
