@@ -33,7 +33,9 @@
             android:layout_marginTop="10dp"
             android:background="@drawable/input_field_bg"
             android:textColor="@color/black"
-            android:hint="Username"/>
+            android:hint="Username"
+            android:singleLine="true"
+            android:nextFocusDown="@+id/signUpPasswordField"/>
 
 
 
