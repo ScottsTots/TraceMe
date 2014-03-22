@@ -2,7 +2,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/layout_rounded_filled" >
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:background="@drawable/game_select_menu" >
 
 
     <TextView
@@ -11,50 +15,128 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Select Game Type"
         android:id="@+id/textView"
+        android:textColor="#000000"
         android:gravity="fill_vertical"
-        android:layout_marginTop="20dp"
         android:textSize="25sp"
         android:layout_gravity="center" />
 
-    <Button
+    <LinearLayout
         android:id="@+id/singlePlayer"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/new_game_selector"
-        android:text="Single Player"
-        android:textSize="20sp"
-        android:textColor="@color/white"
-        android:layout_marginTop="30dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_gravity="center" />
+        android:orientation="horizontal">
 
-    <Button
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="fill_parent"
+            android:src="@drawable/icon_39046"
+            android:layout_weight="1"/>
+
+        <LinearLayout
+            android:layout_width="50dp"
+            android:layout_height="fill_parent"
+            android:orientation="vertical"
+            android:layout_weight="4"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Single Player"
+                android:textColor="#000000"
+                android:textSize="25sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="That's the shizzle ipsizzle dolor sit amizzle, izzle.  "
+                android:textColor="#000000"
+                android:textSize="18sp"/>
+
+        </LinearLayout>
+
+        </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/randomOpponentButton"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/new_game_selector"
-        android:text="Random Opponent"
-        android:textSize="20sp"
-        android:textColor="@color/white"
-        android:layout_gravity="center"
-        android:layout_marginTop="47dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp" />
+        android:orientation="horizontal">
 
-    <Button
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="fill_parent"
+            android:src="@drawable/icon_39046"
+            android:layout_weight="1"/>
+
+        <LinearLayout
+            android:layout_width="50dp"
+            android:layout_height="fill_parent"
+            android:orientation="vertical"
+            android:layout_weight="4"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Random Opponent"
+                android:textColor="#000000"
+                android:textSize="25sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="That's the shizzle ipsizzle dolor sit amizzle, izzle.  "
+                android:textColor="#000000"
+                android:textSize="18sp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+    <LinearLayout
         android:id="@+id/challengeButton"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/new_game_selector"
-        android:text="Challenge a Friend"
-        android:textSize="20sp"
-        android:textColor="@color/white"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="43dp"
-        android:layout_marginBottom="40dp"
-        android:layout_gravity="center" />
+        android:orientation="horizontal">
 
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="fill_parent"
+            android:src="@drawable/icon_39046"
+            android:layout_weight="1"/>
+
+        <LinearLayout
+            android:layout_width="50dp"
+            android:layout_height="fill_parent"
+            android:orientation="vertical"
+            android:layout_weight="4"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Challenge a Friend"
+                android:textColor="#000000"
+                android:textSize="25sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="That's the shizzle ipsizzle dolor sit amizzle, izzle.  "
+                android:textColor="#000000"
+                android:textSize="18sp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </LinearLayout>

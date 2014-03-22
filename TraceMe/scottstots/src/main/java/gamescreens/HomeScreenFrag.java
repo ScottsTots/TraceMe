@@ -50,7 +50,7 @@ public class HomeScreenFrag extends Fragment {// implements View.OnClickListener
 
 
                 //SinglePlayer button
-                Button singlePlayerButton = (Button) dlog.findViewById(R.id.singlePlayer);
+                View singlePlayerButton = dlog.findViewById(R.id.singlePlayer);
                 singlePlayerButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

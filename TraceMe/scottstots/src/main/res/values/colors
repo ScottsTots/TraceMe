@@ -2,6 +2,7 @@
 <resources>
     <color name="transparent">#00000000</color>
     <color name="white">#f2f0f0</color>
+    <color name="darker_blue">#ff003f43</color>
     <color name="dark_blue">#00565c</color>
     <color name="facebook_blue">#0d63ac</color>
     <color name="facebook_dark_blue">#ff09497d</color>
