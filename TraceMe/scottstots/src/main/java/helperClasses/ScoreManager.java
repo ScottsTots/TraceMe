@@ -37,10 +37,7 @@ public class ScoreManager {
     Handler handler;
     Message msg;
 
-    public ScoreManager(TraceFile file, Handler h) {
-        handler = h;
-        msg = new Message();
-        msg.what = 1;
+    public ScoreManager(TraceFile file) {
         traceData = file.getPointArray();
         totalScore = 0;
         // sorts by x
@@ -133,7 +130,6 @@ public class ScoreManager {
         }
     }
 
-
     public double distance(DataPoint a, DataPoint b) {
         return Math.sqrt(Math.pow((a.x - b.x), 2) + Math.pow((a.y - b.y), 2));
     }
@@ -141,6 +137,7 @@ public class ScoreManager {
     public int getScore() {
         return totalScore;
     }
+
 
     public int getCombo() {
         if (combo > 62)

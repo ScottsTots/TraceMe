@@ -33,6 +33,7 @@ import java.util.Random;
 
 import helperClasses.CustomPath;
 import helperClasses.DataPoint;
+import helperClasses.Game;
 import helperClasses.ScoreManager;
 import helperClasses.TraceFile;
 import scotts.tots.traceme.R;
@@ -147,7 +148,7 @@ public class GameActivity extends Activity {
         protected void onPostExecute(Void param) {
 
            // Log.d("score", "siiiize" + trace.getPointArray().size());
-            score = new ScoreManager(trace, handler);
+            score = new ScoreManager(trace);
             loadingDialog.dismiss();
         }
     }
@@ -256,8 +257,7 @@ public class GameActivity extends Activity {
         String traceFileName = "trace" + drawingBoard.currentLevel;
         StringBuilder total = new StringBuilder();
         try {
-            InputStream inputStream = this.getResources().openRawResource(getResources().getIdentifier(traceFileName,
-                    "raw", getPackageName()));
+            InputStream inputStream = this.getAssets().open("tracedata/trace1.txt");
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
             String line;
             while ((line = reader.readLine()) != null) {
@@ -281,7 +281,6 @@ public class GameActivity extends Activity {
             trace = new TraceFile(null, new ArrayList<DataPoint>());
             drawingBoard.setPaintColor(Color.BLUE);
         }
-
     }
 }
 
