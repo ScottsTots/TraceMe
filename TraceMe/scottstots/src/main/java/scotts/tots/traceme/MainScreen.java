@@ -113,17 +113,6 @@ public class MainScreen extends Activity {
         }
         // Handle action buttons
         switch(item.getItemId()) {
-            case R.id.action_websearch:
-                // create intent to perform web search for this planet
-                Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
-                intent.putExtra(SearchManager.QUERY, getActionBar().getTitle());
-                // catch event that there's no activity to handle intent
-                if (intent.resolveActivity(getPackageManager()) != null) {
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(this, R.string.app_not_available, Toast.LENGTH_LONG).show();
-                }
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -139,9 +128,10 @@ public class MainScreen extends Activity {
 
     /** This handles the items that we click on the left menu (the opened drawer) **/
     private void selectItem(int position) {
-
-
         String choiceStr = getResources().getStringArray(R.array.nav_drawer_array)[position];
+
+
+        // If selected the Logout option, simply log them out
         if(choiceStr.equals("Logout")) {
             ParseUser.logOut();
             Intent intent = new Intent(this, LoginMenuActivity.class);
@@ -166,13 +156,6 @@ public class MainScreen extends Activity {
             // We replace the fragment
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-
-            // update selected item and title so it doesn't show up in the menu if we reopen it, then close the drawer
-            mDrawerList.setItemChecked(position, true);
-            // now the actionbar will have the same title as the item name.
-            //setTitle(navMenuTitles[position]);
-            mDrawerLayout.closeDrawer(mDrawerList);
-
         } else if (position == 1) {            // Highscore
             Fragment fragment = new HighScoreFragment();
             Bundle args = new Bundle();
@@ -182,9 +165,6 @@ public class MainScreen extends Activity {
 
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-
-            mDrawerList.setItemChecked(position, true);
-            mDrawerLayout.closeDrawer(mDrawerList);
         } else if (position == 2) {     // About
             Fragment fragment = new AboutFrag();
             Bundle args = new Bundle();
@@ -194,10 +174,12 @@ public class MainScreen extends Activity {
 
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-
-            mDrawerList.setItemChecked(position, true);
-            mDrawerLayout.closeDrawer(mDrawerList);
         }
+
+        setTitle(navMenuTitles[position]);
+        mDrawerList.setItemChecked(position, true);     // update selected item and title so it doesn't
+                                                        // show up in the menu if we reopen it, then close the drawer
+        mDrawerLayout.closeDrawer(mDrawerList);         // now the actionbar will have the same title as the item name.
     }
 
     @Override
