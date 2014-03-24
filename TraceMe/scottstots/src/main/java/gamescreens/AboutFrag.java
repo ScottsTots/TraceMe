@@ -32,6 +32,7 @@ public class AboutFrag extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         aboutTextView = (TextView) view.findViewById(R.id.about_text);
         aboutTextView.setMovementMethod(new ScrollingMovementMethod());
+
     }
 
 }
