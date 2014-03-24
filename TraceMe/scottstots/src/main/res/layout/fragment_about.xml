@@ -9,7 +9,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:text="How To Play / About"
+        android:text="@string/about_how_to"
         android:background="@color/com_facebook_picker_search_bar_background"
         android:gravity="center"
         android:textSize="25dp"

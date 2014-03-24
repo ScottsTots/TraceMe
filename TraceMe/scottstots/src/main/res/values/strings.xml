@@ -13,10 +13,12 @@
     <string name="app_id">1477514169137067</string>
     <string name="title_activity_main_screen">Home</string>
     <string name="about_us">About Us</string>
+    <string name="high_scores">High Scores</string>
+    <string name="about_how_to">About / How To Play</string>
 
     <string-array name="nav_drawer_array">
         <item>Home</item>
-        <item>Highscores</item>
+        <item>High Scores</item>
         <item>About</item>
         <item>Logout</item>
     </string-array>
