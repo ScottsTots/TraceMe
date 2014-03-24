@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="75dp"
+    android:weightSum="4">
+
+    <TextView
+        android:id="@+id/list_score_username"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textSize="25sp"
+        android:padding="0dp"
+        android:layout_margin="0dp"
+        android:layout_weight="3"
+        android:gravity="center"
+        android:text="Loading Username.."
+        android:textColor="@color/black"
+        android:background="@color/com_facebook_usersettingsfragment_not_connected_text_color"
+    />
+
+    <TextView
+        android:id="@+id/list_score_highscore"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:text=""
+        android:gravity="center"
+        android:textSize="25sp"
+        android:textColor="@color/black"
+        android:background="@color/com_facebook_usersettingsfragment_not_connected_text_color"
+    />
+
+
+</LinearLayout>
