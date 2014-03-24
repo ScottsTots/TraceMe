@@ -132,7 +132,7 @@ public class DrawingBoard extends View {
         Log.d("view", "Drawing on");
         // TODO for some reason the xml file doesn't compile if we scale the canvas...
         canvas.scale((float) width / 480.0f, (float) height / 800.0f);
-        canvas.drawColor(0xFAAAAAAA);
+        canvas.drawColor(0xFAffffff);
 
         canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
         canvas.drawPath(mPath, mPaint);

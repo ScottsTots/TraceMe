@@ -88,7 +88,7 @@ public class GameActivity extends Activity {
 
         drawingBoard = (DrawingBoard) findViewById(R.id.draw);
         viewingBoard = (ViewingBoard) findViewById(R.id.view);
-        scoreText = (TextView) findViewById(R.id.scoreText);
+//        scoreText = (TextView) findViewById(R.id.scoreText);
         flipper = (ViewFlipper) findViewById(R.id.viewFlipper);
 
         loadingDialog = new ProgressDialog(GameActivity.this);
