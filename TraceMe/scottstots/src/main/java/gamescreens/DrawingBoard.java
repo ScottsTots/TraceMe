@@ -23,6 +23,7 @@ package gamescreens;
 
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.PathMeasure;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -68,21 +69,21 @@ public class DrawingBoard extends View {
     int frameBufferHeight;
 
     ArrayList<DataPoint> playerTraceData;
-
+    public int currentLevel;
 
     public DrawingBoard(Context c, AttributeSet attributeSet) {
         super(c,attributeSet);
 
         playerTraceData = new ArrayList<DataPoint>();
-
+        currentLevel = 1; // this would be inside the "game class"
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mPaint.setDither(true);
         mPaint.setColor(0xFF000000);
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeJoin(Paint.Join.ROUND);
-        mPaint.setStrokeCap(Paint.Cap.ROUND);
-        mPaint.setStrokeWidth(20);
+          mPaint.setStrokeCap(Paint.Cap.ROUND);
+        mPaint.setStrokeWidth(16);
 
         textPaint = new Paint();
         textPaint.setColor(Color.BLACK);
@@ -131,7 +132,7 @@ public class DrawingBoard extends View {
         Log.d("view", "Drawing on");
         // TODO for some reason the xml file doesn't compile if we scale the canvas...
         canvas.scale((float) width / 480.0f, (float) height / 800.0f);
-        canvas.drawColor(0xFAAAAAAA);
+        canvas.drawColor(0xFAffffff);
 
         canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
         canvas.drawPath(mPath, mPaint);
@@ -141,8 +142,8 @@ public class DrawingBoard extends View {
             textPaint.setTextSize(GameActivity.score.getCombo());
             canvas.drawText("Score: " + Integer.toString(GameActivity.score.getScore()), 20, 120, textPaint);
         }
-    }
 
+    }
     private float mX, mY;
     private static final float TOUCH_TOLERANCE = 4;
 
@@ -211,8 +212,6 @@ public class DrawingBoard extends View {
     public Bitmap getCanvasBitmap() {
         // Returns all the stuff that has been drawn so far.
         return mBitmap.copy(Bitmap.Config.ARGB_8888, true);
-
-
     }
 
     // Used to draw the trace points (the score data). These should all be equidistant points
@@ -259,5 +258,7 @@ public class DrawingBoard extends View {
         mPaint.setColor(color);
     }
 
-
+    public void setDashEffect() {
+        mPaint.setPathEffect(new DashPathEffect(new float[] {30, 15}, 0));
+    }
 }

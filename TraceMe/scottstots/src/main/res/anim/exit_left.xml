@@ -4,7 +4,7 @@
     <translate
 
         android:fromXDelta="0"
-        android:toXDelta="-500"
+        android:toXDelta="-600"
         android:fillAfter="true"
         android:duration="500"/>
 </set>

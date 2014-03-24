@@ -5,8 +5,10 @@ import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.media.MediaScannerConnection;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
@@ -18,10 +20,20 @@ import android.widget.ViewFlipper;
 
 import com.google.gson.Gson;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Random;
 
 import helperClasses.CustomPath;
 import helperClasses.DataPoint;
+import helperClasses.Game;
 import helperClasses.ScoreManager;
 import helperClasses.TraceFile;
 import scotts.tots.traceme.R;
@@ -76,7 +88,7 @@ public class GameActivity extends Activity {
 
         drawingBoard = (DrawingBoard) findViewById(R.id.draw);
         viewingBoard = (ViewingBoard) findViewById(R.id.view);
-        scoreText = (TextView) findViewById(R.id.scoreText);
+//        scoreText = (TextView) findViewById(R.id.scoreText);
         flipper = (ViewFlipper) findViewById(R.id.viewFlipper);
 
         loadingDialog = new ProgressDialog(GameActivity.this);
@@ -113,10 +125,6 @@ public class GameActivity extends Activity {
                 drawingBoard.setPaintColor(Color.BLACK);
             }
         });
-
-
-
-
     }
 
     private class LoadOrSaveTask extends AsyncTask<String, Void, Void> {
@@ -127,10 +135,12 @@ public class GameActivity extends Activity {
 
         @Override
         protected Void doInBackground(String... params) {
-            if(params[0].equals("load"))
-                loadTrace();
-            else if(params[0].equals("save"))
-                saveTrace();
+            if(params[0].equals("load")) {
+                loadFromResources();
+            }
+            else if(params[0].equals("save")) {
+                saveToExternal();
+            }
             return null;
         }
 
@@ -138,13 +148,14 @@ public class GameActivity extends Activity {
         protected void onPostExecute(Void param) {
 
            // Log.d("score", "siiiize" + trace.getPointArray().size());
-            score = new ScoreManager(trace, handler);
+            score = new ScoreManager(trace);
             loadingDialog.dismiss();
         }
     }
 
 
-    public void loadTrace() {
+    // loads from shared prefs
+    public void loadFromPrefs() {
         // If there is a game level/trace present in our shared prefs
         Gson gson = new Gson();
         String json = mPrefs.getString("Trace1", "");
@@ -163,11 +174,11 @@ public class GameActivity extends Activity {
 
                 drawingBoard.setPaintColor(Color.BLUE);
             }
-
         }
     }
 
-    public void saveTrace() {
+    // Saves in shared prefs
+    public void saveToPrefs() {
         Bitmap bmp = drawingBoard.getCanvasBitmap();
         trace = new TraceFile(bmp, pointsArray);
         SharedPreferences.Editor prefsEditor = mPrefs.edit();
@@ -175,8 +186,113 @@ public class GameActivity extends Activity {
         String json = gson.toJson(trace);
         prefsEditor.putString("Trace1", json);
         prefsEditor.commit();
-       // Toast.makeText(GameActivity.this, "Trace saved, start a new game for it to load", Toast.LENGTH_LONG).show();
     }
 
 
+    // Save in external folder Android/data/scotts.tots.traceme/files/trace_files/
+    public void saveToExternal() {
+        // Convert to a string
+        Bitmap bmp = drawingBoard.getCanvasBitmap();
+        trace = new TraceFile(bmp, pointsArray);
+        Gson gson = new Gson();
+        String json = gson.toJson(trace);
+
+        File dir = getExternalFilesDir(null);
+        File file = new File(dir + "/trace_files/", "trace0.txt"); //trace1 is filename
+
+        try {
+            if(file.getParentFile().mkdirs()) {
+                file.createNewFile();
+            }
+            FileOutputStream fos = new FileOutputStream(file);
+            fos.write(json.getBytes());
+            fos.flush();
+            fos.close();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        // filesystem refresh
+        MediaScannerConnection.scanFile(this, new String[]{file.getAbsolutePath()}, null, null);
+    }
+
+    // load from external folder
+    public void loadFromExternal() {
+        StringBuilder total = new StringBuilder();
+        try {
+            File inputFile = new File(getExternalFilesDir(null) + "/trace_files/", "trace8.txt");
+            InputStream inputStream = new BufferedInputStream(new FileInputStream(inputFile));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                total.append(line);
+            }
+            reader.close();
+            inputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Gson gson = new Gson();
+        trace = gson.fromJson(total.toString(), TraceFile.class);
+        Log.d("loading", "got trace");
+        // draw it on the canvas.
+        if (trace != null) {
+            Log.d("loading", "drawing trace...");
+            drawingBoard.drawTrace(trace.getBitmap());
+        }
+        else {
+            trace = new TraceFile(null, new ArrayList<DataPoint>());
+            drawingBoard.setPaintColor(Color.BLUE);
+        }
+
+    }
+
+
+    // load from the raw folder in this project.
+    // We can't save into the raw folder.. we must save into external, then
+    // transfer to raw if we want to add more levels.
+    public void loadFromResources() {
+        // current level to load would be something like "game.getCurrLevel()"
+
+        // For now we use the drawingBoards curr level.
+        String traceFileName = "trace" + drawingBoard.currentLevel;
+        StringBuilder total = new StringBuilder();
+        try {
+            InputStream inputStream = this.getAssets().open("tracedata/trace1.txt");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                total.append(line);
+            }
+            reader.close();
+            inputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Gson gson = new Gson();
+        trace = gson.fromJson(total.toString(), TraceFile.class);
+        Log.d("loading", "got trace");
+        // draw it on the canvas.
+        if (trace != null) {
+            Log.d("loading", "drawing trace...");
+            drawingBoard.drawTrace(trace.getBitmap());
+           // drawingBoard.drawTrace(trace.points);
+        }
+        else {
+            trace = new TraceFile(null, new ArrayList<DataPoint>());
+            drawingBoard.setPaintColor(Color.BLUE);
+        }
+    }
 }
+
+
+
+
+
+
+/*
+trace = new TraceFile(null, new ArrayList<DataPoint>());
+        drawingBoard.setPaintColor(Color.BLACK);
+        drawingBoard.setDashEffect();
+        score = new ScoreManager(trace, handler);
+ */
+
