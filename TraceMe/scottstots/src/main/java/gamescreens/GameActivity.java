@@ -16,9 +16,18 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import com.facebook.FacebookRequestError;
+import com.facebook.Request;
+import com.facebook.Response;
+import com.facebook.model.GraphUser;
 import com.google.gson.Gson;
+import com.parse.ParseFacebookUtils;
+import com.parse.ParseObject;
+import com.parse.ParseTwitterUtils;
+import com.parse.ParseUser;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -52,6 +61,9 @@ import scotts.tots.traceme.R;
  * See DrawingBoard.convertToPoints for the details.
  */
 public class GameActivity extends Activity {
+
+    static String TAG = "GameActivity";
+
     // Contains all points for the trace separated by the path they were at.
     // This array is used to do the drawing animation in ViewingBoard
     public static ArrayList<CustomPath> pathsArray;
@@ -110,6 +122,7 @@ public class GameActivity extends Activity {
                 flipper.setDisplayedChild(1); //drawingBoard is 0, viewingBoard is 1
                 playButton.setVisibility(View.INVISIBLE);
                 viewingBoard.startDrawing(); // this updates our viewingBoard to the current data.
+                saveHighScore();
             }
         });
 
@@ -281,6 +294,57 @@ public class GameActivity extends Activity {
             trace = new TraceFile(null, new ArrayList<DataPoint>());
             drawingBoard.setPaintColor(Color.BLUE);
         }
+    }
+
+    public void saveHighScore() {
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        if (ParseFacebookUtils.isLinked(currentUser)) {         // Currently not working
+            Request request = Request.newMeRequest(ParseFacebookUtils.getSession(),
+                    new Request.GraphUserCallback() {
+                        @Override
+                        public void onCompleted(GraphUser user, Response response) {
+                            if (user != null) {
+                                String username = user.getName();
+                                int newScore = score.getScore();
+                                saveHighScoreToParse(username, newScore);
+                            } else if (response.getError() != null) {
+                                if ((response.getError().getCategory() == FacebookRequestError.Category.AUTHENTICATION_RETRY)
+                                        || (response.getError().getCategory() == FacebookRequestError.Category.AUTHENTICATION_REOPEN_SESSION)) {
+                                    Log.d(TAG,
+                                            "The facebook session was invalidated.");
+                                } else {
+                                    Log.d(TAG,
+                                            "Some other error: "
+                                                    + response.getError()
+                                                    .getErrorMessage()
+                                    );
+                                }
+                            }
+                        }
+                    });
+            request.executeAsync();
+        } else if (ParseTwitterUtils.isLinked(currentUser)) {
+            String username = ParseTwitterUtils.getTwitter().getScreenName();
+            int newScore    = score.getScore();
+
+            saveHighScoreToParse(username, newScore);
+        } else {                // Regularly signed in user
+            String username = currentUser.getUsername();
+            int newScore    = score.getScore();
+            
+            saveHighScoreToParse(username, newScore);
+        }
+    }
+
+    public void saveHighScoreToParse(String username, int newScore) {
+        Toast.makeText(getApplicationContext(),
+                "Saving Score - " + username + ": " + newScore,
+                Toast.LENGTH_LONG).show();
+
+        ParseObject newHighScore = new ParseObject("Highscore");
+        newHighScore.put("username", username);
+        newHighScore.put("score", newScore);
+        newHighScore.saveInBackground();
     }
 }
 
