@@ -13,7 +13,16 @@ EID:
 
 
 2. Brief Instructions on How to Use TraceMe
-
+  1) After logging in the user is presented with a login screen
+  2) Register a new account, login (sample login provided below) with username/password or use the FB/Twitter Auth
+  3) Once Logged in the User can access the Menu Items
+    1) About Goes to a Page About the Project
+    2) High Scores takes the user to the current high scores
+  4) Click New Game to Play a Game
+  5) Select Single Player (only single player supported)
+  6) Begin touching the screen whenever and trace
+  7) After done tracing select play (don't select save trace)
+  8) Hit back because you are done!
 
 3. List of Features / User Cases Completed
 
