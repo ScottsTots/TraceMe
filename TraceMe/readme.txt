@@ -29,9 +29,29 @@ EID:
 
 
 7. List of Classes and Major Chunks of Code Completed Yourself
-
-
-
+  - scotts.tots.traceme
+    - DispatchActivity
+    - LoginMenuActivity
+    - LoginNewUserActivity
+    - MainScreen
+    - SignUpActivity
+    - Splash
+    - TraceMeApplication
+  - helperClasses
+    - CustomPath
+    - DataPOint
+    - Game
+    - Level
+    - ScoreManager
+    - TraceFile
+  - gamescreens
+    - AboutFrag
+    - DrawingBoard
+    - HighScoreFragment
+      - CustomHighScoreListAdapter
+      - Score
+    - HomeScreenFrag
+    - ViewingBoard
 
 ** Note: Included in the a4_apk_readme_TraceMe.txt file, but a sample login for use is:
   Username: foobar
