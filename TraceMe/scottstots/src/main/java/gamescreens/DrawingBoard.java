@@ -43,6 +43,7 @@ import java.util.ArrayList;
 
 import helperClasses.CustomPath;
 import helperClasses.DataPoint;
+import helperClasses.Game;
 
 
 /**
@@ -71,6 +72,8 @@ public class DrawingBoard extends View {
     ArrayList<DataPoint> playerTraceData;
     public int currentLevel;
 
+    Game game;
+
     public DrawingBoard(Context c, AttributeSet attributeSet) {
         super(c,attributeSet);
 
@@ -82,7 +85,7 @@ public class DrawingBoard extends View {
         mPaint.setColor(0xFF000000);
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeJoin(Paint.Join.ROUND);
-          mPaint.setStrokeCap(Paint.Cap.ROUND);
+         mPaint.setStrokeCap(Paint.Cap.ROUND);
         mPaint.setStrokeWidth(16);
 
         textPaint = new Paint();
@@ -138,10 +141,11 @@ public class DrawingBoard extends View {
         canvas.drawPath(mPath, mPaint);
 
         // Draw the score.
-        if(GameActivity.score != null) {
-            textPaint.setTextSize(GameActivity.score.getCombo());
-            canvas.drawText("Score: " + Integer.toString(GameActivity.score.getScore()), 20, 120, textPaint);
+        if(game != null) {
+            textPaint.setTextSize(game.level.getCombo());
+            canvas.drawText("Score: " + Integer.toString(game.level.getScore()), 20, 120, textPaint);
         }
+
 
     }
     private float mX, mY;
@@ -191,16 +195,19 @@ public class DrawingBoard extends View {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                GameActivity.score.update(new DataPoint(x, y));
+                game.level.updateScore(new DataPoint(x, y));
+                //GameActivity.score.update(new DataPoint(x, y));
                 touch_start(x, y);
                 invalidate();
                 break;
             case MotionEvent.ACTION_MOVE:
-                GameActivity.score.update(new DataPoint(x, y));
+                game.level.updateScore(new DataPoint(x, y));
+               // GameActivity.score.update(new DataPoint(x, y));
                 touch_move(x, y);
                 invalidate();
                 break;
             case MotionEvent.ACTION_UP:
+
                 touch_up();
                 invalidate();
                 break;
@@ -223,8 +230,9 @@ public class DrawingBoard extends View {
         }
     }
 
-    // Used to draw the trace image
+    // Used to draw the trace image and set the Game
     public void drawTrace(Bitmap bitmap) {
+        game = GameActivity.game;
         Log.d("loading", "set trace");
         mBitmap = bitmap;
         mCanvas = new Canvas(mBitmap);

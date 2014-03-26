@@ -46,11 +46,12 @@ public class Level {
 
     // Loads level from internal storage
     public void loadSinglePlayerLevel(Context ctx) {
-        for(int i = 1; i <= 6; i++) {
-            TraceFile trace = getTraceFile(ctx, "trace" + i);
+        for(int i = 1; i <= 4; i++) {
+            TraceFile trace = getTraceFile(ctx, "trace" + i + ".txt");
             if(trace != null)
                 traceArray.add(trace);
             else {
+
                 // UH OH.
             }
         }
@@ -83,12 +84,17 @@ public class Level {
         scoreManager.traceData = traceArray.get(currentTrace).points;
     }
 
-    public void update() {
-
+    public void updateScore(DataPoint p) {
+        scoreManager.update(p);
     }
 
+    public int getScore() {
+        return scoreManager.getScore();
+    }
 
-
+    public int getCombo() {
+        return scoreManager.getCombo();
+    }
 
 
 }

@@ -1,6 +1,7 @@
 package helperClasses;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 
 import java.util.ArrayList;
 
@@ -20,7 +21,7 @@ public class Game {
 
     public String gameStatus = "running"; // game ends when this is "end"
 
-    Level level;
+    public Level level;
     // For singlePlayer
     public Game() {
 
@@ -37,8 +38,15 @@ public class Game {
         level.loadSinglePlayerLevel(ctx);
     }
 
-    public void update() {
-        level.update();
+//    public void update() {
+//        level.update();
+//    }
+
+
+    public Bitmap getFirstBitmap() {
+        return level.traceArray.get(0).getBitmap();
     }
+
+
 
 }

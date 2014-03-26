@@ -2,6 +2,7 @@ package gamescreens;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -74,7 +75,10 @@ public class GameActivity extends Activity {
 
     public static ScoreManager score;
 
+    public static Game game;
+
     Handler handler;
+    Context ctx;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,13 +98,18 @@ public class GameActivity extends Activity {
         loadingDialog = new ProgressDialog(GameActivity.this);
         loadingDialog.setMessage("Loading...");
 
+        game = new Game();
+        game.setLevel(1);
+        ctx = this;
+        new LoadTask().execute("load");
 
-        // Load level, if any
-        trace = new TraceFile(null, new ArrayList<DataPoint>());
-        mPrefs = getSharedPreferences("gameprefs", MODE_PRIVATE);
-        new LoadOrSaveTask().execute("load");
 
-
+        // Start a thread here to run a timer for this level?
+        // inside the thread we do game.update()? or we can just
+        // switch the view if we receive a game over handler message from the game class
+        // and tell the player what his/her current
+        // score is, how many medals, etc through a dialog. Since this is single player we can
+        // just put a "play back" button if they want to view it.
 
         // Switch into the viewingBoard using the viewFlipper if we press "play"
         playButton = (Button) findViewById(R.id.playButton);
@@ -116,18 +125,39 @@ public class GameActivity extends Activity {
 
         // Save a trace to be used as the initial trace in the next game.
         saveTraceButton = (Button) findViewById(R.id.saveTraceButton);
-        saveTraceButton.setOnClickListener(new View.OnClickListener() {
-            // When we click save, all the points in pointsArray, AND the bitmap we drew will get saved
-            // into a traceFile object.
-            @Override
-            public void onClick(View view) {
-                new LoadOrSaveTask().execute("save");
-                drawingBoard.setPaintColor(Color.BLACK);
-            }
-        });
+//        saveTraceButton.setOnClickListener(new View.OnClickListener() {
+//            // When we click save, all the points in pointsArray, AND the bitmap we drew will get saved
+//            // into a traceFile object.
+//            @Override
+//            public void onClick(View view) {
+//                new LoadTask().execute("save");
+//                drawingBoard.setPaintColor(Color.BLACK);
+//            }
+//        });
     }
 
-    private class LoadOrSaveTask extends AsyncTask<String, Void, Void> {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private class LoadTask extends AsyncTask<String, Void, Void> {
         @Override
         protected void onPreExecute() {
             loadingDialog.show();
@@ -136,22 +166,28 @@ public class GameActivity extends Activity {
         @Override
         protected Void doInBackground(String... params) {
             if(params[0].equals("load")) {
-                loadFromResources();
+                game.loadGame(ctx);
+                //loadFromResources();
             }
-            else if(params[0].equals("save")) {
-                saveToExternal();
-            }
+//            else if(params[0].equals("save")) {
+//                saveToExternal();
+//            }
             return null;
         }
 
         @Override
         protected void onPostExecute(Void param) {
-
+            // Draw the first bitmap on the canvas.
+            drawingBoard.drawTrace(game.getFirstBitmap());
            // Log.d("score", "siiiize" + trace.getPointArray().size());
-            score = new ScoreManager(trace);
+            //score = new ScoreManager(trace);
             loadingDialog.dismiss();
         }
     }
+
+
+
+
 
 
     // loads from shared prefs
