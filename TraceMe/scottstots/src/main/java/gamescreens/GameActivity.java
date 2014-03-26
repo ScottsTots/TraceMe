@@ -138,6 +138,10 @@ public class GameActivity extends Activity {
                 drawingBoard.setPaintColor(Color.BLACK);
             }
         });
+
+        // Take the save trace button out for the alpha release
+        saveTraceButton.setVisibility(View.INVISIBLE);
+        saveTraceButton.setEnabled(false);
     }
 
     private class LoadOrSaveTask extends AsyncTask<String, Void, Void> {

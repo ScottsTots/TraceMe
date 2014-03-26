@@ -27,7 +27,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Play"
+        android:text="Done"
         android:padding="10dp"
         android:background="@drawable/login_selector"
         android:id="@+id/playButton"
