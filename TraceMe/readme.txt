@@ -24,17 +24,38 @@ EID:
   7) After done tracing select play (don't select save trace)
   8) Hit back because you are done!
 
+
 3. List of Features / User Cases Completed
+  - Login / Signup Activities Completed
+  - Highscore Logic Completed
+  - About Page Logic Completed 
+  - Game Part Setup
+    - Display trace on screen
+    - Allow user to trace
+    - Give the user a score
+    - Signle Player Mode Only
+    - Drawback of Trace
 
 
 4. List of Features / Use Cases from Application Pototype Not Completed
-
+  - Multiplayer
+    - Finding other players random and friends
+    - Double playback
+    - Menu Items not there (no multiplayer)
+    - Async games
+  - Highscore Styling
+  - About Styling
+    
 
 5. List of Features / User Cases Added not Part of Prototype
+  - None?
 
 
 6. List of Classes and Major Chunks of Code Obtained from Other Sources
   - Parse : https://parse.com/docs/android_guide
+  - Parse Android Anyway Tutorial : https://parse.com/tutorials/anywall-android
+  - Android Finger Painting SDK : 
+  - GSON Library
 
 
 7. List of Classes and Major Chunks of Code Completed Yourself
