@@ -24,6 +24,8 @@ EID: av9844
   7) After done tracing select play (don't select save trace)
   8) Hit back because you are done!
 
+** Note: Facebook won't work because you have to explicitly be approved by us to log in to the app with facebook. You can ask us for permission. If you want facebook login to work for all users you have to go through a facebook approval process.
+
 
 3. List of Features / User Cases Completed
   - Login / Signup Activities Completed
