@@ -165,6 +165,16 @@ public class GameActivity extends Activity {
         protected void onPostExecute(Void param) {
 
            // Log.d("score", "siiiize" + trace.getPointArray().size());
+            // draw it on the canvas.
+            if (trace != null) {
+                Log.d("loading", "drawing trace...");
+                drawingBoard.drawTrace(trace.getBitmap());
+                // drawingBoard.drawTrace(trace.points);
+            }
+            else {
+                trace = new TraceFile(null, new ArrayList<DataPoint>());
+                drawingBoard.setPaintColor(Color.BLUE);
+            }
             score = new ScoreManager(trace);
             loadingDialog.dismiss();
         }
@@ -288,16 +298,7 @@ public class GameActivity extends Activity {
         Gson gson = new Gson();
         trace = gson.fromJson(total.toString(), TraceFile.class);
         Log.d("loading", "got trace");
-        // draw it on the canvas.
-        if (trace != null) {
-            Log.d("loading", "drawing trace...");
-            drawingBoard.drawTrace(trace.getBitmap());
-           // drawingBoard.drawTrace(trace.points);
-        }
-        else {
-            trace = new TraceFile(null, new ArrayList<DataPoint>());
-            drawingBoard.setPaintColor(Color.BLUE);
-        }
+
     }
 
     public void saveHighScore() {

@@ -228,6 +228,7 @@ public class DrawingBoard extends View {
         Log.d("loading", "set trace");
         mBitmap = bitmap;
         mCanvas = new Canvas(mBitmap);
+        invalidate();
     }
 
 
