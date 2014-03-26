@@ -9,7 +9,7 @@ Name: Niko Lazaris
 EID : 
 
 Name: Aaron Villalpando
-EID:
+EID: av9844
 
 
 2. Brief Instructions on How to Use TraceMe
@@ -33,7 +33,7 @@ EID:
     - Display trace on screen
     - Allow user to trace
     - Give the user a score
-    - Signle Player Mode Only
+    - Single Player Mode Only
     - Drawback of Trace
 
 
@@ -54,22 +54,23 @@ EID:
 6. List of Classes and Major Chunks of Code Obtained from Other Sources
   - Parse : https://parse.com/docs/android_guide
   - Parse Android Anyway Tutorial : https://parse.com/tutorials/anywall-android
-  - Android Finger Painting SDK : 
-  - GSON Library
-
+	- Specifically, a few of the validation errors/flow and ParseUser Sign In in SignUpActivity.java and LoginNewUserActivity.java
+	- Also the initial Parse API set up in DispatchActivity.java and TraceMeApplication.java
+  - Android Finger Painting SDK : Comes with the SDK but here's another way to view
+	the code http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android-apps/2.2_r1.1/com/example/android/apis/graphics/FingerPaint.java
+  - GSON Library, used to save java objects as JSON strings to saved preferences and external storage
+  - Android SDK Navigation Drawer Example: http://developer.android.com/training/implementing-navigation/nav-drawer.html
+	MainScreen.java was based off of this example.
 
 7. List of Classes and Major Chunks of Code Completed Yourself
   - scotts.tots.traceme
-    - DispatchActivity
     - LoginMenuActivity
     - LoginNewUserActivity
-    - MainScreen
     - SignUpActivity
     - Splash
-    - TraceMeApplication
   - helperClasses
     - CustomPath
-    - DataPOint
+    - DataPoint
     - Game
     - Level
     - ScoreManager
