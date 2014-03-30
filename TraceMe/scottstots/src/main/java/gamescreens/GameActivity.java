@@ -12,14 +12,25 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import com.facebook.FacebookRequestError;
+import com.facebook.Request;
+import com.facebook.Response;
+import com.facebook.model.GraphUser;
 import com.google.gson.Gson;
+import com.parse.ParseFacebookUtils;
+import com.parse.ParseObject;
+import com.parse.ParseTwitterUtils;
+import com.parse.ParseUser;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -35,6 +46,7 @@ import java.util.Random;
 import helperClasses.CustomPath;
 import helperClasses.DataPoint;
 import helperClasses.Game;
+import helperClasses.Level;
 import helperClasses.ScoreManager;
 import helperClasses.TraceFile;
 import scotts.tots.traceme.R;
@@ -53,6 +65,9 @@ import scotts.tots.traceme.R;
  * See DrawingBoard.convertToPoints for the details.
  */
 public class GameActivity extends Activity {
+
+    static String TAG = "GameActivity";
+
     // Contains all points for the trace separated by the path they were at.
     // This array is used to do the drawing animation in ViewingBoard
     public static ArrayList<CustomPath> pathsArray;
@@ -63,6 +78,8 @@ public class GameActivity extends Activity {
     public static ArrayList<DataPoint> pointsArray;
     DrawingBoard drawingBoard;
     ViewingBoard viewingBoard;
+
+    GameLoop gameLoop;
     Button playButton;
     ViewFlipper flipper;
     TextView scoreText;
@@ -76,85 +93,39 @@ public class GameActivity extends Activity {
     public static ScoreManager score;
 
     public static Game game;
-
+    public static Level level;
     Handler handler;
     Context ctx;
-
+    GameThread gameThread;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_activity);
+        ctx = this;
+//      pathsArray = new ArrayList<CustomPath>();
+//      pointsArray = new ArrayList<DataPoint>();
 
-        pathsArray = new ArrayList<CustomPath>();
-        pointsArray = new ArrayList<DataPoint>();
-
-        drawingBoard = (DrawingBoard) findViewById(R.id.draw);
-        viewingBoard = (ViewingBoard) findViewById(R.id.view);
-        scoreText = (TextView) findViewById(R.id.scoreText);
-        flipper = (ViewFlipper) findViewById(R.id.viewFlipper);
+        game = new Game();
+        game.setLevel(1, this);
 
         loadingDialog = new ProgressDialog(GameActivity.this);
         loadingDialog.setMessage("Loading...");
-
-        game = new Game();
-        game.setLevel(1);
-        ctx = this;
         new LoadTask().execute("load");
 
-
-        // Start a thread here to run a timer for this level?
-        // inside the thread we do game.update()? or we can just
-        // switch the view if we receive a game over handler message from the game class
-        // and tell the player what his/her current
-        // score is, how many medals, etc through a dialog. Since this is single player we can
-        // just put a "play back" button if they want to view it.
-
         // Switch into the viewingBoard using the viewFlipper if we press "play"
-        playButton = (Button) findViewById(R.id.playButton);
-        playButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                flipper.setDisplayedChild(1); //drawingBoard is 0, viewingBoard is 1
-                playButton.setVisibility(View.INVISIBLE);
-                viewingBoard.startDrawing(); // this updates our viewingBoard to the current data.
-            }
-        });
-
-
-        // Save a trace to be used as the initial trace in the next game.
-        saveTraceButton = (Button) findViewById(R.id.saveTraceButton);
-//        saveTraceButton.setOnClickListener(new View.OnClickListener() {
-//            // When we click save, all the points in pointsArray, AND the bitmap we drew will get saved
-//            // into a traceFile object.
+//        playButton = (Button) findViewById(R.id.playButton);
+//        playButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
-//                new LoadTask().execute("save");
-//                drawingBoard.setPaintColor(Color.BLACK);
+//                flipper.setDisplayedChild(1); //drawingBoard is 0, viewingBoard is 1
+//                playButton.setVisibility(View.INVISIBLE);
+//                viewingBoard.startDrawing(); // this updates our viewingBoard to the current data.
+//                saveHighScore();
 //            }
 //        });
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     private class LoadTask extends AsyncTask<String, Void, Void> {
@@ -165,65 +136,26 @@ public class GameActivity extends Activity {
 
         @Override
         protected Void doInBackground(String... params) {
-            if(params[0].equals("load")) {
+            if (params[0].equals("load")) {
+                gameLoop = (GameLoop) findViewById(R.id.surfaceView);
+                gameThread = gameLoop.getGameThread();
                 game.loadGame(ctx);
-                //loadFromResources();
             }
-//            else if(params[0].equals("save")) {
-//                saveToExternal();
-//            }
             return null;
         }
 
         @Override
         protected void onPostExecute(Void param) {
-            // Draw the first bitmap on the canvas.
-            drawingBoard.drawTrace(game.getFirstBitmap());
-           // Log.d("score", "siiiize" + trace.getPointArray().size());
-            //score = new ScoreManager(trace);
+            if(gameThread != null) {
+                Log.d("gameloop", "gamethread  initialized!!");
+                gameThread.setLevel(game.level); // gamethread mustve been initialized already..
+            }
+            else {
+                Log.d("gameloop", "gamethread not initialized!!");
+            }
             loadingDialog.dismiss();
         }
     }
-
-
-
-
-
-
-    // loads from shared prefs
-    public void loadFromPrefs() {
-        // If there is a game level/trace present in our shared prefs
-        Gson gson = new Gson();
-        String json = mPrefs.getString("Trace1", "");
-        Log.d("loading", "got json");
-        if (json != null) {
-            trace = gson.fromJson(json, TraceFile.class);
-            Log.d("loading", "got trace");
-            // draw it on the canvas.
-            if (trace != null) {
-                Log.d("loading", "drawing trace...");
-                drawingBoard.drawTrace(trace.getBitmap());
-                // drawingBoard.drawTrace(trace.points);
-            }
-            else {
-                trace = new TraceFile(null, new ArrayList<DataPoint>());
-
-                drawingBoard.setPaintColor(Color.BLUE);
-            }
-        }
-    }
-
-    // Saves in shared prefs
-    public void saveToPrefs() {
-        Bitmap bmp = drawingBoard.getCanvasBitmap();
-        trace = new TraceFile(bmp, pointsArray);
-        SharedPreferences.Editor prefsEditor = mPrefs.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(trace);
-        prefsEditor.putString("Trace1", json);
-        prefsEditor.commit();
-    }
-
 
     // Save in external folder Android/data/scotts.tots.traceme/files/trace_files/
     public void saveToExternal() {
@@ -282,7 +214,6 @@ public class GameActivity extends Activity {
 
     }
 
-
     // load from the raw folder in this project.
     // We can't save into the raw folder.. we must save into external, then
     // transfer to raw if we want to add more levels.
@@ -307,28 +238,72 @@ public class GameActivity extends Activity {
         Gson gson = new Gson();
         trace = gson.fromJson(total.toString(), TraceFile.class);
         Log.d("loading", "got trace");
-        // draw it on the canvas.
-        if (trace != null) {
-            Log.d("loading", "drawing trace...");
-            drawingBoard.drawTrace(trace.getBitmap());
-           // drawingBoard.drawTrace(trace.points);
+
+    }
+
+    public void saveHighScore() {
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        if (ParseFacebookUtils.isLinked(currentUser)) {         // Currently not working
+            Request request = Request.newMeRequest(ParseFacebookUtils.getSession(),
+                    new Request.GraphUserCallback() {
+                        @Override
+                        public void onCompleted(GraphUser user, Response response) {
+                            if (user != null) {
+                                String username = user.getName();
+                                int newScore = score.getScore();
+                                saveHighScoreToParse(username, newScore);
+                            } else if (response.getError() != null) {
+                                if ((response.getError().getCategory() == FacebookRequestError.Category.AUTHENTICATION_RETRY)
+                                        || (response.getError().getCategory() == FacebookRequestError.Category.AUTHENTICATION_REOPEN_SESSION)) {
+                                    Log.d(TAG,
+                                            "The facebook session was invalidated.");
+                                } else {
+                                    Log.d(TAG,
+                                            "Some other error: "
+                                                    + response.getError()
+                                                    .getErrorMessage()
+                                    );
+                                }
+                            }
+                        }
+                    });
+            request.executeAsync();
+        } else if (ParseTwitterUtils.isLinked(currentUser)) {
+            String username = ParseTwitterUtils.getTwitter().getScreenName();
+            int newScore    = score.getScore();
+
+            saveHighScoreToParse(username, newScore);
+        } else {                // Regularly signed in user
+            String username = currentUser.getUsername();
+            int newScore    = score.getScore();
+
+            saveHighScoreToParse(username, newScore);
         }
-        else {
-            trace = new TraceFile(null, new ArrayList<DataPoint>());
-            drawingBoard.setPaintColor(Color.BLUE);
-        }
+    }
+
+    public void saveHighScoreToParse(String username, int newScore) {
+        Toast.makeText(getApplicationContext(),
+                "Saving Score - " + username + ": " + newScore,
+                Toast.LENGTH_LONG).show();
+
+        ParseObject newHighScore = new ParseObject("Highscore");
+        newHighScore.put("username", username);
+        newHighScore.put("score", newScore);
+        newHighScore.saveInBackground();
     }
 }
 
-
-
-
-
-
-/*
-trace = new TraceFile(null, new ArrayList<DataPoint>());
-        drawingBoard.setPaintColor(Color.BLACK);
-        drawingBoard.setDashEffect();
-        score = new ScoreManager(trace, handler);
- */
-
+// Save a trace to be used as the initial trace in the next game.
+// saveTraceButton = (Button) findViewById(R.id.saveTraceButton);
+//        saveTraceButton.setOnClickListener(new View.OnClickListener() {
+//            // When we click save, all the points in pointsArray, AND the bitmap we drew will get saved
+//            // into a traceFile object.
+//            @Override
+//            public void onClick(View view) {
+//                new LoadOrSaveTask().execute("save");
+//                drawingBoard.setPaintColor(Color.BLACK);
+//            }
+//        });
+//        // Take the save trace button out for the alpha release
+//        saveTraceButton.setVisibility(View.INVISIBLE);
+//        saveTraceButton.setEnabled(false);

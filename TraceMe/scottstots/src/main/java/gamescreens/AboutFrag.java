@@ -2,15 +2,20 @@ package gamescreens;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
 import scotts.tots.traceme.R;
 
 /**
  * The about the game fragment.=
  */
 public class AboutFrag extends Fragment {
+
+    TextView aboutTextView;
 
     public AboutFrag() {
         // Empty constructor required for fragment subclasses
@@ -25,7 +30,9 @@ public class AboutFrag extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        // Filler
+        aboutTextView = (TextView) view.findViewById(R.id.about_text);
+        aboutTextView.setMovementMethod(new ScrollingMovementMethod());
+
     }
 
 }

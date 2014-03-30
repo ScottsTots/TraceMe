@@ -4,10 +4,28 @@
     android:layout_height="match_parent"
     tools:context="gamescreens.HighScoreFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Highscore Fragment" />
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:weightSum="10">
 
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:background="@color/black"
+            android:text="@string/high_scores"
+            android:gravity="center"
+            android:textSize="25dp"
+            android:textColor="@color/white"/>
+
+        <ListView
+            android:id="@+id/highscoreListView"
+            android:layout_width="fill_parent"
+            android:layout_weight="8"
+            android:layout_height="wrap_content"
+            android:background="@color/com_facebook_blue"></ListView>
+
+    </LinearLayout>
 </FrameLayout>

@@ -1,42 +1,23 @@
-
-/**
- *
- * Based on the FingerPaint Sample from the Android SDK Samples.
- *
- *
- * Copyright (C) 2007 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package gamescreens;
 
+import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
+import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.PathMeasure;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.View;
-
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.MaskFilter;
-import android.graphics.Paint;
-import android.graphics.Path;
 import android.view.MotionEvent;
+import android.view.Surface;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.WindowManager;
 
 import java.util.ArrayList;
@@ -45,14 +26,20 @@ import helperClasses.CustomPath;
 import helperClasses.DataPoint;
 import helperClasses.Game;
 
-
 /**
- * This DrawingBoard was put together with some sort of magic.
- * Android Paths get converted into my own paths made out of "points", which are
- * used and modified in certain calculations to create effects (see the Save Button)
+ * Created by Aaron on 3/29/2014.
+ * based on Lunar Lander sdk sample, as well as Mario Zechner's "Beginning Android Games" game loop framework
  */
 
-public class DrawingBoard extends View {
+// This class will also implement touch
+public class GameLoop extends SurfaceView implements SurfaceHolder.Callback {
+
+    SurfaceHolder holder;
+    boolean running = false;
+    GameThread gameThread;
+    Game game;
+
+
 
     private Paint mPaint;
 
@@ -62,89 +49,67 @@ public class DrawingBoard extends View {
     private Path mPath;
     private Paint mBitmapPaint;
     private Paint textPaint;
-
     float scaleX;
     float scaleY;
     int width;
     int height;
     int frameBufferWidth;
     int frameBufferHeight;
+    public GameLoop(Context context, AttributeSet attrs)  {
+        super(context, attrs);
+        getHolder().addCallback(this); //TODO dont really need this callback since we already check isValid()
+        gameThread = new GameThread(getHolder(), context);
+        holder = getHolder();
+        setFocusable(true);
+       // this.game = game;
+        Log.d("gameloop", "constructorrrr");
 
-    ArrayList<DataPoint> playerTraceData;
-    public int currentLevel;
 
-    Game game;
-
-    public DrawingBoard(Context c, AttributeSet attributeSet) {
-        super(c,attributeSet);
-
-        playerTraceData = new ArrayList<DataPoint>();
-        currentLevel = 1; // this would be inside the "game class"
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mPaint.setDither(true);
         mPaint.setColor(0xFF000000);
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeJoin(Paint.Join.ROUND);
-         mPaint.setStrokeCap(Paint.Cap.ROUND);
+        mPaint.setStrokeCap(Paint.Cap.ROUND);
         mPaint.setStrokeWidth(16);
 
-        textPaint = new Paint();
-        textPaint.setColor(Color.BLACK);
-        textPaint.setTextSize(30);
 
-        mBitmapPaint = new Paint(Paint.DITHER_FLAG);
-
-        // For scaling to different screen sizes
-        WindowManager wm = (WindowManager) c.getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics metrics = new DisplayMetrics();
-        wm.getDefaultDisplay().getMetrics(metrics);
-
-        height = metrics.heightPixels;
-        width = metrics.widthPixels;
-
-        // Scale the canvas for all devices based on the screen dimensions
-        boolean isPortrait = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
-        frameBufferWidth = isPortrait ? 480 : 800;
-        frameBufferHeight = isPortrait ? 800 : 480;
-        scaleX = (float) frameBufferWidth / width;
-        scaleY = (float) frameBufferHeight / height;
-
-        // When we finish drawing a path, we "save" it by just drawing it to this bitmap.
-        mBitmap = Bitmap.createBitmap(frameBufferWidth, frameBufferHeight, Bitmap.Config.ARGB_8888);
-        // This is only path object we use to draw. on touch_up, we save it by drawing it in mBitmap.
-        mPath = new Path();
-        mCanvas = new Canvas(mBitmap);
-        // The array that we will use to draw our trace. It contains time info + datapoints.
-        // This is not the array we use for scoring.
         GameActivity.pathsArray = new ArrayList<CustomPath>();
     }
 
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-        boolean isPortrait = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
-        frameBufferWidth = isPortrait ? 480 : 800;
-        frameBufferHeight = isPortrait ? 800 : 480;
-    }
-
 
     @Override
-    protected void onDraw(Canvas canvas) {
-        Log.d("view", "Drawing on");
-        // TODO for some reason the xml file doesn't compile if we scale the canvas...
-        canvas.scale((float) width / 480.0f, (float) height / 800.0f);
-        canvas.drawColor(0xFAffffff);
-
-        canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
-        canvas.drawPath(mPath, mPaint);
-
-        // Draw the score.
-        if(game != null) {
-            textPaint.setTextSize(game.level.getCombo());
-            canvas.drawText("Score: " + Integer.toString(game.level.getScore()), 20, 120, textPaint);
+    public void surfaceCreated(SurfaceHolder holder) {
+        if(!gameThread.isAlive()) {
+            gameThread.setRunning(true);
+            gameThread.start();
         }
     }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        gameThread.setRunning(false);
+        while(true) {
+            try {
+                gameThread.join();
+                Log.d("gameloop", " ended thread");
+                break;
+            } catch (InterruptedException e) {
+            }
+        }
+    }
+
+    public GameThread getGameThread() {
+        return gameThread;
+    }
+
+
     private float mX, mY;
     private static final float TOUCH_TOLERANCE = 4;
 
@@ -201,7 +166,7 @@ public class DrawingBoard extends View {
                 break;
             case MotionEvent.ACTION_MOVE:
                 game.level.updateScore(new DataPoint(x, y));
-               // GameActivity.score.update(new DataPoint(x, y));
+                // GameActivity.score.update(new DataPoint(x, y));
                 touch_move(x, y);
                 invalidate();
                 break;
@@ -269,4 +234,5 @@ public class DrawingBoard extends View {
     public void setDashEffect() {
         mPaint.setPathEffect(new DashPathEffect(new float[] {30, 15}, 0));
     }
+
 }

@@ -27,9 +27,9 @@ public class Game {
 
     }
 
-    public void setLevel(int levelCount) {
+    public void setLevel(int levelCount, Context ctx) {
         // level, timeLeft, totalTraces, currentTrace are set.
-        level = new Level(levelCount);
+        level = new Level(levelCount, ctx);
     }
 
     // Called before starting the game. It basically loads the level,
@@ -37,16 +37,4 @@ public class Game {
     public void loadGame(Context ctx) {
         level.loadSinglePlayerLevel(ctx);
     }
-
-//    public void update() {
-//        level.update();
-//    }
-
-
-    public Bitmap getFirstBitmap() {
-        return level.traceArray.get(0).getBitmap();
-    }
-
-
-
 }
