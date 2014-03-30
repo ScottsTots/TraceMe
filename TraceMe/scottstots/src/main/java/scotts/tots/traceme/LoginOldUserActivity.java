@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.parse.GetCallback;
@@ -21,8 +20,6 @@ import com.parse.ParseFacebookUtils;
 import com.parse.ParseQuery;
 import com.parse.ParseTwitterUtils;
 import com.parse.ParseUser;
-import com.parse.SignUpCallback;
-
 
 
 /**
@@ -30,7 +27,7 @@ import com.parse.SignUpCallback;
  * Based on the Parse "Anywall App" tutorial
  * https://www.parse.com/anywall
  */
-public class LoginNewUserActivity extends Activity {
+public class LoginOldUserActivity extends Activity {
 
     // UI references.
     private EditText usernameView;
@@ -124,7 +121,7 @@ public class LoginNewUserActivity extends Activity {
 
                 // If there is an error at this point display it and return
                 if (validationError) {
-                    Toast.makeText(LoginNewUserActivity.this,
+                    Toast.makeText(LoginOldUserActivity.this,
                             validationErrorMessage.toString(),
                             Toast.LENGTH_LONG).show();
                     return;
@@ -132,7 +129,7 @@ public class LoginNewUserActivity extends Activity {
 
 
                 // Logging in waiting dialog
-                final ProgressDialog dlg = new ProgressDialog(LoginNewUserActivity.this);
+                final ProgressDialog dlg = new ProgressDialog(LoginOldUserActivity.this);
                 dlg.setTitle("Please wait..");
                 dlg.setMessage("Logging in..");
                 dlg.show();
@@ -145,10 +142,10 @@ public class LoginNewUserActivity extends Activity {
                             public void done(ParseUser parseUser, ParseException e) {
                                 dlg.dismiss();      // Get rid of the loading dlg
                                 if (e != null) {    // Uh oh! Login messed up.
-                                    Toast.makeText(LoginNewUserActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(LoginOldUserActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                                 } else {
                                     // Fire up an intent for the next activity
-                                    Intent i = new Intent(LoginNewUserActivity.this, MainScreen.class);
+                                    Intent i = new Intent(LoginOldUserActivity.this, MainScreen.class);
                                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                     startActivity(i);
                                 }
@@ -205,13 +202,13 @@ public class LoginNewUserActivity extends Activity {
 //                // If there is a validation error, display the error
 //                if (validationError) {
 //                    Log.d("parseNetwork",   "Validation Error!");
-//                    Toast.makeText(LoginNewUserActivity.this, validationErrorMessage.toString(),
+//                    Toast.makeText(LoginOldUserActivity.this, validationErrorMessage.toString(),
 //                            Toast.LENGTH_LONG).show();
 //                    return;
 //                }
 //
 //                // Set up a progress dialog
-//                final ProgressDialog dlg = new ProgressDialog(LoginNewUserActivity.this);
+//                final ProgressDialog dlg = new ProgressDialog(LoginOldUserActivity.this);
 //                dlg.setTitle("Please wait.");
 //                dlg.setMessage("Signing up.  Please wait.");
 //                dlg.show();
@@ -228,11 +225,11 @@ public class LoginNewUserActivity extends Activity {
 //                        dlg.dismiss();
 //                        if (e != null) {
 //                            // Show the error message
-//                            Toast.makeText(LoginNewUserActivity.this, e.getMessage(), Toast.LENGTH_LONG)
+//                            Toast.makeText(LoginOldUserActivity.this, e.getMessage(), Toast.LENGTH_LONG)
 //                                    .show();
 //                        } else {
 //                            // Start an intent for the dispatch activity
-//                            Intent intent = new Intent(LoginNewUserActivity.this, MainScreen.class);
+//                            Intent intent = new Intent(LoginOldUserActivity.this, MainScreen.class);
 //                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
 //                                    | Intent.FLAG_ACTIVITY_NEW_TASK);
 //                            startActivity(intent);
@@ -258,7 +255,7 @@ public class LoginNewUserActivity extends Activity {
     }
 
     public void loginWithFacebook() {
-        final ProgressDialog dlg = new ProgressDialog(LoginNewUserActivity.this);
+        final ProgressDialog dlg = new ProgressDialog(LoginOldUserActivity.this);
         dlg.setTitle("Please wait..");
         dlg.setMessage("Logging in..");
         dlg.show();
@@ -268,30 +265,30 @@ public class LoginNewUserActivity extends Activity {
             @Override
             public void done(ParseUser parseUser, ParseException e) {
                 if (parseUser == null) {
-                    Toast.makeText(LoginNewUserActivity.this,
+                    Toast.makeText(LoginOldUserActivity.this,
                             "Uh oh. The user cancelled the Facebook login.",
                             Toast.LENGTH_LONG
                     ).show();
                     dlg.dismiss();
                 } else if (parseUser.isNew()) {
                     dlg.dismiss();
-                    Toast.makeText(LoginNewUserActivity.this,
+                    Toast.makeText(LoginOldUserActivity.this,
                             "User signed up and logged in through Facebook!",
                             Toast.LENGTH_LONG
                             ).show();
 
-                    Intent intent = new Intent(LoginNewUserActivity.this, MainScreen.class);
+                    Intent intent = new Intent(LoginOldUserActivity.this, MainScreen.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
                             | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                 } else {
                     dlg.dismiss();
-                    Toast.makeText(LoginNewUserActivity.this,
+                    Toast.makeText(LoginOldUserActivity.this,
                             "User logged in through Facebook!",
                             Toast.LENGTH_LONG
                     ).show();
 
-                    Intent intent = new Intent(LoginNewUserActivity.this, MainScreen.class);
+                    Intent intent = new Intent(LoginOldUserActivity.this, MainScreen.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
                             | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
@@ -301,7 +298,7 @@ public class LoginNewUserActivity extends Activity {
     }
 
     public void loginWithTwitter() {
-        final ProgressDialog dlg = new ProgressDialog(LoginNewUserActivity.this);
+        final ProgressDialog dlg = new ProgressDialog(LoginOldUserActivity.this);
         dlg.setTitle("Please wait..");
         dlg.setMessage("Logging in..");
         dlg.show();
@@ -311,30 +308,30 @@ public class LoginNewUserActivity extends Activity {
             @Override
             public void done(ParseUser parseUser, ParseException e) {
                 if (parseUser == null) {
-                    Toast.makeText(LoginNewUserActivity.this,
+                    Toast.makeText(LoginOldUserActivity.this,
                             "Uh oh. The user cancelled the Twitter login.",
                             Toast.LENGTH_LONG
                     ).show();
                     dlg.dismiss();
                 } else if (parseUser.isNew()) {
                     dlg.dismiss();
-                    Toast.makeText(LoginNewUserActivity.this,
+                    Toast.makeText(LoginOldUserActivity.this,
                             "User signed up and logged in through Twitter!",
                             Toast.LENGTH_LONG
                     ).show();
 
-                    Intent intent = new Intent(LoginNewUserActivity.this, MainScreen.class);
+                    Intent intent = new Intent(LoginOldUserActivity.this, MainScreen.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
                             | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                 } else {
                     dlg.dismiss();
-                    Toast.makeText(LoginNewUserActivity.this,
+                    Toast.makeText(LoginOldUserActivity.this,
                             "User logged in through Twitter!",
                             Toast.LENGTH_LONG
                     ).show();
 
-                    Intent intent = new Intent(LoginNewUserActivity.this, MainScreen.class);
+                    Intent intent = new Intent(LoginOldUserActivity.this, MainScreen.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
                             | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);

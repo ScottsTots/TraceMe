@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Let's Get Started..."
+        android:textColor="@color/dark_blue"
+        android:textSize="25sp"
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+
+        <Button
+            android:id="@+id/sign_up_button"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Sign Up"
+            android:padding="17dp"
+            android:background="@drawable/sign_up_selector"
+            android:layout_marginRight="10dp"
+            android:textColor="@color/white"/>
+        <Button
+            android:id="@+id/login_button"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="17dp"
+            android:text="Login"
+            android:background="@drawable/login_selector"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/white"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/facebook_button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Sign in with Facebook"
+        android:padding="17dp"
+        android:textColor="@color/white"
+        android:background="@drawable/facebook_selector"
+        android:layout_marginTop="15dp"/>
+
+    <Button
+        android:id="@+id/twitter_button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Sign in with Twitter"
+        android:padding="17dp"
+        android:textColor="@color/white"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/twitter_selector"/>
+
+</LinearLayout>

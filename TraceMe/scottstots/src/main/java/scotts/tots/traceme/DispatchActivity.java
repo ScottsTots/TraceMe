@@ -33,7 +33,7 @@ public class DispatchActivity extends Activity {
 
         } else {
             // Start and intent for the logged out activity
-            startActivity(new Intent(this, LoginMenuActivity.class));
+            startActivity(new Intent(this, LoginScreen.class));
             finish();
         }
     }
