@@ -34,12 +34,6 @@
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name=".LoginOldUserActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:theme="@style/NoActionBarTheme" >
-        </activity>
-        <activity
             android:name="scotts.tots.traceme.MainScreen"
             android:label="@string/title_activity_main_screen" >
         </activity>
@@ -85,15 +79,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name="scotts.tots.traceme.LoginMenuActivity"
-            android:theme="@style/NoActionBarTheme" >
-        </activity>
-        <activity
-            android:name="scotts.tots.traceme.SignUpActivity"
-            android:theme="@style/NoActionBarTheme" >
- >
         </activity>
         <activity
             android:name="scotts.tots.traceme.LoginScreen"

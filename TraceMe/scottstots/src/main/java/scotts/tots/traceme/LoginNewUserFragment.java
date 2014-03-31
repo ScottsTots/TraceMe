@@ -34,7 +34,7 @@ import scotts.tots.traceme.R;
 
 public class LoginNewUserFragment extends Fragment {// implements View.OnClickListener {
 
-    static final String TAG = "SignUpActivity";
+    static final String TAG = "NewUserFragment";
 
     Button signUpButton;
     EditText usernameField;

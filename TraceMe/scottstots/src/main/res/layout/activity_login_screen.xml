@@ -5,7 +5,7 @@
     android:background="@color/white"
     android:orientation="vertical"
     android:padding="25dp"
-    tools:context="scotts.tots.traceme.LoginMenuActivity">
+    tools:context="scotts.tots.traceme.LoginScreen">
 
     <ImageView
         android:id="@+id/logo"
