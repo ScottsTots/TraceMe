@@ -2,8 +2,11 @@ package helperClasses;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.view.View;
 
 import java.util.ArrayList;
+
+import gamescreens.GameLoop;
 
 /**
  * Created by Aaron on 3/23/2014.
@@ -14,27 +17,21 @@ import java.util.ArrayList;
  * manage player turns, and communicate with the network.
  */
 public class Game {
-    public enum  Status{
-
-    }
     public int levelNum = 1;
-
-    public String gameStatus = "running"; // game ends when this is "end"
-
     public Level level;
     // For singlePlayer
     public Game() {
 
     }
 
-    public void setLevel(int levelCount, Context ctx) {
+    public void setLevel(int levelCount, Context ctx, GameLoop v) {
         // level, timeLeft, totalTraces, currentTrace are set.
-        level = new Level(levelCount, ctx);
+        level = new Level(levelCount, ctx, v);
     }
 
     // Called before starting the game. It basically loads the level,
     // and should be called inside an async task.
     public void loadGame(Context ctx) {
-        level.loadSinglePlayerLevel(ctx);
+        level.loadSinglePlayerLevel();
     }
 }

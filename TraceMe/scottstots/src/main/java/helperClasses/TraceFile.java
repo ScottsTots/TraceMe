@@ -40,6 +40,10 @@ public class TraceFile {
         return mutable;
     }
 
+    public int[] getPixels() {
+        return pixels;
+    }
+
     public ArrayList<DataPoint> getPointArray() {
         return points;
     }
