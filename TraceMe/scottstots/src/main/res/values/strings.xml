@@ -34,4 +34,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_sign_up">SignUpActivity</string>
     <string name="about_the_game">How To Play\n\nSelect new game and begin tracing! It\'s that easy. As you trace a score will be assigned. When done tracing select the Done button and it will be played back to you. Select back after you are done watching.\n\n\nAbout the Game\n\nTrace me is a super fun game that allows you to trace things against your friends. Created by Scott\'s Tots in Mike Scott\'s Mobile Computing at the University of Texas Spring 2014. Scott\'s Tots is a dream team consisting of Matthew Ebeweber, Niko Lazaris and Aaron Villalpando.\n\nTraceMe Github: https://github.com/ScottsTots/TraceMe \n </string>
+    <string name="title_activity_login_screen">LoginScreen</string>
+    <string name="logo">logo</string>
+    <string name="title">title</string>
+
 </resources>

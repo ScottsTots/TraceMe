@@ -1,15 +1,17 @@
 package scotts.tots.traceme;
 
-import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
-import android.util.Log;
 
 import com.parse.LogInCallback;
 import com.parse.ParseException;
@@ -21,24 +23,33 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class LoginMenuActivity extends Activity {
 
-    static final String TAG = "LoginMenuActivity";
+public class LoginMenuFragment extends Fragment {// implements View.OnClickListener {
+
+    static final String TAG = "LoginMenuFragment";
 
     Button signUpButton;
     Button loginButton;
     Button facebookButton;
     Button twitterButton;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login_menu);
+    public LoginMenuFragment() {
+        // Empty constructor required for fragment subclasses
+    }
 
-        signUpButton    = (Button) findViewById(R.id.sign_up_button);
-        loginButton     = (Button) findViewById(R.id.login_in_button);
-        facebookButton  = (Button) findViewById(R.id.facebook_button);
-        twitterButton   = (Button) findViewById(R.id.twitter_button);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_login_menu, container, false);
+        return rootView;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        signUpButton    = (Button) view.findViewById(R.id.sign_up_button);
+        loginButton     = (Button) view.findViewById(R.id.login_button);
+        facebookButton  = (Button) view.findViewById(R.id.facebook_button);
+        twitterButton   = (Button) view.findViewById(R.id.twitter_button);
 
 
         signUpButton.setOnClickListener(buttonListener);
@@ -47,32 +58,11 @@ public class LoginMenuActivity extends Activity {
         twitterButton.setOnClickListener(buttonListener);
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.login_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     private void showMainScreenActivity() {
-        Intent intent = new Intent(this, MainScreen.class);
+        Intent intent = new Intent(getActivity(), MainScreen.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
                 | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        getActivity().startActivity(intent);
     }
 
     View.OnClickListener buttonListener = new View.OnClickListener() {
@@ -85,17 +75,25 @@ public class LoginMenuActivity extends Activity {
                 case R.id.twitter_button:
                     loginWithTwitter();
                     break;
-                case R.id.login_in_button:
-                    Intent lIntent = new Intent(LoginMenuActivity.this, LoginNewUserActivity.class);
-                    lIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    startActivity(lIntent);
-                    overridePendingTransition(R.anim.enter_left, R.anim.exit_left );
+                case R.id.login_button:
+                    Fragment fragment_old_user = new LoginOldUserFragment();
+                    String nTag = fragment_old_user.getTag(); // instance method of a to get a tag
+
+                    FragmentTransaction nFragmentTransaction = getFragmentManager().beginTransaction();
+//                    nFragmentTransaction.setCustomAnimations(R.anim.enter_left, R.anim.exit_left);
+                    nFragmentTransaction.replace(R.id.login_frame, fragment_old_user);
+                    nFragmentTransaction.addToBackStack(nTag);
+                    nFragmentTransaction.commit();
                     break;
                 case R.id.sign_up_button:
-                    Intent sIntent = new Intent(LoginMenuActivity.this, SignUpActivity.class);
-                    sIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    startActivity(sIntent);
-                    overridePendingTransition(R.anim.enter_left, R.anim.exit_left );
+                    Fragment fragment_new_user = new LoginNewUserFragment();
+                    String mTag = fragment_new_user.getTag(); // instance method of a to get a tag
+
+                    FragmentTransaction mFragmentTransaction = getFragmentManager().beginTransaction();
+//                   mFragmentTransaction.setCustomAnimations(R.anim.enter_left, R.anim.exit_left);
+                    mFragmentTransaction.replace(R.id.login_frame, fragment_new_user);
+                    mFragmentTransaction.addToBackStack(mTag);
+                    mFragmentTransaction.commit();
                     break;
             }
         }
@@ -105,7 +103,7 @@ public class LoginMenuActivity extends Activity {
         Log.d(TAG, "Attempting to login w/ Facebook.");
 
         // Start Progress Dialog
-        final ProgressDialog dlg = new ProgressDialog(LoginMenuActivity.this);
+        final ProgressDialog dlg = new ProgressDialog(getActivity());
         dlg.setTitle("Please wait..");
         dlg.setMessage("Attempting to login with Facebook.");
         dlg.show();
@@ -114,24 +112,24 @@ public class LoginMenuActivity extends Activity {
         List<String> permissions = Arrays.asList("basic_info", "user_about_me",
                 "user_relationships", "user_birthday", "user_location");
 
-        ParseFacebookUtils.logIn(permissions, this, new LogInCallback() {
+        ParseFacebookUtils.logIn(permissions, getActivity(), new LogInCallback() {
             @Override
             public void done(ParseUser user, ParseException err) {
                 dlg.dismiss();              // Done with login process
 
                 if (user == null) {         // Error logging in
-                    Toast.makeText(LoginMenuActivity.this,
+                    Toast.makeText(getActivity(),
                             "Unable to log in with Facebook.",
                             Toast.LENGTH_LONG
                     ).show();
                 } else if (user.isNew()) {  // New user
-                    Toast.makeText(LoginMenuActivity.this,
+                    Toast.makeText(getActivity(),
                             "New user created through Facebook.",
                             Toast.LENGTH_LONG
                     ).show();
                     showMainScreenActivity();
                 } else {                    // Existing user
-                    Toast.makeText(LoginMenuActivity.this,
+                    Toast.makeText(getActivity(),
                             "User logged in with Facebook.",
                             Toast.LENGTH_LONG
                     ).show();
@@ -146,30 +144,30 @@ public class LoginMenuActivity extends Activity {
 
 
         // Start progress dialog
-        final ProgressDialog dlg = new ProgressDialog(LoginMenuActivity.this);
+        final ProgressDialog dlg = new ProgressDialog(getActivity());
         dlg.setTitle("Please wait..");
         dlg.setMessage("Attempting to login with Twitter.");
         dlg.show();
 
 
-        ParseTwitterUtils.logIn(this, new LogInCallback() {
+        ParseTwitterUtils.logIn(getActivity(), new LogInCallback() {
             @Override
             public void done(ParseUser parseUser, ParseException e) {
                 dlg.dismiss();                  // Dismiss dialog
 
                 if (parseUser == null) {        // Error logging in
-                    Toast.makeText(LoginMenuActivity.this,
+                    Toast.makeText(getActivity(),
                             "Uh oh. The user cancelled the Twitter login.",
                             Toast.LENGTH_LONG
                     ).show();
                 } else if (parseUser.isNew()) { // New user
-                    Toast.makeText(LoginMenuActivity.this,
+                    Toast.makeText(getActivity(),
                             "New user logged in through Twitter!",
                             Toast.LENGTH_LONG
                     ).show();
                     showMainScreenActivity();
                 } else {                        // Existing user
-                    Toast.makeText(LoginMenuActivity.this,
+                    Toast.makeText(getActivity(),
                             "User logged in through Twitter!",
                             Toast.LENGTH_LONG
                     ).show();
@@ -184,4 +182,5 @@ public class LoginMenuActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
         ParseFacebookUtils.finishAuthentication(requestCode, resultCode, data);
     }
+
 }

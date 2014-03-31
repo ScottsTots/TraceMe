@@ -11,7 +11,7 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <uses-sdk
         android:maxSdkVersion="17"
@@ -32,12 +32,6 @@
         <activity
             android:name="scotts.tots.traceme.DispatchActivity"
             android:label="@string/app_name" >
-        </activity>
-        <activity
-            android:name="scotts.tots.traceme.LoginNewUserActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:theme="@style/NoActionBarTheme" >
         </activity>
         <activity
             android:name="scotts.tots.traceme.MainScreen"
@@ -87,12 +81,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="scotts.tots.traceme.LoginMenuActivity"
-            android:theme="@style/NoActionBarTheme" >
-        </activity>
-        <activity
-            android:name="scotts.tots.traceme.SignUpActivity"
-            android:theme="@style/NoActionBarTheme" > >
+            android:name="scotts.tots.traceme.LoginScreen"
+            android:label="@string/title_activity_login_screen"
+            android:theme="@style/NoActionBarTheme">
         </activity>
     </application>
 

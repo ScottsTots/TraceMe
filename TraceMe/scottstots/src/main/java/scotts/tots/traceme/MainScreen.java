@@ -134,7 +134,7 @@ public class MainScreen extends Activity {
         // If selected the Logout option, simply log them out
         if(choiceStr.equals("Logout")) {
             ParseUser.logOut();
-            Intent intent = new Intent(this, LoginMenuActivity.class);
+            Intent intent = new Intent(this, LoginScreen.class);
             startActivity(intent);
             finish();
         }

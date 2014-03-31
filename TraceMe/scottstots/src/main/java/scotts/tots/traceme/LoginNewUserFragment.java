@@ -1,46 +1,67 @@
 package scotts.tots.traceme;
 
-import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
+import android.view.ViewGroup;
 import android.widget.Button;
-import android.util.Log;
-import android.widget.ProgressBar;
+import android.widget.EditText;
 import android.widget.Toast;
 
+import com.parse.GetCallback;
+import com.parse.LogInCallback;
 import com.parse.ParseException;
+import com.parse.ParseFacebookUtils;
+import com.parse.ParseQuery;
+import com.parse.ParseTwitterUtils;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
+import java.util.Arrays;
+import java.util.List;
 
-public class SignUpActivity extends Activity {
+import scotts.tots.traceme.R;
 
-    static final String TAG = "SignUpActivity";
+
+public class LoginNewUserFragment extends Fragment {// implements View.OnClickListener {
+
+    static final String TAG = "NewUserFragment";
 
     Button signUpButton;
     EditText usernameField;
     EditText passwordField;
     EditText passwordAgainField;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_up);
+    public LoginNewUserFragment() {
+        // Empty constructor required for fragment subclasses
+    }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_login_new_user, container, false);
+        return rootView;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
         // Connect the UI Elements
-        signUpButton = (Button) findViewById(R.id.signUpButton);
-        usernameField = (EditText) findViewById(R.id.signUpUsernameField);
-        passwordField = (EditText) findViewById(R.id.signUpPasswordField);
-        passwordAgainField = (EditText) findViewById(R.id.signUpPasswordAgainField);
+        signUpButton = (Button) view.findViewById(R.id.signUpButton);
+        usernameField = (EditText) view.findViewById(R.id.signUpUsernameField);
+        passwordField = (EditText) view.findViewById(R.id.signUpPasswordField);
+        passwordAgainField = (EditText) view.findViewById(R.id.signUpPasswordAgainField);
 
         // Hook up the Click Listener(s)
         signUpButton.setOnClickListener(buttonListener);
-
     }
 
     View.OnClickListener buttonListener= new View.OnClickListener() {
@@ -96,14 +117,14 @@ public class SignUpActivity extends Activity {
         if (validationErr) {
             Log.d(TAG, "Error attempting to sign up");
 
-            Toast.makeText(SignUpActivity.this,
+            Toast.makeText(getActivity(),
                     validationErrMsg.toString(),
                     Toast.LENGTH_LONG).show();
             return;
         }
 
         // Fields are valid, fire up progress dialog
-        final ProgressDialog dlg = new ProgressDialog(SignUpActivity.this);
+        final ProgressDialog dlg = new ProgressDialog(getActivity());
         dlg.setTitle("Please wait.");
         dlg.setMessage("Attempting to create a new user.");
         dlg.show();
@@ -120,42 +141,22 @@ public class SignUpActivity extends Activity {
                 dlg.dismiss();
 
                 if (e != null) {        // Error signing up, display the error msg
-                    Toast.makeText(SignUpActivity.this,
+                    Toast.makeText(getActivity(),
                             e.getMessage(),
                             Toast.LENGTH_LONG).show();
                 } else {
                     // Login successful, go to the MainScreenActivity
-                    Toast.makeText(SignUpActivity.this,
+                    Toast.makeText(getActivity(),
                             "Sign up successful. Presenting the good stuff.",
                             Toast.LENGTH_LONG).show();
 
-                    Intent i = new Intent(SignUpActivity.this, MainScreen.class);
+                    Intent i = new Intent(getActivity(), MainScreen.class);
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK |
                             Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(i);
                 }
             }
         });
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.sign_up, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
 
@@ -175,5 +176,4 @@ public class SignUpActivity extends Activity {
             return false;
         }
     }
-
 }
