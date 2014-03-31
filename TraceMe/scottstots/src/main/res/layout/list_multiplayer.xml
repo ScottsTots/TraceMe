@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="75dp"
+    android:weightSum="4">
+
+    <TextView
+        android:id="@+id/list_score_username"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:padding="20dp"
+        android:text="TODO: Make Multiplayer Mode"
+        android:textColor="@color/black"
+        android:background="@color/white"
+    />
+
+</LinearLayout>

@@ -40,7 +40,10 @@
             />
 
         <ListView
-            android:id="@+id/listView"
+            android:id="@+id/challengesListView"
+            android:layout_gravity="center"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
@@ -73,7 +76,10 @@
             />
 
         <ListView
-            android:id="@+id/listView2"
+            android:id="@+id/currentGamesListView"
+            android:layout_gravity="center"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             />
@@ -107,7 +113,10 @@
             />
 
         <ListView
-            android:id="@+id/listView3"
+            android:id="@+id/pastGamesListView"
+            android:layout_gravity="center"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             />
