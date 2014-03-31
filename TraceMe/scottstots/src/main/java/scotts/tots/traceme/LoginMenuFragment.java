@@ -2,6 +2,7 @@ package scotts.tots.traceme;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -76,27 +77,23 @@ public class LoginMenuFragment extends Fragment {// implements View.OnClickListe
                     break;
                 case R.id.login_button:
                     Fragment fragment_old_user = new LoginOldUserFragment();
+                    String nTag = fragment_old_user.getTag(); // instance method of a to get a tag
 
-                    Bundle args = new Bundle();
-
-                    args.putInt("Foo", 0);
-                    fragment_old_user.setArguments(args);
-
-                    FragmentManager fragmentManager_old = getFragmentManager();
-                    assert fragmentManager_old != null;
-                    fragmentManager_old.beginTransaction().replace(R.id.login_frame, fragment_old_user).commit();
-
+                    FragmentTransaction nFragmentTransaction = getFragmentManager().beginTransaction();
+//                    nFragmentTransaction.setCustomAnimations(R.anim.enter_left, R.anim.exit_left);
+                    nFragmentTransaction.replace(R.id.login_frame, fragment_old_user);
+                    nFragmentTransaction.addToBackStack(nTag);
+                    nFragmentTransaction.commit();
                     break;
                 case R.id.sign_up_button:
                     Fragment fragment_new_user = new LoginNewUserFragment();
+                    String mTag = fragment_new_user.getTag(); // instance method of a to get a tag
 
-                    Bundle args_2 = new Bundle();
-
-                    args_2.putInt("Foo", 0);
-                    fragment_new_user.setArguments(args_2);
-                    FragmentManager fragmentManager_new = getFragmentManager();
-                    assert fragmentManager_new != null;
-                    fragmentManager_new.beginTransaction().replace(R.id.login_frame, fragment_new_user).commit();
+                    FragmentTransaction mFragmentTransaction = getFragmentManager().beginTransaction();
+//                   mFragmentTransaction.setCustomAnimations(R.anim.enter_left, R.anim.exit_left);
+                    mFragmentTransaction.replace(R.id.login_frame, fragment_new_user);
+                    mFragmentTransaction.addToBackStack(mTag);
+                    mFragmentTransaction.commit();
                     break;
             }
         }
