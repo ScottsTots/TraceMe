@@ -80,7 +80,8 @@ public class LoginMenuFragment extends Fragment {// implements View.OnClickListe
                     String nTag = fragment_old_user.getTag(); // instance method of a to get a tag
 
                     FragmentTransaction nFragmentTransaction = getFragmentManager().beginTransaction();
-//                    nFragmentTransaction.setCustomAnimations(R.anim.enter_left, R.anim.exit_left);
+
+                    nFragmentTransaction.setCustomAnimations(R.anim.slide_in_left,R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left);
                     nFragmentTransaction.replace(R.id.login_frame, fragment_old_user);
                     nFragmentTransaction.addToBackStack(nTag);
                     nFragmentTransaction.commit();
@@ -90,7 +91,8 @@ public class LoginMenuFragment extends Fragment {// implements View.OnClickListe
                     String mTag = fragment_new_user.getTag(); // instance method of a to get a tag
 
                     FragmentTransaction mFragmentTransaction = getFragmentManager().beginTransaction();
-//                   mFragmentTransaction.setCustomAnimations(R.anim.enter_left, R.anim.exit_left);
+
+                    mFragmentTransaction.setCustomAnimations(R.anim.slide_in_left,R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left);
                     mFragmentTransaction.replace(R.id.login_frame, fragment_new_user);
                     mFragmentTransaction.addToBackStack(mTag);
                     mFragmentTransaction.commit();

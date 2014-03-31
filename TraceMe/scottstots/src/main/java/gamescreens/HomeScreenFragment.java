@@ -21,13 +21,13 @@ import scotts.tots.traceme.R;
  * Fragment that appears in the "content_frame". This fragment shows the game lobbies, and
  * game activity.
  */
-public class HomeScreenFrag extends Fragment {// implements View.OnClickListener {
+public class HomeScreenFragment extends Fragment {// implements View.OnClickListener {
     public static final String ARG_PLANET_NUMBER = "planet_number";
 
     Button logOutButton;
     Button newGameButton;
     android.app.Dialog dlog;
-    public HomeScreenFrag() {
+    public HomeScreenFragment() {
         // Empty constructor required for fragment subclasses
     }
 

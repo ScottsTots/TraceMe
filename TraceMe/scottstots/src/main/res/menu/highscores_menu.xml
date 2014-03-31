@@ -1,0 +1,13 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="scotts.tots.traceme.AboutActivity" >
+    
+    <item android:id="@+id/highscore_single_player"
+        android:title="Single Player"
+        android:orderInCategory="100"
+        android:showAsAction="never" />
+    <item android:id="@+id/highscore_multiplayer"
+        android:title="Multiplayer"
+        android:orderInCategory="100"
+        android:showAsAction="never" />
+</menu>

@@ -3,7 +3,6 @@ package scotts.tots.traceme;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.SearchManager;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -17,12 +16,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.parse.ParseUser;
 
 import gamescreens.AboutFrag;
-import gamescreens.HomeScreenFrag;
+import gamescreens.HomeScreenFragment;
 import gamescreens.HighScoreFragment;
 
 public class MainScreen extends Activity {
@@ -145,12 +143,12 @@ public class MainScreen extends Activity {
 
 
             // update the main content by replacing fragments
-            Fragment fragment = new HomeScreenFrag();
+            Fragment fragment = new HomeScreenFragment();
             Bundle args = new Bundle();
 
             // We send an int containing which item on the list was pressed.
             // The "planet_number" stuff is from the tutorial.
-            args.putInt(HomeScreenFrag.ARG_PLANET_NUMBER, position);
+            args.putInt(HomeScreenFragment.ARG_PLANET_NUMBER, position);
             fragment.setArguments(args);
 
             // We replace the fragment
