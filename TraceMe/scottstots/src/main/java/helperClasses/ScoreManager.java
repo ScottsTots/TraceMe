@@ -34,6 +34,9 @@ public class ScoreManager {
     int errors = 0;
     ArrayList<DataPoint> traceData;
 
+    // Points for each individual trace.
+    ArrayList<Integer> tracePoints;
+
     Handler handler;
     Message msg;
 
@@ -42,7 +45,7 @@ public class ScoreManager {
         totalScore = 0;
         // sorts by x
         Collections.sort(traceData);
-
+        tracePoints = new ArrayList<Integer>();
     }
 
     public void update(DataPoint touchPoint) {
@@ -51,7 +54,7 @@ public class ScoreManager {
         float distance = 0.0f;
         DataPoint p;
         int offset = 0;
-        Log.d("score", "tracesize " + traceData.size());
+        //Log.d("score", "tracesize " + traceData.size());
 
 
         // Naive solution for scoring

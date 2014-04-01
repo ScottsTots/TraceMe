@@ -43,6 +43,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import helperClasses.CustomPath;
 import helperClasses.DataPoint;
@@ -78,6 +80,12 @@ public class GameActivity extends Activity {
     public static GameLoop gameLoop;
     Button playButton;
     ViewFlipper flipper;
+    private final int COUNTDOWN_TIME = 2;
+    private int time_left;
+    private TextView countdownTimerView;
+
+    private Timer myTimer;
+    private long mStartTime;
 
     ProgressDialog loadingDialog;
 
@@ -103,6 +111,7 @@ public class GameActivity extends Activity {
 
 
         // UI
+        countdownTimerView = (TextView) findViewById(R.id.countdown_timer);
         flipper = (ViewFlipper) findViewById(R.id.viewFlipper);
         // Switch into the viewingBoard using the viewFlipper if we press "play"
         playButton = (Button) findViewById(R.id.playButton);
@@ -110,7 +119,7 @@ public class GameActivity extends Activity {
             @Override
             public void onClick(View view) {
                 viewingBoard = (ViewingBoard) findViewById(R.id.view);
-                flipper.setDisplayedChild(1); //gameloop is 0, viewingBoard is 1
+                flipper.setDisplayedChild(2); //gameloop is 0, viewingBoard is 1
                 playButton.setVisibility(View.INVISIBLE);
                 viewingBoard.startDrawing(); // this updates our viewingBoard to the current data.
                 saveHighScore();
@@ -144,20 +153,10 @@ public class GameActivity extends Activity {
         @Override
         protected void onPostExecute(Void param) {
 
+
             loadingDialog.dismiss();
-
-            new CountDownTimer(3000, 1000) {
-
-                public void onTick(long millisUntilFinished) {
-                    Log.d("gameloop", "seconds remaining: " + millisUntilFinished / 1000);
-                }
-
-                public void onFinish() {
-                    gameLoop.startLoop();
-                }
-            }.start();
-
-
+            startCountDownTimer();
+//            gameLoop.startLoop();
 
         }
 
@@ -165,6 +164,20 @@ public class GameActivity extends Activity {
         protected void onProgressUpdate(Integer... progress) {
             //
             loadingDialog.setProgress(progress[0]);
+        }
+
+        private void startCountDownTimer(){
+            mStartTime = System.currentTimeMillis();
+
+
+            myTimer = new Timer();
+            myTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    TimerMethod();
+                }
+
+            }, 0, 1000);
         }
     }
 
@@ -218,4 +231,40 @@ public class GameActivity extends Activity {
         newHighScore.put("score", newScore);
         newHighScore.saveInBackground();
     }
+
+    private void TimerMethod()
+    {
+        //This method is called directly by the timer
+        //and runs in the same thread as the timer.
+        long millis = System.currentTimeMillis() - mStartTime;
+        int seconds = (int) (millis / 1000);
+
+        time_left = COUNTDOWN_TIME - seconds;
+        if (time_left < 0){
+            gameLoop.startLoop();
+        }
+
+        //We call the method that will work with the UI
+        //through the runOnUiThread method.
+        this.runOnUiThread(Timer_Tick);
+
+    }
+
+    private Runnable Timer_Tick = new Runnable() {
+        public void run() {
+
+            //This method runs in the same thread as the UI.
+            //Do something to the UI thread here
+            if (time_left < 0){
+                flipper.setDisplayedChild(1);
+                myTimer.cancel();
+            }
+            else if (time_left == 0){
+                countdownTimerView.setText("GO!");
+            }
+            else{
+                countdownTimerView.setText("" + time_left);
+            }
+        }
+    };
 }

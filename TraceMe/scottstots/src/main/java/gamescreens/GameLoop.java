@@ -42,9 +42,11 @@ public class GameLoop extends SurfaceView implements Runnable {
     public static float FPS = 60.0f; // how fast we want the game to run.
     public GameLoop(Context context, AttributeSet attrs)  {
         super(context, attrs);
-        holder = getHolder();
-        setFocusable(true);
-        renderThread = new Thread(this);
+        if(!isInEditMode()) {
+            holder = getHolder();
+            setFocusable(true);
+            renderThread = new Thread(this);
+        }
     }
 
 

@@ -73,13 +73,33 @@ public class Level {
         setUpDrawing();
         traceArray = new ArrayList<TraceFile>();
         traceBitmaps = new ArrayList<Bitmap>();
-        timer.start();
+
+    }
+
+    String message;
+    int lastScore;
+    public void updateMessage() {
+        lastScore = scoreManager.getScore() - lastScore;
+        if(lastScore > 50) {
+            message = "GREAT";
+        } else if (lastScore > 40) {
+            message = "NOICE";
+        } else if (lastScore > 30) {
+            message = "Booooo";
+        } else {
+            message = "wow..";
+        }
     }
 
     public void getNextTrace() {
-        currentTrace++;
+        if(currentTrace + 1 <= 3)
+            currentTrace++;
         // Update the scoremanager with the new set of datapoints to score from.
         scoreManager.traceData = traceArray.get(currentTrace).points;
+
+        // Removed saved paths.
+        pathsBitmap.eraseColor(Color.TRANSPARENT);
+        updateMessage();
     }
 
     public void updateScore(DataPoint p) {
@@ -96,9 +116,16 @@ public class Level {
 
     boolean isTouched = false;
     boolean isTouchUp = false;
+    boolean startTimer = true;
     /**************************************** UPDATING ************************************/
     // First we update game logic...
     public void update(float deltaTime) {
+        // Start the game timer if it's the first update.
+        if(startTimer) {
+            timer.start();
+            startTimer = false;
+        }
+
         if(!isTouchUp) {   //if is touched and timer < 2.
 
         }
@@ -114,15 +141,18 @@ public class Level {
         mCanvas.drawColor(Color.WHITE);
 
 
-        if(timer.getTime() < 3)
-        {
-            mCanvas.drawText("GREAAAT!", 20, 200, textPaint);
+        if(timer.getTime() < 2) {// possibly send a message to UI on touchup instead? or draw it here?
+
+            mCanvas.drawText(message, 20, 200, textPaint);
         }
 
         traceBitmap = traceBitmaps.get(currentTrace);
         // Draw the current trace image
         if(traceBitmap != null) {
             mCanvas.drawBitmap(traceBitmap, 0, 0, mPaint);
+        }
+        else {
+            Log.d("gameloop", "trace is null!");
         }
 
         //TODO try drawing pixels but set alpha to false
@@ -151,6 +181,7 @@ public class Level {
             }
         if(numTracesLoaded == 1)
             scoreManager = new ScoreManager(traceArray.get(0));
+        numTracesLoaded++;
     }
 
     Gson gson = new Gson();
@@ -291,8 +322,8 @@ public class Level {
         // kill this so we don't double draw
         mPath.reset();
 
-
         timer.resetTime();
+        getNextTrace();
     }
 
     public Bitmap getFrameBuffer() {

@@ -10,6 +10,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:id="@+id/countdown_timer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textSize="180sp"
+            android:textColor="@color/black"/>
+
         <gamescreens.GameLoop
             android:id="@+id/surfaceView"
             android:layout_width="match_parent"
