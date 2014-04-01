@@ -92,6 +92,7 @@ public class GameLoop extends SurfaceView implements Runnable {
             if (!holder.getSurface().isValid() || level == null)
                 continue;
             //   Log.d("gameloop", " valid!..");
+
             now = System.nanoTime();
             delta += (now - lastTime) / ns;
             lastTime = now;

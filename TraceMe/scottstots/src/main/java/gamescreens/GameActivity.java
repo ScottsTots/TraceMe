@@ -1,11 +1,13 @@
 package gamescreens;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.media.MediaScannerConnection;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -88,6 +90,8 @@ public class GameActivity extends Activity {
     private long mStartTime;
 
     ProgressDialog loadingDialog;
+    static Dialog endGameDlog;
+    static TextView scoreText;
 
     public static Level level;
     Context ctx;
@@ -99,6 +103,12 @@ public class GameActivity extends Activity {
         setContentView(R.layout.game_activity);
         ctx = this;
         pathsArray = new ArrayList<CustomPath>(); //used to play animation
+
+        endGameDlog = new android.app.Dialog(this,
+                android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth);
+        endGameDlog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        endGameDlog.setContentView(R.layout.dialog_level_end);
+        scoreText = (TextView) endGameDlog.findViewById(R.id.scoreTextView);
 
         // Load the game
         loadingDialog = new ProgressDialog(GameActivity.this);
@@ -141,9 +151,9 @@ public class GameActivity extends Activity {
                 level = new Level(1, ctx, gameLoop);
 
                 // Loads each trace
-                for(int i = 1; i <= 3; i++) {
-                    level.loadSinglePlayerLevel();
-                    publishProgress((int) ((i / 3.0) * 100));
+                for(int i = 0; i < level.TOTAL_TRACES; i++) {
+                    level.loadTrace();
+                    publishProgress((int) (((i+1) / (double)level.TOTAL_TRACES) * 100));
                 }
                 gameLoop.setLevel(level);
             }
@@ -152,23 +162,17 @@ public class GameActivity extends Activity {
 
         @Override
         protected void onPostExecute(Void param) {
-
-
             loadingDialog.dismiss();
             startCountDownTimer();
-//            gameLoop.startLoop();
-
         }
 
         @Override
         protected void onProgressUpdate(Integer... progress) {
-            //
             loadingDialog.setProgress(progress[0]);
         }
 
         private void startCountDownTimer(){
             mStartTime = System.currentTimeMillis();
-
 
             myTimer = new Timer();
             myTimer.schedule(new TimerTask() {
@@ -216,7 +220,6 @@ public class GameActivity extends Activity {
         } else {                // Regularly signed in user
             String username = currentUser.getUsername();
             int newScore    = level.getScore();
-
             saveHighScoreToParse(username, newScore);
         }
     }
@@ -232,8 +235,7 @@ public class GameActivity extends Activity {
         newHighScore.saveInBackground();
     }
 
-    private void TimerMethod()
-    {
+    private void TimerMethod() {
         //This method is called directly by the timer
         //and runs in the same thread as the timer.
         long millis = System.currentTimeMillis() - mStartTime;
@@ -252,7 +254,6 @@ public class GameActivity extends Activity {
 
     private Runnable Timer_Tick = new Runnable() {
         public void run() {
-
             //This method runs in the same thread as the UI.
             //Do something to the UI thread here
             if (time_left < 0){
@@ -267,4 +268,11 @@ public class GameActivity extends Activity {
             }
         }
     };
+
+    // Called by the level object when there's no more traces.
+    public static void endGame() {
+        gameLoop.running = false;
+        scoreText.setText(Integer.toString(level.getScore()));
+        endGameDlog.show();
+    }
 }

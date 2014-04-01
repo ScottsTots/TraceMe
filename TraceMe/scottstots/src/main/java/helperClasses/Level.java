@@ -36,6 +36,7 @@ public class Level {
     Bitmap framebuffer;
     public static final int STATE_RUNNING = 1;
     public static final int STATE_PAUSED = 0;
+    public static boolean GAME_OVER = false;
 
     ArrayList<String> drawings;
     ArrayList<TraceFile> traceArray;
@@ -45,7 +46,7 @@ public class Level {
 
     Bitmap traceBitmap;
 
-    public int totalTraces = 6;
+    public static int TOTAL_TRACES = 3;
     public int currentTrace = 0;
     public int timeLeft = 15;
 
@@ -73,18 +74,24 @@ public class Level {
         setUpDrawing();
         traceArray = new ArrayList<TraceFile>();
         traceBitmaps = new ArrayList<Bitmap>();
-
+        TOTAL_TRACES = 4;
     }
 
     String message;
-    int lastScore;
-    public void updateMessage() {
+    double lastScore;
+    int currentPossiblePoints;
+    public void updateMessage(int possibleMaxPoints) {
+        // Actual points gotten.
         lastScore = scoreManager.getScore() - lastScore;
-        if(lastScore > 50) {
+
+        double correct = (lastScore / possibleMaxPoints) * 100;
+        Log.d("gameloop", "scoring:  max points " + possibleMaxPoints + "current " + lastScore + " correct: " + correct);
+        // 0 sucks, 100 perfect
+        if(correct > 90) {
             message = "GREAT";
-        } else if (lastScore > 40) {
+        } else if (correct> 70) {
             message = "NOICE";
-        } else if (lastScore > 30) {
+        } else if (correct > 50) {
             message = "Booooo";
         } else {
             message = "wow..";
@@ -92,14 +99,22 @@ public class Level {
     }
 
     public void getNextTrace() {
-        if(currentTrace + 1 <= 3)
+        updateMessage(scoreManager.traceData.size());
+        if(currentTrace + 1 < TOTAL_TRACES) {
             currentTrace++;
-        // Update the scoremanager with the new set of datapoints to score from.
-        scoreManager.traceData = traceArray.get(currentTrace).points;
+            // Update the scoremanager with the new set of datapoints to score from.
+            scoreManager.traceData = traceArray.get(currentTrace).points;
 
-        // Removed saved paths.
-        pathsBitmap.eraseColor(Color.TRANSPARENT);
-        updateMessage();
+            // Removed saved paths.
+            pathsBitmap.eraseColor(Color.TRANSPARENT);
+        }
+
+        // Game over
+        else {
+            GameActivity.endGame();
+        }
+
+
     }
 
     public void updateScore(DataPoint p) {
@@ -118,31 +133,21 @@ public class Level {
     boolean isTouchUp = false;
     boolean startTimer = true;
     /**************************************** UPDATING ************************************/
-    // First we update game logic...
     public void update(float deltaTime) {
         // Start the game timer if it's the first update.
         if(startTimer) {
             timer.start();
             startTimer = false;
         }
-
-        if(!isTouchUp) {   //if is touched and timer < 2.
-
-        }
-
-
-
-
     }
-
 
     // Then we paint stuff on the framebuffer
     public void paint() {
         mCanvas.drawColor(Color.WHITE);
 
 
-        if(timer.getTime() < 2) {// possibly send a message to UI on touchup instead? or draw it here?
-
+        // If the user "touched up", draw congratulatory text for 2 seconds
+        if(timer.getTime() < 2) {
             mCanvas.drawText(message, 20, 200, textPaint);
         }
 
@@ -150,6 +155,7 @@ public class Level {
         // Draw the current trace image
         if(traceBitmap != null) {
             mCanvas.drawBitmap(traceBitmap, 0, 0, mPaint);
+            //drawTrace(scoreManager.traceData);
         }
         else {
             Log.d("gameloop", "trace is null!");
@@ -162,13 +168,18 @@ public class Level {
         // draw current Path
         mCanvas.drawPath(mPath, mPaint);
         mCanvas.drawText("Score: " + Integer.toString(getScore()), 20, 120, textPaint);
-        mCanvas.drawText("yay", 300, 700, paint);
     }
+
+    public void drawGameOver() {
+
+    }
+
+
 
     /***************************** LOADING *****************************************/
     int numTracesLoaded = 1; //starts at 1
     // Loads level from internal storage
-    public void loadSinglePlayerLevel() {
+    public void loadTrace() {
         Log.d("gameloop", "loading files");
             TraceFile trace = getTraceFile(ctx, "trace" + numTracesLoaded + ".txt");
             if (trace != null) {

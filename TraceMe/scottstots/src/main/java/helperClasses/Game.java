@@ -32,6 +32,6 @@ public class Game {
     // Called before starting the game. It basically loads the level,
     // and should be called inside an async task.
     public void loadGame(Context ctx) {
-        level.loadSinglePlayerLevel();
+        level.loadTrace();
     }
 }

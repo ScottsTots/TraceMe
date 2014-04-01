@@ -19,13 +19,13 @@ public class ScoreManager {
 
     // number of points to sample
     int RADIUS = 4;
-    // minimum distance needed between two points to increaes score
-    int DISTANCE = 30;
+    // minimum distance needed between two points to increase score
+    int DISTANCE = 10;
     // default score text size
     int TEXT_SIZE = 30;
     int MAX_TEXT_SIZE = 68;
 
-    // more combos means textsize increases, looks kewl.
+    // more combos means textsize increases, looks kinda kewl.
     int combo = TEXT_SIZE;
 
     // error wiggle room (we don't want to cancel out all combo score with just one error)
@@ -34,8 +34,6 @@ public class ScoreManager {
     int errors = 0;
     ArrayList<DataPoint> traceData;
 
-    // Points for each individual trace.
-    ArrayList<Integer> tracePoints;
 
     Handler handler;
     Message msg;
@@ -44,8 +42,12 @@ public class ScoreManager {
         traceData = file.getPointArray();
         totalScore = 0;
         // sorts by x
-        Collections.sort(traceData);
-        tracePoints = new ArrayList<Integer>();
+     //   Collections.sort(traceData);
+    }
+
+    public void setData(ArrayList<DataPoint> data) {
+        traceData = data;
+        Collections.sort(data);
     }
 
     public void update(DataPoint touchPoint) {
@@ -58,25 +60,20 @@ public class ScoreManager {
 
 
         // Naive solution for scoring
-        /*
-        Log.d("score", "touch " + touchPoint.x + " " + touchPoint.y);
         for (int i = 0; i < traceData.size(); i++) {
             p = traceData.get(i);
            // Log.d("score", "data " + p.x + " " + p.y);
-            if (!traceData.get(i).touched && distance(touchPoint, traceData.get(i)) < DISTANCE) {
+            if (!(traceData.get(i).touched) && distance(touchPoint, traceData.get(i)) < DISTANCE) {
                 totalScore++;
                 combo++;
-             //   Log.d("score", "score          " + totalScore);
                 // invalidate point so we don't count it again.
-                traceData.get(index).touched = true;
-            //    handler.sendMessage(msg);
+                traceData.get(i).touched = true;
             }
             else {
                 combo = 12;
             }
-
         }
-*/
+/*
         // Searching a small subset of the array.
         // search range is from original x coordinate +- RADIUS
         for (int i = 0; i < RADIUS; i++) {
@@ -131,6 +128,7 @@ public class ScoreManager {
                 }
             }
         }
+        */
     }
 
     public double distance(DataPoint a, DataPoint b) {
