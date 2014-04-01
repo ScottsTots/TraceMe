@@ -9,6 +9,7 @@ import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PathMeasure;
+import android.os.CountDownTimer;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -21,6 +22,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Timer;
 
 import gamescreens.GameActivity;
 import gamescreens.GameLoop;
@@ -50,6 +52,8 @@ public class Level {
     Context ctx;
     Paint paint;
     GameLoop view;
+    boolean countDown = true;
+    CustomTimer timer = new CustomTimer(); // Our 3 second countdown timer.
     /**
      *
      * @param levelNum the level
@@ -69,6 +73,7 @@ public class Level {
         setUpDrawing();
         traceArray = new ArrayList<TraceFile>();
         traceBitmaps = new ArrayList<Bitmap>();
+        timer.start();
     }
 
     public void getNextTrace() {
@@ -89,15 +94,31 @@ public class Level {
         return scoreManager.getCombo();
     }
 
+    boolean isTouched = false;
+    boolean isTouchUp = false;
     /**************************************** UPDATING ************************************/
     // First we update game logic...
     public void update(float deltaTime) {
+        if(!isTouchUp) {   //if is touched and timer < 2.
+
+        }
+
+
+
 
     }
+
 
     // Then we paint stuff on the framebuffer
     public void paint() {
         mCanvas.drawColor(Color.WHITE);
+
+
+        if(timer.getTime() < 3)
+        {
+            mCanvas.drawText("GREAAAT!", 20, 200, textPaint);
+        }
+
         traceBitmap = traceBitmaps.get(currentTrace);
         // Draw the current trace image
         if(traceBitmap != null) {
@@ -115,11 +136,10 @@ public class Level {
     }
 
     /***************************** LOADING *****************************************/
-    int numTracesLoaded = 1;
+    int numTracesLoaded = 1; //starts at 1
     // Loads level from internal storage
     public void loadSinglePlayerLevel() {
         Log.d("gameloop", "loading files");
-
             TraceFile trace = getTraceFile(ctx, "trace" + numTracesLoaded + ".txt");
             if (trace != null) {
                 traceArray.add(trace);
@@ -219,13 +239,16 @@ public class Level {
                     case MotionEvent.ACTION_DOWN:
                         updateScore(new DataPoint(x, y));
                         touch_start(x, y);
+                        isTouched = true;
                         break;
                     case MotionEvent.ACTION_MOVE:
                         updateScore(new DataPoint(x, y));
                         touch_move(x, y);
+                        isTouched = true;
                         break;
                     case MotionEvent.ACTION_UP:
                         touch_up();
+                        isTouched = false;
                         break;
                 }
                 return true;
@@ -260,12 +283,16 @@ public class Level {
         }
     }
 
+
     private void touch_up() {
         mPath.lineTo(mX, mY);
         // commit the path to a separate framebuffer that is in mCanvas2
         mCanvas2.drawPath(mPath, mPaint);
         // kill this so we don't double draw
         mPath.reset();
+
+
+        timer.resetTime();
     }
 
     public Bitmap getFrameBuffer() {

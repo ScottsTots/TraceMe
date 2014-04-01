@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.media.MediaScannerConnection;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
@@ -142,8 +143,22 @@ public class GameActivity extends Activity {
 
         @Override
         protected void onPostExecute(Void param) {
-            gameLoop.startLoop();
+
             loadingDialog.dismiss();
+
+            new CountDownTimer(3000, 1000) {
+
+                public void onTick(long millisUntilFinished) {
+                    Log.d("gameloop", "seconds remaining: " + millisUntilFinished / 1000);
+                }
+
+                public void onFinish() {
+                    gameLoop.startLoop();
+                }
+            }.start();
+
+
+
         }
 
         @Override
