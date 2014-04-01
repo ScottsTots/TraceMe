@@ -3,18 +3,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="fill_parent"
-    android:layout_height="75dp"
-    android:weightSum="4">
+    android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/list_score_username"
+        android:id="@+id/list_multiplayer"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textSize="20sp"
         android:padding="20dp"
         android:text="TODO: Make Multiplayer Mode"
         android:textColor="@color/black"
-        android:background="@color/white"
+        android:background="@drawable/multiplayer_list_item_bg"
     />
 
 </LinearLayout>

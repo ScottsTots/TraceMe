@@ -9,11 +9,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -111,21 +113,24 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
 
     private void setupListViews(){
         challengesList = new ArrayList<String>();
-        challengesList.add("TODO: Implement with Multiplayer");
+        challengesList.add("Example 1");
+        challengesList.add("Example 2");
+        challengesList.add("Example 3");
         challengesAdapter = new CustomMultiplayerListAdapter(getActivity().getApplicationContext(),
                 R.layout.list_multiplayer,challengesList);
         challengesListView.setAdapter(challengesAdapter);
         challengesAdapter.notifyDataSetChanged();
 
         currentGamesList = new ArrayList<String>();
-        currentGamesList.add("TODO: Implement with Multiplayer");
+        currentGamesList.add("Example 1");
+        currentGamesList.add("Example 2");
         currentGamesAdapter = new CustomMultiplayerListAdapter(getActivity().getApplicationContext(),
                 R.layout.list_multiplayer,currentGamesList);
         currentGamesListView.setAdapter(currentGamesAdapter);
         currentGamesAdapter.notifyDataSetChanged();
 
         pastGamesList = new ArrayList<String>();
-        pastGamesList.add("TODO: Implement with Multiplayer");
+        pastGamesList.add("Example 1");
         pastGamesAdapter = new CustomMultiplayerListAdapter(getActivity().getApplicationContext(),
                 R.layout.list_multiplayer,pastGamesList);
         pastGamesListView.setAdapter(pastGamesAdapter);
@@ -186,6 +191,17 @@ class CustomMultiplayerListAdapter extends ArrayAdapter<String> {
             LayoutInflater inflater = (LayoutInflater) mContext.getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(textViewResourceId, parent, false);
         }
+
+        TextView item = (TextView) convertView.findViewById(R.id.list_multiplayer);
+        item.setText(data.get(position));
+
+//        // Gets linearlayout
+//        LinearLayout layout = (LinearLayout)item.getParent();
+//        // Gets the layout params that will allow you to resize the layout
+//        ViewGroup.LayoutParams params = layout.getLayoutParams();
+//        // Changes the height and width to the specified *pixels*
+//        int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, mContext.getResources().getDisplayMetrics());
+//        params.height = height*data.size();
 
         return convertView;
     }
