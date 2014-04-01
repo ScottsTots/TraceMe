@@ -56,45 +56,47 @@ public class ViewingBoard extends View {
 
     public ViewingBoard(Context c, AttributeSet attrs) {
         super(c, attrs);
-        paths = GameActivity.pathsArray;
-        currentPath = new CustomPath(0, 0);
-        Log.d("view", "ViewingBoard start");
-        mPath = new Path();
-        mBitmapPaint = new Paint(Paint.DITHER_FLAG);
-        mPaint = new Paint();
-        mPaint.setAntiAlias(true);
-        mPaint.setDither(true);
-        mPaint.setColor(0xFF000000);
-        mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setStrokeJoin(Paint.Join.ROUND);
-        mPaint.setStrokeCap(Paint.Cap.ROUND);
-        mPaint.setStrokeWidth(12);
+        if(!isInEditMode()) {
+            paths = GameActivity.pathsArray;
+            currentPath = new CustomPath(0, 0);
+            Log.d("view", "ViewingBoard start");
+            mPath = new Path();
+            mBitmapPaint = new Paint(Paint.DITHER_FLAG);
+            mPaint = new Paint();
+            mPaint.setAntiAlias(true);
+            mPaint.setDither(true);
+            mPaint.setColor(0xFF000000);
+            mPaint.setStyle(Paint.Style.STROKE);
+            mPaint.setStrokeJoin(Paint.Join.ROUND);
+            mPaint.setStrokeCap(Paint.Cap.ROUND);
+            mPaint.setStrokeWidth(12);
 
-        mBitmapPaint = new Paint(Paint.DITHER_FLAG);
+            mBitmapPaint = new Paint(Paint.DITHER_FLAG);
 
-        mPath = new Path();
+            mPath = new Path();
 
-        // Scale window for all devices
-        WindowManager wm = (WindowManager) c.getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics metrics = new DisplayMetrics();
-        wm.getDefaultDisplay().getMetrics(metrics);
+            // Scale window for all devices
+            WindowManager wm = (WindowManager) c.getSystemService(Context.WINDOW_SERVICE);
+            DisplayMetrics metrics = new DisplayMetrics();
+            wm.getDefaultDisplay().getMetrics(metrics);
 
-        height = metrics.heightPixels;
-        width = metrics.widthPixels;
+            height = metrics.heightPixels;
+            width = metrics.widthPixels;
 
-        // Scale the window size
-        boolean isPortrait = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
-        frameBufferWidth = isPortrait ? 480 : 800;
-        frameBufferHeight = isPortrait ? 800 : 480;
-        scaleX = (float) frameBufferWidth
-                / width;
-        scaleY = (float) frameBufferHeight
-                / height;
+            // Scale the window size
+            boolean isPortrait = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
+            frameBufferWidth = isPortrait ? 480 : 800;
+            frameBufferHeight = isPortrait ? 800 : 480;
+            scaleX = (float) frameBufferWidth
+                    / width;
+            scaleY = (float) frameBufferHeight
+                    / height;
 
-        currPathNumber = 0;
-        previous = System.currentTimeMillis();
-        mBitmap = Bitmap.createBitmap(frameBufferWidth, frameBufferHeight, Bitmap.Config.ARGB_8888);
-        mCanvas = new Canvas(mBitmap);
+            currPathNumber = 0;
+            previous = System.currentTimeMillis();
+            mBitmap = Bitmap.createBitmap(frameBufferWidth, frameBufferHeight, Bitmap.Config.ARGB_8888);
+            mCanvas = new Canvas(mBitmap);
+        }
 
     }
 
