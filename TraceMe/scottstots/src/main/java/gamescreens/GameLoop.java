@@ -45,9 +45,14 @@ public class GameLoop extends SurfaceView implements Runnable {
         holder = getHolder();
         setFocusable(true);
         renderThread = new Thread(this);
+    }
+
+
+    public void startLoop() {
         running = true;
         renderThread.start();
     }
+
 
     public void setLevel(Level level) {
         this.level = level;
@@ -121,7 +126,6 @@ public class GameLoop extends SurfaceView implements Runnable {
             }
         }
     }
-
 }
 
 

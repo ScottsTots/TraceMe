@@ -124,10 +124,12 @@ public class Level {
     // Loads level from internal storage
     public void loadSinglePlayerLevel() {
         for(int i = 1; i <= 3; i++) {
+            Log.d("gameloop", "loading files");
             TraceFile trace = getTraceFile(ctx, "trace" + i + ".txt");
             if (trace != null) {
                 traceArray.add(trace);
                 traceBitmaps.add(trace.getBitmap());
+                Log.d("gameloop", "loading files " + i);
             }
             else {
                 // UH OH.

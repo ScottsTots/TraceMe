@@ -134,6 +134,7 @@ public class GameActivity extends Activity {
 
         @Override
         protected void onPostExecute(Void param) {
+            gameLoop.startLoop();
             loadingDialog.dismiss();
         }
     }
