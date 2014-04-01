@@ -26,6 +26,7 @@ import gamescreens.GameActivity;
 import gamescreens.GameLoop;
 import scotts.tots.traceme.R;
 
+
 /**
  * Created by Aaron on 3/23/2014.
  */
@@ -63,13 +64,6 @@ public class Level {
         // trace1.txt 5 seconds    normal
         // trace2.txt 10 seconds   disappearing
         // trace3.txt 6 seconds    blinking
-
-        // After it reads which traces it needs,
-        // It builds an array of the traceFile names but does not load the actual data yet.
-        // In the future, each of these traces could have more properties, such
-        // as blinking, disappearing after a certain time (to make it harder), or
-        // etcetera. Each of these trace objects also contains the amount of time
-        // one would need to finish this specific drawing/trace.
         view = v;
         this.ctx = ctx;
         setUpDrawing();
@@ -121,23 +115,25 @@ public class Level {
     }
 
     /***************************** LOADING *****************************************/
+    int numTracesLoaded = 1;
     // Loads level from internal storage
     public void loadSinglePlayerLevel() {
-        for(int i = 1; i <= 3; i++) {
-            Log.d("gameloop", "loading files");
-            TraceFile trace = getTraceFile(ctx, "trace" + i + ".txt");
+        Log.d("gameloop", "loading files");
+
+            TraceFile trace = getTraceFile(ctx, "trace" + numTracesLoaded + ".txt");
             if (trace != null) {
                 traceArray.add(trace);
                 traceBitmaps.add(trace.getBitmap());
-                Log.d("gameloop", "loading files " + i);
+                Log.d("gameloop", "loading files " + numTracesLoaded);
             }
             else {
                 // UH OH.
             }
-        }
-        scoreManager = new ScoreManager(traceArray.get(0));
+        if(numTracesLoaded == 1)
+            scoreManager = new ScoreManager(traceArray.get(0));
     }
 
+    Gson gson = new Gson();
     private TraceFile getTraceFile(Context ctx, String filename) {
         TraceFile trace;
         StringBuilder total = new StringBuilder();
@@ -153,7 +149,6 @@ public class Level {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Gson gson = new Gson();
         trace = gson.fromJson(total.toString(), TraceFile.class);
         return trace;
     }

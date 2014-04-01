@@ -82,7 +82,6 @@ public class GameActivity extends Activity {
 
     public static Level level;
     Context ctx;
-   // GameThread gameThread;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -95,6 +94,10 @@ public class GameActivity extends Activity {
         // Load the game
         loadingDialog = new ProgressDialog(GameActivity.this);
         loadingDialog.setMessage("Loading...");
+        loadingDialog.setCanceledOnTouchOutside(false);
+        loadingDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        loadingDialog.setProgress(0);
+        loadingDialog.setMax(100);
         new LoadTask().execute("load");
 
 
@@ -115,7 +118,7 @@ public class GameActivity extends Activity {
     }
 
 
-    private class LoadTask extends AsyncTask<String, Void, Void> {
+    public class LoadTask extends AsyncTask<String, Integer, Void> {
         @Override
         protected void onPreExecute() {
             loadingDialog.show();
@@ -126,7 +129,12 @@ public class GameActivity extends Activity {
             if (params[0].equals("load")) {
                 gameLoop = (GameLoop) findViewById(R.id.surfaceView);
                 level = new Level(1, ctx, gameLoop);
-                level.loadSinglePlayerLevel();
+
+                // Loads each trace
+                for(int i = 1; i <= 3; i++) {
+                    level.loadSinglePlayerLevel();
+                    publishProgress((int) ((i / 3.0) * 100));
+                }
                 gameLoop.setLevel(level);
             }
             return null;
@@ -136,6 +144,12 @@ public class GameActivity extends Activity {
         protected void onPostExecute(Void param) {
             gameLoop.startLoop();
             loadingDialog.dismiss();
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... progress) {
+            //
+            loadingDialog.setProgress(progress[0]);
         }
     }
 
