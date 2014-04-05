@@ -15,8 +15,17 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
+import com.facebook.FacebookRequestError;
+import com.facebook.Request;
+import com.facebook.Response;
+import com.facebook.model.GraphUser;
 import com.google.gson.Gson;
+import com.parse.ParseFacebookUtils;
+import com.parse.ParseObject;
+import com.parse.ParseTwitterUtils;
+import com.parse.ParseUser;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -33,6 +42,8 @@ import scotts.tots.traceme.R;
  * Created by Aaron on 3/23/2014.
  */
 public class Level {
+    static final String TAG = "LEVEL";
+
     Bitmap framebuffer;
     public static final int STATE_RUNNING = 1;
     public static final int STATE_PAUSED = 0;
@@ -111,6 +122,7 @@ public class Level {
 
         // Game over
         else {
+            saveHighScore();
             GameActivity.endGame();
         }
 
@@ -369,5 +381,56 @@ public class Level {
 
     public void setDashEffect() {
         mPaint.setPathEffect(new DashPathEffect(new float[] {30, 15}, 0));
+    }
+
+
+
+
+
+    /** Saving HighScore @ End of the Game **/
+    public void saveHighScore() {
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        if (ParseFacebookUtils.isLinked(currentUser)) {         // Currently not working
+            Request request = Request.newMeRequest(ParseFacebookUtils.getSession(),
+                    new Request.GraphUserCallback() {
+                        @Override
+                        public void onCompleted(GraphUser user, Response response) {
+                            if (user != null) {
+                                String username = user.getName();
+                                int newScore = getScore();
+                                saveHighScoreToParse(username, newScore);
+                            } else if (response.getError() != null) {
+                                if ((response.getError().getCategory() == FacebookRequestError.Category.AUTHENTICATION_RETRY)
+                                        || (response.getError().getCategory() == FacebookRequestError.Category.AUTHENTICATION_REOPEN_SESSION)) {
+                                    Log.d(TAG,
+                                            "The facebook session was invalidated.");
+                                } else {
+                                    Log.d(TAG,
+                                            "Some other error: "
+                                                    + response.getError()
+                                                    .getErrorMessage()
+                                    );
+                                }
+                            }
+                        }
+                    });
+            request.executeAsync();
+        } else if (ParseTwitterUtils.isLinked(currentUser)) {
+            String username = ParseTwitterUtils.getTwitter().getScreenName();
+            int newScore    = getScore();
+
+            saveHighScoreToParse(username, newScore);
+        } else {                // Regularly signed in user
+            String username = currentUser.getUsername();
+            int newScore    = getScore();
+            saveHighScoreToParse(username, newScore);
+        }
+    }
+
+    public void saveHighScoreToParse(String username, int newScore) {
+        ParseObject newHighScore = new ParseObject("Highscore");
+        newHighScore.put("username", username);
+        newHighScore.put("score", newScore);
+        newHighScore.saveInBackground();
     }
 }

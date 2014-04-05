@@ -81,36 +81,6 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
         expListView.expandGroup(1);
         expListView.expandGroup(2);
         expListView.expandGroup(3);
-
-//        // Rnadom opponent button
-//        View randomPlayerButton = view.findViewById(R.id.randomOpponentButton);
-//        randomPlayerButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Toast.makeText(getActivity(),
-//                        "Random player button clicked..",
-//                        Toast.LENGTH_LONG
-//                ).show();
-//                // Retrieve a randomOpponent (do this in the game object)  E.g. game.get/setRandomOpponent();
-//                ParseUser opponent = getRandomOpponent();
-////                startMultiPlayer(opponent);
-//            }
-//        });
-//
-//        // Challenge a friend button
-//        View multiPlayerButton = view.findViewById(R.id.challengeButton);
-//        multiPlayerButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Toast.makeText(getActivity(),
-//                        "Challenge friend button clicked..",
-//                        Toast.LENGTH_LONG
-//                ).show();
-//                showFriendPicker();
-//                // the startMultiplayer() method gets called inside friendPicker. OR we could set up a handler here
-//                // that gets called when we're done choosing a friend.
-//            }
-//        });
     }
 
     private void prepareListData() {
