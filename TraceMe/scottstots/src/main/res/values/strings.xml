@@ -37,5 +37,6 @@
     <string name="title_activity_login_screen">LoginScreen</string>
     <string name="logo">logo</string>
     <string name="title">title</string>
+    <string name="title_activity_level_select">LevelSelectActivity</string>
 
 </resources>
