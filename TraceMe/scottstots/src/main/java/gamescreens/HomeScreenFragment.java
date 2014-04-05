@@ -17,15 +17,29 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ExpandableListView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.facebook.FacebookRequestError;
+import com.facebook.Request;
+import com.facebook.Response;
+import com.facebook.model.GraphUser;
+import com.parse.FindCallback;
+import com.parse.Parse;
+import com.parse.ParseException;
+import com.parse.ParseFacebookUtils;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseTwitterUtils;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import helperClasses.GameStatus;
 import scotts.tots.traceme.R;
 
 /**
@@ -68,37 +82,36 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
         expListView.expandGroup(2);
         expListView.expandGroup(3);
 
-/*
-                // Random opponent button
-                Button randomPlayerButton = (Button) dlog.findViewById(R.id.);
-                randomPlayerButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        // Retrieve a randomOpponent (do this in the game object)  E.g. game.get/setRandomOpponent();
-                        ParseUser opponent = getRandomOpponent();
-                        startMultiPlayer(opponent);
-                    }
-                });
-
-
-                // Challenge a friend button
-                Button multiPlayerButton = (Button) dlog.findViewById(R.id.singlePlayer);
-                multiPlayerButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        showFriendPicker();
-                        // the startMultiplayer() method gets called inside friendPicker. OR we could set up a handler here
-                        // that gets called when we're done choosing a friend.
-                    }
-                });
-*/
-
-//                dlog.show();
+//        // Rnadom opponent button
+//        View randomPlayerButton = view.findViewById(R.id.randomOpponentButton);
+//        randomPlayerButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Toast.makeText(getActivity(),
+//                        "Random player button clicked..",
+//                        Toast.LENGTH_LONG
+//                ).show();
+//                // Retrieve a randomOpponent (do this in the game object)  E.g. game.get/setRandomOpponent();
+//                ParseUser opponent = getRandomOpponent();
+////                startMultiPlayer(opponent);
+//            }
+//        });
+//
+//        // Challenge a friend button
+//        View multiPlayerButton = view.findViewById(R.id.challengeButton);
+//        multiPlayerButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Toast.makeText(getActivity(),
+//                        "Challenge friend button clicked..",
+//                        Toast.LENGTH_LONG
+//                ).show();
+//                showFriendPicker();
+//                // the startMultiplayer() method gets called inside friendPicker. OR we could set up a handler here
+//                // that gets called when we're done choosing a friend.
 //            }
 //        });
     }
-
-
 
     private void prepareListData() {
         listDataHeader = new ArrayList<String>();
@@ -111,24 +124,80 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
         listDataHeader.add("Past Games");
 
         // Adding child data
-        List<String> challenges = new ArrayList<String>();
-        challenges.add("Aaron Villapando");
-        challenges.add("Matt Ebeweber");
-        challenges.add("Niko Lazaris");
-        challenges.add("Sai Avala");
+        final List<String> challenges = new ArrayList<String>();
 
-        List<String> currentgames = new ArrayList<String>();
-        currentgames.add("Mike Scott");
-        currentgames.add("William Cook");
-        currentgames.add("Greg Plaxton");
-        currentgames.add("Pradeep Ravikumar");
+        // Query for this user's current games w/out an opponent
+        ParseQuery<ParseObject> awaitingQuery = ParseQuery.getQuery("Game");
+        awaitingQuery.whereEqualTo("player_one", ParseUser.getCurrentUser());
+        awaitingQuery.whereEqualTo("game_status", GameStatus.WAITING_FOR_OPPONENT.id);
+        awaitingQuery.findInBackground(new FindCallback<ParseObject>() {
+            public void done(List<ParseObject> gameList, ParseException e) {
+                if (e == null) {
+                    for (ParseObject game : gameList) {
+                        challenges.add("Waiting for opponent..");
+                    }
+                    listAdapter.notifyDataSetChanged();
+                } else {
+                    Log.d("prepareListData", "Error: " + e.getMessage());
+                }
+            }
+        });
+
+        // TODO: Find challenges involving this current user.
+        // TODO: Awaiting opponent should have click and hold to cancel
+
+
+        // TODO: Collapse these two into one query
+        final List<String> currentgames = new ArrayList<String>();
+        // For player one
+        ParseQuery<ParseObject> currentGameQuery1 = ParseQuery.getQuery("Game");
+        currentGameQuery1.whereEqualTo("player_one", ParseUser.getCurrentUser());
+        currentGameQuery1.whereEqualTo("game_status", GameStatus.IN_PROGRESS.id);
+        currentGameQuery1.include("_User");
+        currentGameQuery1.findInBackground(new FindCallback<ParseObject>() {
+            public void done(List<ParseObject> gameList, ParseException e) {
+                if (e == null) {
+                    for (ParseObject game :  gameList) {
+                        ParseUser user = game.getParseUser("player_two");
+                        try {
+                            user.fetchIfNeeded();
+                            currentgames.add(user.getUsername());
+                        } catch (ParseException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                    listAdapter.notifyDataSetChanged();
+                } else {
+                    Log.d("prepareListData", "Error: " + e.getMessage());
+                }
+            }
+        });
+
+        ParseQuery<ParseObject> currentGameQuery2 = ParseQuery.getQuery("Game");
+        currentGameQuery2.whereEqualTo("player_two", ParseUser.getCurrentUser());
+        currentGameQuery2.whereEqualTo("game_status", GameStatus.IN_PROGRESS.id);
+        currentGameQuery2.include("_User");
+        currentGameQuery2.findInBackground(new FindCallback<ParseObject>() {
+            public void done(List<ParseObject> gameList, ParseException e) {
+                if (e == null) {
+                    for (ParseObject game :  gameList) {
+                        ParseUser user = game.getParseUser("player_one");
+                        try {
+                            user.fetchIfNeeded();
+                            currentgames.add(user.getUsername());
+                        } catch (ParseException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                    listAdapter.notifyDataSetChanged();
+                } else {
+                    Log.d("prepareListData", "Error: " + e.getMessage());
+                }
+            }
+        });
 
         List<String> pastgames = new ArrayList<String>();
-        pastgames.add("Glen Downing");
-        pastgames.add("Risto Mikkulainen");
-        pastgames.add("Alison Norman");
-        pastgames.add("Adam Klivans");
-        pastgames.add("Mike Scott");
+        pastgames.add("Coming soon..");
 
         //New Game Button == listDataHeader.get(0)
         listDataChild.put(listDataHeader.get(1), challenges); // Header, Child data
@@ -147,7 +216,6 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
 //        dlog.dismiss();
 //        //startActivity(new Intent(getActivity(), DrawingActivityMultiplayer.class);
 //    }
-
 
     public ParseUser getRandomOpponent() {
         return null;

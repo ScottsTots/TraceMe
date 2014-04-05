@@ -18,13 +18,22 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.parse.FindCallback;
+import com.parse.Parse;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
+
+import java.util.List;
 
 import gamescreens.AboutFrag;
 import gamescreens.GameActivity;
 import gamescreens.HomeScreenFragment;
 import gamescreens.HighScoreFragment;
+import helperClasses.GameStatus;
 
 public class MainScreen extends Activity {
 
@@ -95,8 +104,16 @@ public class MainScreen extends Activity {
         dlog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dlog.setContentView(R.layout.home_fragment_new_game_dialog);
 
+        // Hook up single player button
         View singlePlayerButton = dlog.findViewById(R.id.singlePlayer);
         singlePlayerButton.setOnClickListener(viewListener);
+
+        View randomOpponentButton = dlog.findViewById(R.id.randomOpponentButton);
+        randomOpponentButton.setOnClickListener(viewListener);
+
+        View challengeFriendButton = dlog.findViewById(R.id.challengeButton);
+        challengeFriendButton.setOnClickListener(viewListener);
+
         dlog.show();
     }
 
@@ -105,8 +122,17 @@ public class MainScreen extends Activity {
         public void onClick(View v) {
             switch(v.getId()){
                 case R.id.singlePlayer:
+                    Log.d("Mainscreen.java", "SinglePlayer Button Clicked.");
                     dlog.dismiss();
                     startActivity(new Intent(MainScreen.this, GameActivity.class));
+                    break;
+                case R.id.randomOpponentButton:
+                    Log.d("Mainscreen.java", "RandomOpponent Button Clicked.");
+                    findRandomOpponent();
+                    dlog.dismiss();
+                    break;
+                case R.id.challengeButton:
+                    Log.d("Mainscreen.java", "Challenge Button Clicked.");
                     break;
             }
         }
@@ -210,6 +236,39 @@ public class MainScreen extends Activity {
     public void setTitle(CharSequence title) {
         mTitle = title;
         getActionBar().setTitle(mTitle);
+    }
+
+    public void findRandomOpponent() {
+        // Search for games that need another player if possible
+        // Criteria:
+        //      Game is Searching for an opponent
+        //      player_one of the game is not the current user
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Game");
+        query.whereEqualTo("game_status", GameStatus.WAITING_FOR_OPPONENT.id);
+        query.whereNotEqualTo("player_one", ParseUser.getCurrentUser());
+
+        query.findInBackground(new FindCallback<ParseObject>() {
+            public void done(List<ParseObject> gameList, ParseException e) {
+                if (e == null) {
+                    Log.d("findRandomOpponent", "Retrieved " + gameList.size() + " games");
+
+                    if (gameList.size() == 0) {         // No games, create a new one awaiting an opponent
+                        ParseObject game = new ParseObject("Game");
+                        game.put("player_one", ParseUser.getCurrentUser());
+                        game.put("game_status", GameStatus.WAITING_FOR_OPPONENT.id);
+                        game.saveInBackground();
+                    } else {                            // Retrived games, pair with one of the games
+                        ParseObject game = gameList.get(0);     // Just grab the first item
+                        game.put("player_two", ParseUser.getCurrentUser());
+                        game.put("game_status", GameStatus.IN_PROGRESS.id);
+                        game.saveInBackground();
+                    }
+                } else {
+                    Log.d("findRandomOpponent", "Error: " + e.getMessage());
+                }
+            }
+        });
+
     }
 
     /**
