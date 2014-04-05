@@ -132,7 +132,6 @@ public class GameActivity extends Activity {
                 flipper.setDisplayedChild(2); //gameloop is 0, viewingBoard is 1
                 playButton.setVisibility(View.INVISIBLE);
                 viewingBoard.startDrawing(); // this updates our viewingBoard to the current data.
-                saveHighScore();
             }
         });
     }
@@ -183,56 +182,6 @@ public class GameActivity extends Activity {
 
             }, 0, 1000);
         }
-    }
-
-    public void saveHighScore() {
-        ParseUser currentUser = ParseUser.getCurrentUser();
-        if (ParseFacebookUtils.isLinked(currentUser)) {         // Currently not working
-            Request request = Request.newMeRequest(ParseFacebookUtils.getSession(),
-                    new Request.GraphUserCallback() {
-                        @Override
-                        public void onCompleted(GraphUser user, Response response) {
-                            if (user != null) {
-                                String username = user.getName();
-                                int newScore = level.getScore();
-                                saveHighScoreToParse(username, newScore);
-                            } else if (response.getError() != null) {
-                                if ((response.getError().getCategory() == FacebookRequestError.Category.AUTHENTICATION_RETRY)
-                                        || (response.getError().getCategory() == FacebookRequestError.Category.AUTHENTICATION_REOPEN_SESSION)) {
-                                    Log.d(TAG,
-                                            "The facebook session was invalidated.");
-                                } else {
-                                    Log.d(TAG,
-                                            "Some other error: "
-                                                    + response.getError()
-                                                    .getErrorMessage()
-                                    );
-                                }
-                            }
-                        }
-                    });
-            request.executeAsync();
-        } else if (ParseTwitterUtils.isLinked(currentUser)) {
-            String username = ParseTwitterUtils.getTwitter().getScreenName();
-            int newScore    = level.getScore();
-
-            saveHighScoreToParse(username, newScore);
-        } else {                // Regularly signed in user
-            String username = currentUser.getUsername();
-            int newScore    = level.getScore();
-            saveHighScoreToParse(username, newScore);
-        }
-    }
-
-    public void saveHighScoreToParse(String username, int newScore) {
-        Toast.makeText(getApplicationContext(),
-                "Saving Score - " + username + ": " + newScore,
-                Toast.LENGTH_LONG).show();
-
-        ParseObject newHighScore = new ParseObject("Highscore");
-        newHighScore.put("username", username);
-        newHighScore.put("score", newScore);
-        newHighScore.saveInBackground();
     }
 
     private void TimerMethod() {
