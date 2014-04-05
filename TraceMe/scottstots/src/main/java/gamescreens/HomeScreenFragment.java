@@ -6,22 +6,25 @@ package gamescreens;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.TypedValue;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import scotts.tots.traceme.R;
 
@@ -32,18 +35,10 @@ import scotts.tots.traceme.R;
 public class HomeScreenFragment extends Fragment {// implements View.OnClickListener {
     public static final String ARG_PLANET_NUMBER = "planet_number";
 
-    private Button logOutButton;
-    private Button newGameButton;
-    private android.app.Dialog dlog;
-    private ListView challengesListView;
-    private ArrayList<String> challengesList;
-    private CustomMultiplayerListAdapter challengesAdapter;
-    private ListView currentGamesListView;
-    private ArrayList<String> currentGamesList;
-    private CustomMultiplayerListAdapter currentGamesAdapter;
-    private ListView pastGamesListView;
-    private ArrayList<String> pastGamesList;
-    private CustomMultiplayerListAdapter pastGamesAdapter;
+    private ExpandableListAdapter listAdapter;
+    private ExpandableListView expListView;
+    private List<String> listDataHeader;
+    private HashMap<String, List<String>> listDataChild;
 
     public HomeScreenFragment() {
         // Empty constructor required for fragment subclasses
@@ -52,35 +47,27 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.home_fragment, container, false);
+        View rootView = inflater.inflate(R.layout.home_fragment_2, container, false);
         return rootView;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        newGameButton = (Button) view.findViewById(R.id.newGameButton);
 
-        challengesListView = (ListView) view.findViewById(R.id.challengesListView);
-        currentGamesListView = (ListView) view.findViewById(R.id.currentGamesListView);
-        pastGamesListView = (ListView) view.findViewById(R.id.pastGamesListView);
-        setupListViews();
+        // get the listview
+        expListView = (ExpandableListView) view.findViewById(R.id.lvExp);
 
-        newGameButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                dlog = new android.app.Dialog(getActivity(),
-                        android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth);
-                dlog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-                dlog.setContentView(R.layout.home_fragment_new_game_dialog);
+        // preparing list data
+        prepareListData();
 
+        listAdapter = new ExpandableListAdapter(getActivity(), listDataHeader, listDataChild);
 
-                //SinglePlayer button
-                View singlePlayerButton = dlog.findViewById(R.id.singlePlayer);
-                singlePlayerButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        startSinglePlayer();
-                    }
-                });
+        // setting list adapter
+        expListView.setAdapter(listAdapter);
+        expListView.expandGroup(1);
+        expListView.expandGroup(2);
+        expListView.expandGroup(3);
+
 /*
                 // Random opponent button
                 Button randomPlayerButton = (Button) dlog.findViewById(R.id.);
@@ -106,48 +93,60 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
                 });
 */
 
-                dlog.show();
-            }
-        });
+//                dlog.show();
+//            }
+//        });
     }
 
-    private void setupListViews(){
-        challengesList = new ArrayList<String>();
-        challengesList.add("Example 1");
-        challengesList.add("Example 2");
-        challengesList.add("Example 3");
-        challengesAdapter = new CustomMultiplayerListAdapter(getActivity().getApplicationContext(),
-                R.layout.list_multiplayer,challengesList);
-        challengesListView.setAdapter(challengesAdapter);
-        challengesAdapter.notifyDataSetChanged();
 
-        currentGamesList = new ArrayList<String>();
-        currentGamesList.add("Example 1");
-        currentGamesList.add("Example 2");
-        currentGamesAdapter = new CustomMultiplayerListAdapter(getActivity().getApplicationContext(),
-                R.layout.list_multiplayer,currentGamesList);
-        currentGamesListView.setAdapter(currentGamesAdapter);
-        currentGamesAdapter.notifyDataSetChanged();
 
-        pastGamesList = new ArrayList<String>();
-        pastGamesList.add("Example 1");
-        pastGamesAdapter = new CustomMultiplayerListAdapter(getActivity().getApplicationContext(),
-                R.layout.list_multiplayer,pastGamesList);
-        pastGamesListView.setAdapter(pastGamesAdapter);
-        pastGamesAdapter.notifyDataSetChanged();
+    private void prepareListData() {
+        listDataHeader = new ArrayList<String>();
+        listDataChild = new HashMap<String, List<String>>();
+
+        // Adding child data
+        listDataHeader.add("New Game");
+        listDataHeader.add("Challenges");
+        listDataHeader.add("Current Games");
+        listDataHeader.add("Past Games");
+
+        // Adding child data
+        List<String> challenges = new ArrayList<String>();
+        challenges.add("Aaron Villapando");
+        challenges.add("Matt Ebeweber");
+        challenges.add("Niko Lazaris");
+        challenges.add("Sai Avala");
+
+        List<String> currentgames = new ArrayList<String>();
+        currentgames.add("Mike Scott");
+        currentgames.add("William Cook");
+        currentgames.add("Greg Plaxton");
+        currentgames.add("Pradeep Ravikumar");
+
+        List<String> pastgames = new ArrayList<String>();
+        pastgames.add("Glen Downing");
+        pastgames.add("Risto Mikkulainen");
+        pastgames.add("Alison Norman");
+        pastgames.add("Adam Klivans");
+        pastgames.add("Mike Scott");
+
+        //New Game Button == listDataHeader.get(0)
+        listDataChild.put(listDataHeader.get(1), challenges); // Header, Child data
+        listDataChild.put(listDataHeader.get(2), currentgames);
+        listDataChild.put(listDataHeader.get(3), pastgames);
     }
 
     // When we start the game, it must be the case that all game components are set to how the user wants them. (time limit, etc)
     // If we want to add new game modes, game content later on, those game modes must be set before reaching this.
-    public void startSinglePlayer() {
-        dlog.dismiss();
-        startActivity(new Intent(getActivity(), GameActivity.class));
-    }
+//    public void startSinglePlayer() {
+//        dlog.dismiss();
+//        startActivity(new Intent(getActivity(), GameActivity.class));
+//    }
 
-    public void startMultiPlayer(ParseUser opponent) {
-        dlog.dismiss();
-        //startActivity(new Intent(getActivity(), DrawingActivityMultiplayer.class);
-    }
+//    public void startMultiPlayer(ParseUser opponent) {
+//        dlog.dismiss();
+//        //startActivity(new Intent(getActivity(), DrawingActivityMultiplayer.class);
+//    }
 
 
     public ParseUser getRandomOpponent() {
@@ -171,39 +170,4 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
                     break;
             }
         }*/
-}
-
-class CustomMultiplayerListAdapter extends ArrayAdapter<String> {
-    Context mContext;
-    int textViewResourceId;
-    ArrayList<String> data;
-
-    public CustomMultiplayerListAdapter(Context context, int textViewResourceId, ArrayList<String> objects) {
-        super(context, textViewResourceId, objects);
-        this.mContext = context;
-        this.textViewResourceId = textViewResourceId;
-        this.data = objects;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        if (convertView == null) {
-            LayoutInflater inflater = (LayoutInflater) mContext.getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(textViewResourceId, parent, false);
-        }
-
-        TextView item = (TextView) convertView.findViewById(R.id.list_multiplayer);
-        item.setText(data.get(position));
-
-//        // Gets linearlayout
-//        LinearLayout layout = (LinearLayout)item.getParent();
-//        // Gets the layout params that will allow you to resize the layout
-//        ViewGroup.LayoutParams params = layout.getLayoutParams();
-//        // Changes the height and width to the specified *pixels*
-//        int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, mContext.getResources().getDisplayMetrics());
-//        params.height = height*data.size();
-
-        return convertView;
-    }
-
 }

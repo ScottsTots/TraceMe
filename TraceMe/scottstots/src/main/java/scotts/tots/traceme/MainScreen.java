@@ -5,10 +5,12 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,6 +22,7 @@ import android.widget.ListView;
 import com.parse.ParseUser;
 
 import gamescreens.AboutFrag;
+import gamescreens.GameActivity;
 import gamescreens.HomeScreenFragment;
 import gamescreens.HighScoreFragment;
 
@@ -32,6 +35,7 @@ public class MainScreen extends Activity {
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
     private String[] navMenuTitles;
+    private android.app.Dialog dlog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +89,28 @@ public class MainScreen extends Activity {
         }
     }
 
+    public void showDialog (View v){
+        Log.d("Group Click", "New Button Pressed");
+        dlog = new android.app.Dialog(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth);
+        dlog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dlog.setContentView(R.layout.home_fragment_new_game_dialog);
+
+        View singlePlayerButton = dlog.findViewById(R.id.singlePlayer);
+        singlePlayerButton.setOnClickListener(viewListener);
+        dlog.show();
+    }
+
+    View.OnClickListener viewListener = new View.OnClickListener(){
+        @Override
+        public void onClick(View v) {
+            switch(v.getId()){
+                case R.id.singlePlayer:
+                    dlog.dismiss();
+                    startActivity(new Intent(MainScreen.this, GameActivity.class));
+                    break;
+            }
+        }
+    };
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
