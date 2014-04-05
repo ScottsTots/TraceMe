@@ -17,7 +17,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
@@ -45,6 +47,7 @@ public class MainScreen extends Activity {
     private CharSequence mTitle;
     private String[] navMenuTitles;
     private android.app.Dialog dlog;
+    private android.app.Dialog randDlog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,8 +131,8 @@ public class MainScreen extends Activity {
                     break;
                 case R.id.randomOpponentButton:
                     Log.d("Mainscreen.java", "RandomOpponent Button Clicked.");
-                    findRandomOpponent();
                     dlog.dismiss();
+                    findRandomOpponent();
                     break;
                 case R.id.challengeButton:
                     Log.d("Mainscreen.java", "Challenge Button Clicked.");
@@ -239,6 +242,19 @@ public class MainScreen extends Activity {
     }
 
     public void findRandomOpponent() {
+        randDlog = new android.app.Dialog(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth);
+        randDlog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        randDlog.setContentView(R.layout.message);
+
+        TextView dlogText = (TextView) randDlog.findViewById(R.id.dlogText);
+        Button dismissButton = (Button) randDlog.findViewById(R.id.dlogDismissButton);
+        dismissButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                randDlog.dismiss();
+            }
+        });
+
         // Search for games that need another player if possible
         // Criteria:
         //      Game is Searching for an opponent
@@ -247,28 +263,31 @@ public class MainScreen extends Activity {
         query.whereEqualTo("game_status", GameStatus.WAITING_FOR_OPPONENT.id);
         query.whereNotEqualTo("player_one", ParseUser.getCurrentUser());
 
-        query.findInBackground(new FindCallback<ParseObject>() {
-            public void done(List<ParseObject> gameList, ParseException e) {
-                if (e == null) {
-                    Log.d("findRandomOpponent", "Retrieved " + gameList.size() + " games");
+        try {
+            List<ParseObject> gameList = query.find();
 
-                    if (gameList.size() == 0) {         // No games, create a new one awaiting an opponent
-                        ParseObject game = new ParseObject("Game");
-                        game.put("player_one", ParseUser.getCurrentUser());
-                        game.put("game_status", GameStatus.WAITING_FOR_OPPONENT.id);
-                        game.saveInBackground();
-                    } else {                            // Retrived games, pair with one of the games
-                        ParseObject game = gameList.get(0);     // Just grab the first item
-                        game.put("player_two", ParseUser.getCurrentUser());
-                        game.put("game_status", GameStatus.IN_PROGRESS.id);
-                        game.saveInBackground();
-                    }
-                } else {
-                    Log.d("findRandomOpponent", "Error: " + e.getMessage());
-                }
+            if (gameList.size() == 0) {         // No games, create a new one awaiting an opponent
+                ParseObject game = new ParseObject("Game");
+                game.put("player_one", ParseUser.getCurrentUser());
+                game.put("game_status", GameStatus.WAITING_FOR_OPPONENT.id);
+                game.saveInBackground();
+
+                dlogText.setText("Unable to match you with opponent. You will be notified when an opponent is found.");
+            } else {                                    // Retrived games, pair with one of the games
+                ParseObject game = gameList.get(0);     // Just grab the first item
+                game.put("player_two", ParseUser.getCurrentUser());
+                game.put("game_status", GameStatus.IN_PROGRESS.id);
+                game.saveInBackground();
+
+                dlogText.setText("Found an opponent!");
             }
-        });
+        } catch (ParseException e) {
+            e.printStackTrace();
 
+            dlogText.setText("Error. Please try again.");
+        }
+
+        randDlog.show();
     }
 
     /**
