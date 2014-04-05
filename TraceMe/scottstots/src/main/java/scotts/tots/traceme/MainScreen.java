@@ -33,6 +33,7 @@ import gamescreens.AboutFrag;
 import gamescreens.GameActivity;
 import gamescreens.HomeScreenFragment;
 import gamescreens.HighScoreFragment;
+import gamescreens.LevelSelectActivity;
 import helperClasses.GameStatus;
 
 public class MainScreen extends Activity {
@@ -124,7 +125,7 @@ public class MainScreen extends Activity {
                 case R.id.singlePlayer:
                     Log.d("Mainscreen.java", "SinglePlayer Button Clicked.");
                     dlog.dismiss();
-                    startActivity(new Intent(MainScreen.this, GameActivity.class));
+                    startActivity(new Intent(MainScreen.this, LevelSelectActivity.class));
                     break;
                 case R.id.randomOpponentButton:
                     Log.d("Mainscreen.java", "RandomOpponent Button Clicked.");
