@@ -12,9 +12,12 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.util.HashMap;
 import java.util.List;
 
+import helperClasses.GameMenuListItem;
 import scotts.tots.traceme.R;
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
@@ -22,10 +25,10 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     private Context _context;
     private List<String> _listDataHeader; // header titles
     // child data in format of header title, child title
-    private HashMap<String, List<String>> _listDataChild;
+    private HashMap<String, List<GameMenuListItem>> _listDataChild;
 
     public ExpandableListAdapter(Context context, List<String> listDataHeader,
-                                 HashMap<String, List<String>> listChildData) {
+                                 HashMap<String, List<GameMenuListItem>> listChildData) {
         this._context = context;
         this._listDataHeader = listDataHeader;
         this._listDataChild = listChildData;
@@ -46,7 +49,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     public View getChildView(int groupPosition, final int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
 
-        final String childText = (String) getChild(groupPosition, childPosition);
+        final GameMenuListItem child = (GameMenuListItem) getChild(groupPosition, childPosition);
 
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this._context
@@ -54,10 +57,13 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             convertView = infalInflater.inflate(R.layout.list_multiplayer, null);
         }
 
-        TextView txtListChild = (TextView) convertView
-                .findViewById(R.id.list_multiplayer);
+        TextView txtListUsername = (TextView) convertView
+                .findViewById(R.id.username_item);
+        TextView txtListTime = (TextView) convertView
+                .findViewById(R.id.time_item);
 
-        txtListChild.setText(childText);
+        txtListUsername.setText(child.username);
+        txtListTime.setText(child.getLastUpdatedString());
         return convertView;
     }
 
