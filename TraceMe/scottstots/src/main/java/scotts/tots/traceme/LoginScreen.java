@@ -19,9 +19,6 @@ public class LoginScreen extends Activity {
         Fragment fragment = new LoginMenuFragment();
         Bundle args = new Bundle();
 
-        args.putInt("Foo", 0);
-        fragment.setArguments(args);
-
         // We replace the fragment
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.login_frame, fragment).commit();

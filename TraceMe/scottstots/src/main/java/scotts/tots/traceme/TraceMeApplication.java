@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 
 import com.parse.Parse;
 import com.parse.ParseACL;
+import com.parse.ParseAnalytics;
 import com.parse.ParseInstallation;
 import com.parse.ParseTwitterUtils;
 import com.parse.PushService;

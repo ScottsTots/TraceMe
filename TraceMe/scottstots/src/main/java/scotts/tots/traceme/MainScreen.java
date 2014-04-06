@@ -25,7 +25,9 @@ import android.widget.Toast;
 import com.parse.FindCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
+import com.parse.ParseInstallation;
 import com.parse.ParseObject;
+import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
@@ -279,6 +281,16 @@ public class MainScreen extends Activity {
                 game.put("player_two", ParseUser.getCurrentUser());
                 game.put("game_status", GameStatus.IN_PROGRESS.id);
                 game.saveInBackground();
+
+                // Send the user a push notification
+                ParseQuery pushQuery = ParseInstallation.getQuery();
+                pushQuery.whereEqualTo("user", game.getParseUser("player_one")); // Set the channel
+
+                // Send push notification to query
+                ParsePush push = new ParsePush();
+                push.setQuery(pushQuery);
+                push.setMessage("Found an opponent");
+                push.sendInBackground();
 
                 dlogText.setText("Found an opponent!");
             }

@@ -120,6 +120,7 @@ public class LoginOldUserFragment extends Fragment {// implements View.OnClickLi
                             Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                         } else {
                             // Fire up an intent for the next activity
+                            LoginMenuFragment.saveUserInstallationInfo();
                             Intent i = new Intent(getActivity(), MainScreen.class);
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(i);
@@ -128,9 +129,6 @@ public class LoginOldUserFragment extends Fragment {// implements View.OnClickLi
                 });
 
     }
-
-
-
 
     private boolean isEmpty(EditText etText) {
         if (etText.getText().toString().trim().length() > 0) {

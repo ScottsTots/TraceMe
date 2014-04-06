@@ -150,6 +150,7 @@ public class LoginNewUserFragment extends Fragment {// implements View.OnClickLi
                             "Sign up successful. Presenting the good stuff.",
                             Toast.LENGTH_LONG).show();
 
+                    LoginMenuFragment.saveUserInstallationInfo();
                     Intent i = new Intent(getActivity(), MainScreen.class);
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK |
                             Intent.FLAG_ACTIVITY_NEW_TASK);
