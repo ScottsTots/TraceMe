@@ -54,6 +54,7 @@ public class Level {
     Paint paint;
     GameLoop view;
     boolean countDown = true;
+    double ink = 0;
     CustomTimer timer = new CustomTimer(); // Our 3 second countdown timer.
     /**
      *
@@ -74,7 +75,6 @@ public class Level {
         setUpDrawing();
         traceArray = new ArrayList<TraceFile>();
         traceBitmaps = new ArrayList<Bitmap>();
-        TOTAL_TRACES = 4;
     }
 
     String message;
@@ -113,8 +113,6 @@ public class Level {
         else {
             GameActivity.endGame();
         }
-
-
     }
 
     public void updateScore(DataPoint p) {
@@ -130,7 +128,6 @@ public class Level {
     }
 
     boolean isTouched = false;
-    boolean isTouchUp = false;
     boolean startTimer = true;
     /**************************************** UPDATING ************************************/
     public void update(float deltaTime) {
@@ -168,13 +165,15 @@ public class Level {
         // draw current Path
         mCanvas.drawPath(mPath, mPaint);
         mCanvas.drawText("Score: " + Integer.toString(getScore()), 20, 120, textPaint);
+
+        PathMeasure pm = new PathMeasure(mPath, false);
+
+        mCanvas.drawRect(100, 100, 150, 200, textPaint);
+        Log.d("gameloop", "path length " + pm.getLength());
     }
 
     public void drawGameOver() {
-
     }
-
-
 
     /***************************** LOADING *****************************************/
     int numTracesLoaded = 1; //starts at 1
