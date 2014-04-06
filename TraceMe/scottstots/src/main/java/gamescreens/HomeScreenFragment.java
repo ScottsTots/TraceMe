@@ -50,7 +50,7 @@ import scotts.tots.traceme.R;
  */
 public class HomeScreenFragment extends Fragment {// implements View.OnClickListener {
     public static final String ARG_PLANET_NUMBER = "planet_number";
-
+    public static Game game;
     private ExpandableListAdapter listAdapter;
     private ExpandableListView expListView;
     private List<String> listDataHeader;
@@ -195,21 +195,7 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
         return null;
     }
 
-
     public void showFriendPicker() {
 
     }
-
-    // If we wanted to just make a switch case scenario for all buttons, then we'd implement the onclick listener and do this:
-       /* @Override
-        public void onClick(View v) {
-            switch(v.getId()) {
-                case R.id.logOutButton:
-                    ParseUser.logOut();
-                    Intent intent = new Intent(getActivity(), LoginScreen.class);
-                    startActivity(intent);
-                    getActivity().finish();
-                    break;
-            }
-        }*/
 }

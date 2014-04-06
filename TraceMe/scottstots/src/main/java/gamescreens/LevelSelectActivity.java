@@ -8,10 +8,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import helperClasses.Game;
 import scotts.tots.traceme.R;
+import scotts.tots.traceme.TraceMeApplication;
 
 public class LevelSelectActivity extends Activity {
     private TextView level1;
+
+    Game game = ((TraceMeApplication)this.getApplicationContext()).getGame();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +33,7 @@ public class LevelSelectActivity extends Activity {
         public void onClick(View view) {
             switch (view.getId()){
                 case R.id.level1:
+                    game.setLevel(1);
                     startActivity(new Intent(LevelSelectActivity.this, GameActivity.class));
                     break;
             }

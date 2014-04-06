@@ -45,9 +45,6 @@ public class Level {
     static final String TAG = "LEVEL";
 
     Bitmap framebuffer;
-    public static final int STATE_RUNNING = 1;
-    public static final int STATE_PAUSED = 0;
-    public static boolean GAME_OVER = false;
 
     ArrayList<String> drawings;
     ArrayList<TraceFile> traceArray;

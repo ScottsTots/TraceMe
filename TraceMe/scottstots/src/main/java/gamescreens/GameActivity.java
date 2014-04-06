@@ -55,6 +55,7 @@ import helperClasses.Level;
 import helperClasses.ScoreManager;
 import helperClasses.TraceFile;
 import scotts.tots.traceme.R;
+import scotts.tots.traceme.TraceMeApplication;
 
 /**
  * Created by Aaron on 3/9/14.
@@ -70,7 +71,7 @@ import scotts.tots.traceme.R;
  * See DrawingBoard.convertToPoints for the details.
  */
 public class GameActivity extends Activity {
-
+    Game game;
     static String TAG = "GameActivity";
 
     // Contains all points for the trace separated by the path they were at.
@@ -111,14 +112,18 @@ public class GameActivity extends Activity {
         scoreText = (TextView) endGameDlog.findViewById(R.id.scoreTextView);
 
         // Load the game
+        game = ((TraceMeApplication)this.getApplicationContext()).getGame();
         loadingDialog = new ProgressDialog(GameActivity.this);
         loadingDialog.setMessage("Loading...");
         loadingDialog.setCanceledOnTouchOutside(false);
         loadingDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         loadingDialog.setProgress(0);
         loadingDialog.setMax(100);
-        new LoadTask().execute("load");
-
+        if(game.isMultiplayer())
+            loadMultiplayer();
+        else {
+            new LoadTask().execute("load");
+        }
 
         // UI
         countdownTimerView = (TextView) findViewById(R.id.countdown_timer);
@@ -147,7 +152,7 @@ public class GameActivity extends Activity {
         protected Void doInBackground(String... params) {
             if (params[0].equals("load")) {
                 gameLoop = (GameLoop) findViewById(R.id.surfaceView);
-                level = new Level(1, ctx, gameLoop);
+                level = new Level(game.getLevelNum(), ctx, gameLoop);
 
                 // Loads each trace
                 for(int i = 0; i < level.TOTAL_TRACES; i++) {
@@ -224,4 +229,13 @@ public class GameActivity extends Activity {
         scoreText.setText(Integer.toString(level.getScore()));
         endGameDlog.show();
     }
+
+
+
+    public void loadMultiplayer() {
+
+    }
+
+
+
 }

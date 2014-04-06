@@ -12,11 +12,13 @@ import com.parse.ParseTwitterUtils;
 import com.parse.PushService;
 import com.parse.ParseFacebookUtils;
 
+import helperClasses.Game;
+
 /**
  * Created by matthewebeweber on 3/5/14.
  */
 public class TraceMeApplication extends Application {
-
+    public static Game game;
     private static SharedPreferences preferences;
     @Override
     public void onCreate() {
@@ -42,5 +44,14 @@ public class TraceMeApplication extends Application {
 
         preferences = getSharedPreferences("scotts.tots.traceme", Context.MODE_PRIVATE);
 
+
+        // Game object to be used throughout the application
+        game = new Game();
     }
+
+    public Game getGame() {
+        return game;
+    }
+
+
 }
