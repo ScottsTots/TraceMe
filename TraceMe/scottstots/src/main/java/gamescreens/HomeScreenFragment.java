@@ -107,7 +107,7 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
             public void done(List<ParseObject> gameList, ParseException e) {
                 if (e == null) {
                     for (ParseObject game : gameList) {
-                        challenges.add(new GameMenuListItem(game, "Waiting for opponent.."));
+                        challenges.add(new GameMenuListItem("Waiting for opponent..", game.getUpdatedAt()));
                     }
                     listAdapter.notifyDataSetChanged();
                 } else {
@@ -135,7 +135,7 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
                         ParseUser user = game.getParseUser("player_two");
                         try {
                             user.fetchIfNeeded();
-                            currentgames.add(new GameMenuListItem(game, user.getUsername()));
+                            currentgames.add(new GameMenuListItem(user.getUsername(), game.getUpdatedAt()));
                         } catch (ParseException e1) {
                             e1.printStackTrace();
                         }
@@ -159,7 +159,7 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
                         ParseUser user = game.getParseUser("player_one");
                         try {
                             user.fetchIfNeeded();
-                            currentgames.add(new GameMenuListItem(game, user.getUsername()));
+                            currentgames.add(new GameMenuListItem(user.getUsername(), game.getUpdatedAt()));
                         } catch (ParseException e1) {
                             e1.printStackTrace();
                         }

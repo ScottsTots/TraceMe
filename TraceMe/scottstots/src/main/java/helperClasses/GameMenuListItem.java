@@ -15,24 +15,20 @@ import java.util.Date;
 
 public class GameMenuListItem {
 
-    ParseObject gameItem;
-    public String username;
+    private String username;
+    private Date lastUpdatedTime;
 
-    public GameMenuListItem(ParseObject gameItem, String username) {
-        this.gameItem = gameItem;
+    public GameMenuListItem(String username, Date lastUpdatedTime) {
         this.username = username;
+        this.lastUpdatedTime = lastUpdatedTime;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public String getLastUpdatedString() {
         PrettyTime p = new PrettyTime();
-        try {
-            gameItem.fetchIfNeeded();
-            Date d = gameItem.getUpdatedAt();
-            Log.d("TIME", d.toString());
-            return p.format(d);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return "No info";
-        }
+        return p.format(lastUpdatedTime);
     }
 }
