@@ -51,7 +51,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="That's the shizzle ipsizzle dolor sit amizzle, izzle.  "
+                android:text="No friends? It's okay, just play by yourself."
                 android:textColor="@color/darker_black"
                 android:textSize="18sp"/>
 
@@ -90,7 +90,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="That's the shizzle ipsizzle dolor sit amizzle, izzle.  "
+                android:text="Stranger danger. Find a random opponent and put your skills to the test."
                 android:textColor="@color/darker_black"
                 android:textSize="18sp"/>
 
@@ -128,7 +128,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="That's the shizzle ipsizzle dolor sit amizzle, izzle.  "
+                android:text="So you actually have friends? Might as well challenge them!"
                 android:textColor="@color/darker_black"
                 android:textSize="18sp"/>
 
