@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
+import com.parse.ParseInstallation;
 import com.parse.ParseTwitterUtils;
 import com.parse.ParseUser;
 
@@ -129,16 +130,26 @@ public class LoginMenuFragment extends Fragment {// implements View.OnClickListe
                             "New user created through Facebook.",
                             Toast.LENGTH_LONG
                     ).show();
+                    saveUserInstallationInfo();
                     showMainScreenActivity();
                 } else {                    // Existing user
                     Toast.makeText(getActivity(),
                             "User logged in with Facebook.",
                             Toast.LENGTH_LONG
                     ).show();
+
+                    saveUserInstallationInfo();
                     showMainScreenActivity();
                 }
             }
         });
+    }
+
+    public static void saveUserInstallationInfo() {
+        // Associate the device with a user
+        ParseInstallation installation = ParseInstallation.getCurrentInstallation();
+        installation.put("user",ParseUser.getCurrentUser());
+        installation.saveInBackground();
     }
 
     public void loginWithTwitter() {
@@ -167,12 +178,14 @@ public class LoginMenuFragment extends Fragment {// implements View.OnClickListe
                             "New user logged in through Twitter!",
                             Toast.LENGTH_LONG
                     ).show();
+                    saveUserInstallationInfo();
                     showMainScreenActivity();
                 } else {                        // Existing user
                     Toast.makeText(getActivity(),
                             "User logged in through Twitter!",
                             Toast.LENGTH_LONG
                     ).show();
+                    saveUserInstallationInfo();
                     showMainScreenActivity();
                 }
             }
