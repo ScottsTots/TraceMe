@@ -3,6 +3,7 @@ package helperClasses;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
@@ -556,7 +557,60 @@ public class Level{
             e.printStackTrace();
         }
 
+        // STEP 1: Retrieve images ----------------------------
+        ArrayList<ParseFile> files = new ArrayList<ParseFile>();
+        int totalImages = retrievedLevel.getInt("number_traces");
+        for(int i = 0; i < totalImages; i++) {
+            files.add(retrievedLevel.getParseFile("trace" + Integer.toString(i)));
+        }
 
+        // Retrieve parsefile bytes and turn them into bitmaps.
+        traceBitmaps = new ArrayList<Bitmap>();
+        Bitmap bmp;
+        for (int j = 0; j < totalImages; j++) {
+            try {
+                byte[] data = files.get(j).getData();
+                bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
+                traceBitmaps.add(bmp);
+                Log.d("parseNetwork", "Downloaded image " + j);
+            } catch (ParseException e) {
+                Log.d("parseNetwork", "Download image failure");
+                e.printStackTrace();
+            }
+        } // end all image downloads
+
+        // Step 2: Retrieve trace data -------------------------------
+
+        // this is a JSON array(traces) of JSONArrays(datapoints for each trace) that contain JSON objects with x and y keys(point coords
+        JSONArray jsonTraces = retrievedLevel.getJSONArray("trace_array");
+        for(int i = 0; i < jsonTraces.length(); i++) {
+            JSONArray jsonPointData = null;
+            try {
+                // Get the array of jsonObjects
+                jsonPointData = jsonTraces.getJSONArray(i);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            ArrayList<DataPoint> tracePoints = new ArrayList<DataPoint>();
+            // Iterate through all the points and build a pointArray to add to our traceFile
+            for(int j = 0; j < jsonPointData.length(); j++) {
+                try {
+                    JSONObject jsonPoint = jsonPointData.getJSONObject(j);
+                    int x = jsonPoint.getInt("x");
+                    int y = jsonPoint.getInt("y");
+                    int time = jsonPoint.getInt("time");
+                    // Add this datapoint to our pointsarray for this trace
+                    tracePoints.add(new DataPoint(x, y, time));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            // Add it to our buffer of traceFiles.
+            TraceFile trace = new TraceFile(traceBitmaps.get(i), tracePoints);
+            traceArray.add(trace);
+        }
+        scoreManager = new ScoreManager(traceArray.get(0));
     }
 
 

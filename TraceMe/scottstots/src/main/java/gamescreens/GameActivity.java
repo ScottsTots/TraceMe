@@ -119,7 +119,7 @@ public class GameActivity extends Activity {
         loadingDialog.setProgress(0);
         loadingDialog.setMax(100);
         if(game.isMultiplayer())
-            loadMultiplayer();
+            new LoadTask().execute("loadOnline");
         else {
             new LoadTask().execute("load");
         }
@@ -151,9 +151,7 @@ public class GameActivity extends Activity {
         protected Void doInBackground(String... params) {
             if (params[0].equals("load")) {
                 gameLoop = (GameLoop) findViewById(R.id.surfaceView);
-
                 level = new Level(1, ctx, gameLoop);
-
                 // Loads each trace
                 for(int i = 0; i < level.TOTAL_TRACES; i++) {
                     level.loadTrace();
@@ -162,6 +160,14 @@ public class GameActivity extends Activity {
                 gameLoop.setLevel(level);
                // level.createLevel();
             }
+            else if(params[0].equals("loadOnline")) {
+                gameLoop = (GameLoop) findViewById(R.id.surfaceView);
+                level = new Level(1, ctx, gameLoop);
+                level.loadLevelFromParse();
+                gameLoop.setLevel(level);
+            }
+
+
             return null;
         }
 
