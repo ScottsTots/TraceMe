@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/game_select_menu" >
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_margin="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
+        android:text="Choose Your Friend"
+        android:textSize="20sp" />
+
+    <EditText
+        android:id="@+id/friendName"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="17dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/input_field_bg"
+        android:textColor="@color/black"
+        android:hint="Enter friend's username"
+        android:singleLine="true"
+        android:layout_gravity="center_horizontal" />
+
+    <Button
+        android:id="@+id/startButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp"
+        android:text="Start"
+        android:layout_gravity="center"
+        android:textColor="@color/white"
+        android:background="@drawable/sign_up_selector"
+        />
+</LinearLayout>
