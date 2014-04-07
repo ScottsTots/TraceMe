@@ -55,6 +55,7 @@ import helperClasses.Level;
 import helperClasses.ScoreManager;
 import helperClasses.TraceFile;
 import scotts.tots.traceme.R;
+import scotts.tots.traceme.TraceMeApplication;
 
 /**
  * Created by Aaron on 3/9/14.
@@ -70,9 +71,8 @@ import scotts.tots.traceme.R;
  * See DrawingBoard.convertToPoints for the details.
  */
 public class GameActivity extends Activity {
-
     static String TAG = "GameActivity";
-
+    Game game;
     // Contains all points for the trace separated by the path they were at.
     // This array is used to do the drawing animation in ViewingBoard
     public static ArrayList<CustomPath> pathsArray;
@@ -111,14 +111,18 @@ public class GameActivity extends Activity {
         scoreText = (TextView) endGameDlog.findViewById(R.id.scoreTextView);
 
         // Load the game
+        game = ((TraceMeApplication)this.getApplicationContext()).getGame();
         loadingDialog = new ProgressDialog(GameActivity.this);
         loadingDialog.setMessage("Loading...");
         loadingDialog.setCanceledOnTouchOutside(false);
         loadingDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         loadingDialog.setProgress(0);
         loadingDialog.setMax(100);
-        new LoadTask().execute("load");
-
+        if(game.isMultiplayer())
+            loadMultiplayer();
+        else {
+            new LoadTask().execute("load");
+        }
 
         // UI
         countdownTimerView = (TextView) findViewById(R.id.countdown_timer);
@@ -147,6 +151,7 @@ public class GameActivity extends Activity {
         protected Void doInBackground(String... params) {
             if (params[0].equals("load")) {
                 gameLoop = (GameLoop) findViewById(R.id.surfaceView);
+
                 level = new Level(1, ctx, gameLoop);
 
                 // Loads each trace
@@ -155,6 +160,7 @@ public class GameActivity extends Activity {
                     publishProgress((int) (((i+1) / (double)level.TOTAL_TRACES) * 100));
                 }
                 gameLoop.setLevel(level);
+               // level.createLevel();
             }
             return null;
         }
@@ -162,6 +168,7 @@ public class GameActivity extends Activity {
         @Override
         protected void onPostExecute(Void param) {
             loadingDialog.dismiss();
+
             startCountDownTimer();
         }
 
@@ -224,4 +231,16 @@ public class GameActivity extends Activity {
         scoreText.setText(Integer.toString(level.getScore()));
         endGameDlog.show();
     }
+
+
+    public void createLevel() {
+
+    }
+
+    public void loadMultiplayer() {
+
+    }
+
+
+
 }

@@ -10,6 +10,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PathMeasure;
 import android.os.CountDownTimer;
+import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -22,15 +23,28 @@ import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.model.GraphUser;
 import com.google.gson.Gson;
+import com.parse.FindCallback;
+import com.parse.ParseClassName;
+import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
+import com.parse.ParseFile;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseTwitterUtils;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 
 import gamescreens.GameActivity;
@@ -41,23 +55,28 @@ import scotts.tots.traceme.R;
 /**
  * Created by Aaron on 3/23/2014.
  */
-public class Level {
-    static final String TAG = "LEVEL";
 
-    Bitmap framebuffer;
+public class Level{
+
+    // Level variables:
+    // Same thing as the traceArray, except it just has the traceFile bitmaps (used for optimization)
+    ArrayList<Bitmap> traceBitmaps;
+    ArrayList<TraceFile> traceArray;
+
+
     public static final int STATE_RUNNING = 1;
     public static final int STATE_PAUSED = 0;
     public static boolean GAME_OVER = false;
 
+
+
+
+    static final String TAG = "LEVEL";
+    Bitmap framebuffer;
     ArrayList<String> drawings;
-    ArrayList<TraceFile> traceArray;
-    // Same thing as the traceArray, except it just has the traceFile bitmaps (used for optimization)
-    ArrayList<Bitmap> traceBitmaps;
     ScoreManager scoreManager;
-
     Bitmap traceBitmap;
-
-    public static int TOTAL_TRACES = 3;
+    public static int TOTAL_TRACES = 8;
     public int currentTrace = 0;
     public int timeLeft = 15;
 
@@ -65,6 +84,7 @@ public class Level {
     Paint paint;
     GameLoop view;
     boolean countDown = true;
+    double ink = 0;
     CustomTimer timer = new CustomTimer(); // Our 3 second countdown timer.
     /**
      *
@@ -85,12 +105,15 @@ public class Level {
         setUpDrawing();
         traceArray = new ArrayList<TraceFile>();
         traceBitmaps = new ArrayList<Bitmap>();
-        TOTAL_TRACES = 4;
     }
+
+
+
+
+
 
     String message;
     double lastScore;
-    int currentPossiblePoints;
     public void updateMessage(int possibleMaxPoints) {
         // Actual points gotten.
         lastScore = scoreManager.getScore() - lastScore;
@@ -119,14 +142,11 @@ public class Level {
             // Removed saved paths.
             pathsBitmap.eraseColor(Color.TRANSPARENT);
         }
-
         // Game over
         else {
             saveHighScore();
             GameActivity.endGame();
         }
-
-
     }
 
     public void updateScore(DataPoint p) {
@@ -142,7 +162,6 @@ public class Level {
     }
 
     boolean isTouched = false;
-    boolean isTouchUp = false;
     boolean startTimer = true;
     /**************************************** UPDATING ************************************/
     public void update(float deltaTime) {
@@ -180,13 +199,15 @@ public class Level {
         // draw current Path
         mCanvas.drawPath(mPath, mPaint);
         mCanvas.drawText("Score: " + Integer.toString(getScore()), 20, 120, textPaint);
+
+        PathMeasure pm = new PathMeasure(mPath, false);
+
+        mCanvas.drawRect(100, 100, 150, 200, textPaint);
+        //Log.d("gameloop", "path length " + pm.getLength());
     }
 
     public void drawGameOver() {
-
     }
-
-
 
     /***************************** LOADING *****************************************/
     int numTracesLoaded = 1; //starts at 1
@@ -433,4 +454,110 @@ public class Level {
         newHighScore.put("score", newScore);
         newHighScore.saveInBackground();
     }
+
+
+
+
+
+
+
+    /** Saves this level to parse. To be used only when trying to create new levels **/
+    int filesUploaded = 0;
+    ParseObject levelObject;
+    ArrayList<ParseFile> fileArray;
+    public void createLevel() {
+        levelObject = new ParseObject("Level");
+
+        // Step 1: build trace data.-----------------------
+        JSONArray levelTraces = new JSONArray();
+        // Iterate through all the traces
+        for(int i = 0; i < traceArray.size(); i++) {
+            // Get the scoring points of each trace
+            ArrayList<DataPoint> points = traceArray.get(i).points;
+            // points are saved into this array.
+            JSONArray jsonPoints = new JSONArray();
+            for(int j = 0; j < points.size(); j++) {
+                JSONObject point = new JSONObject();
+                try {
+                    point.put("x", (int)(points.get(j).x));
+                    point.put("y", (int)(points.get(j).y));
+                    point.put("time", 0);
+                    jsonPoints.put(j, point);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            // Add the trace data to the array that holds all traces
+            try {
+                levelTraces.put(i, jsonPoints);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Step 2, build image data into parseFiles and upload to cloud.-------------------------
+        // When this is done, associate the files to our levelObject.
+        fileArray = new ArrayList<ParseFile>();
+
+        // Now save bitmaps for this level.
+        for (int i = 0; i < traceBitmaps.size(); i++) {
+
+            // Compress into PNG
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            boolean compress = traceBitmaps.get(i).compress(Bitmap.CompressFormat.PNG, 80, stream);
+            if (compress)
+                Log.d("parseNetwork", "compression success");
+            else
+                Log.d("parseNetwork", "compression failed");
+
+            // Convert bytes into ParseFile
+            final ParseFile file = new ParseFile("img.png", stream.toByteArray());
+            // Save each file to the database
+            try {
+                file.save();
+                fileArray.add(file);
+            } catch (ParseException e) {
+                Log.d("parseNetwork", "couldn't save file!");
+                e.printStackTrace();
+            }
+                /*
+                file.saveInBackground(new SaveCallback() {
+                    public void done(ParseException e) {
+                        if(e == null) {
+                            Log.d("parseNetwork", "file saved");
+                            fileArray.add(file);
+                            levelObject.put("img" + Integer.toString(filesUploaded), fileArray.get(i));
+                        }
+                    }
+                });*/
+        } // end for
+
+        // step 3: associate files to the parse object
+        for(int i = 0; i < fileArray.size(); i++) {
+            Log.d("parseNetwork", "associating file " + i);
+            levelObject.put("trace" + Integer.toString(i), fileArray.get(i));
+        }
+        // Add other level data
+        levelObject.put("trace_array", levelTraces); // this is a JSON array(traces) of JSONArrays(datapoints for each trace) that contain JSON objects with x and y keys(point coords for each datapoint)
+        levelObject.put("time_allowed", 20);
+        levelObject.put("level_number", 1);
+        levelObject.put("number_traces", TOTAL_TRACES);
+        levelObject.saveInBackground();
+    }
+
+    ParseObject retrievedLevel;
+    public void loadLevelFromParse() {
+        ParseQuery<ParseObject> levelQuery = ParseQuery.getQuery("Level");
+        levelQuery.whereEqualTo("level_number", 1);
+        levelQuery.setLimit(1);
+        try {
+            retrievedLevel = levelQuery.getFirst();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+
 }

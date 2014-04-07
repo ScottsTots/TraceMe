@@ -1,6 +1,7 @@
 package scotts.tots.traceme;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
@@ -10,6 +11,8 @@ import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,6 +21,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,10 +42,11 @@ import gamescreens.GameActivity;
 import gamescreens.HomeScreenFragment;
 import gamescreens.HighScoreFragment;
 import gamescreens.LevelSelectActivity;
+import helperClasses.Game;
 import helperClasses.GameStatus;
 
 public class MainScreen extends Activity {
-
+    Game game;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -51,6 +56,7 @@ public class MainScreen extends Activity {
     private String[] navMenuTitles;
     private android.app.Dialog dlog;
     private android.app.Dialog randDlog;
+    private Dialog chooseFriendDlog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +64,8 @@ public class MainScreen extends Activity {
 
         // This layout contains a navigation drawable and a fragment (defined as "content_frame"), which contains the game lobby etc..
         setContentView(R.layout.activity_main_screen);
+
+        game = ((TraceMeApplication)this.getApplicationContext()).getGame();
 
         //mTitle is the action bar's title when drawer is closed.
         // mDrawer title is the title that appears when the drawer opens.
@@ -130,15 +138,20 @@ public class MainScreen extends Activity {
                 case R.id.singlePlayer:
                     Log.d("Mainscreen.java", "SinglePlayer Button Clicked.");
                     dlog.dismiss();
+                    game.setMultiplayer(false);
                     startActivity(new Intent(MainScreen.this, LevelSelectActivity.class));
                     break;
                 case R.id.randomOpponentButton:
                     Log.d("Mainscreen.java", "RandomOpponent Button Clicked.");
                     dlog.dismiss();
+                    game.setMultiplayer(true);
                     findRandomOpponent();
                     break;
                 case R.id.challengeButton:
                     Log.d("Mainscreen.java", "Challenge Button Clicked.");
+                    dlog.dismiss();
+                    game.setMultiplayer(true);
+                    findFriendOpponent();
                     break;
             }
         }
@@ -198,7 +211,6 @@ public class MainScreen extends Activity {
         if (position == 0) {
             // If we're not trying to logout, we might try to change our content_view fragment based
             // on the item we clicked, so we do the following steps:
-
 
             // update the main content by replacing fragments
             Fragment fragment = new HomeScreenFragment();
@@ -303,10 +315,96 @@ public class MainScreen extends Activity {
         randDlog.show();
     }
 
+
+    String playerTwoName;
+    ParseUser playerTwoUser;
+
+    public void findFriendOpponent() {
+
+        // Set up dialog
+        chooseFriendDlog = new android.app.Dialog(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth);
+        chooseFriendDlog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        chooseFriendDlog.setContentView(R.layout.dialog_choose_friend);
+
+
+        // Set up edit text
+        final EditText editText = (EditText) chooseFriendDlog.findViewById(R.id.friendName);
+       /* editText.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+                playerTwoName = s.toString();
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
+*/
+
+        Button startGameButton = (Button) chooseFriendDlog.findViewById(R.id.startButton);
+        startGameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                playerTwoName = editText.getText().toString().trim();
+                // PlayerTwo validation
+                if(playerTwoName != null) {
+                    // verify playerTwo is not current user
+                    if(playerTwoName.equals(ParseUser.getCurrentUser().getUsername())) {
+                        Toast.makeText(MainScreen.this, "This ain't single player mode :(" ,
+                                Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    // Verify player exists
+                    if((playerTwoUser = getPlayer(playerTwoName)) == null) {
+                        Toast.makeText(MainScreen.this, "Username " + "\"" + playerTwoName + "\"does not exist." ,
+                                Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                } else { // empty field
+                    Toast.makeText(MainScreen.this, "Player Two's username required to play!" ,
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+
+                // All good to go!
+                // Update Game object with our playerOne and playerTwo, and start Level select
+                game.setPlayerOne(ParseUser.getCurrentUser());
+                game.setPlayerTwo(playerTwoUser);
+                game.setGameStatus(GameStatus.IN_PROGRESS);
+
+
+                startActivity(new Intent(MainScreen.this, LevelSelectActivity.class));
+                chooseFriendDlog.dismiss();
+            }
+        });
+        chooseFriendDlog.show();
+
+    }
+
+
+
+    private ParseUser getPlayer(String s) {
+        ParseQuery<ParseUser> query = ParseUser.getQuery();
+        query.whereEqualTo("username", s);
+        Log.d("parseNetwork", "verifying username availability");
+        try {
+            return query.getFirst();
+        } catch (ParseException e1) { // if no results, player doesn't exist
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+            return null;
+        }
+    }
+
+
+
     /**
      * When using the ActionBarDrawerToggle, you must call it during
      * onPostCreate() and onConfigurationChanged()...
      */
+
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
