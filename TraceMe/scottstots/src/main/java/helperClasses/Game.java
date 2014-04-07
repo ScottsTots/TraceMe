@@ -90,6 +90,7 @@ public class Game extends ParseObject {
     }
 
     public void setMultiplayer(boolean b) {
+        isMultiplayer = b;
         put("multiplayer", b);
 
     }

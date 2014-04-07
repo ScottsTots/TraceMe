@@ -71,9 +71,8 @@ import scotts.tots.traceme.TraceMeApplication;
  * See DrawingBoard.convertToPoints for the details.
  */
 public class GameActivity extends Activity {
-    Game game;
     static String TAG = "GameActivity";
-
+    Game game;
     // Contains all points for the trace separated by the path they were at.
     // This array is used to do the drawing animation in ViewingBoard
     public static ArrayList<CustomPath> pathsArray;
@@ -152,7 +151,8 @@ public class GameActivity extends Activity {
         protected Void doInBackground(String... params) {
             if (params[0].equals("load")) {
                 gameLoop = (GameLoop) findViewById(R.id.surfaceView);
-                level = new Level(game.getLevelNum(), ctx, gameLoop);
+
+                level = new Level(1, ctx, gameLoop);
 
                 // Loads each trace
                 for(int i = 0; i < level.TOTAL_TRACES; i++) {
@@ -160,6 +160,7 @@ public class GameActivity extends Activity {
                     publishProgress((int) (((i+1) / (double)level.TOTAL_TRACES) * 100));
                 }
                 gameLoop.setLevel(level);
+               // level.createLevel();
             }
             return null;
         }
@@ -167,6 +168,7 @@ public class GameActivity extends Activity {
         @Override
         protected void onPostExecute(Void param) {
             loadingDialog.dismiss();
+
             startCountDownTimer();
         }
 
@@ -231,6 +233,9 @@ public class GameActivity extends Activity {
     }
 
 
+    public void createLevel() {
+
+    }
 
     public void loadMultiplayer() {
 

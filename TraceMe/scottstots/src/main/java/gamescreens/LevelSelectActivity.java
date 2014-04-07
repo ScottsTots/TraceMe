@@ -15,7 +15,7 @@ import scotts.tots.traceme.TraceMeApplication;
 public class LevelSelectActivity extends Activity {
     private TextView level1;
 
-    Game game = ((TraceMeApplication)this.getApplicationContext()).getGame();
+    Game game;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +24,7 @@ public class LevelSelectActivity extends Activity {
 
         level1 = (TextView) findViewById(R.id.level1);
 
-
+        game = ((TraceMeApplication)this.getApplicationContext()).getGame();
         level1.setOnClickListener(viewListener);
     }
 

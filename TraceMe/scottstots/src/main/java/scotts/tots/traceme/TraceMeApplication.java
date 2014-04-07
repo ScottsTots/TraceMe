@@ -8,11 +8,14 @@ import com.parse.Parse;
 import com.parse.ParseACL;
 import com.parse.ParseAnalytics;
 import com.parse.ParseInstallation;
+import com.parse.ParseObject;
 import com.parse.ParseTwitterUtils;
 import com.parse.PushService;
 import com.parse.ParseFacebookUtils;
 
 import helperClasses.Game;
+import helperClasses.Level;
+import helperClasses.ParseLevel;
 
 /**
  * Created by matthewebeweber on 3/5/14.
@@ -44,7 +47,8 @@ public class TraceMeApplication extends Application {
 
         preferences = getSharedPreferences("scotts.tots.traceme", Context.MODE_PRIVATE);
 
-
+        ParseObject.registerSubclass(Game.class);
+       // ParseObject.registerSubclass(Level.class);
         // Game object to be used throughout the application
         game = new Game();
     }

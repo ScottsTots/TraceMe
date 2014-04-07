@@ -65,6 +65,8 @@ public class MainScreen extends Activity {
         // This layout contains a navigation drawable and a fragment (defined as "content_frame"), which contains the game lobby etc..
         setContentView(R.layout.activity_main_screen);
 
+        game = ((TraceMeApplication)this.getApplicationContext()).getGame();
+
         //mTitle is the action bar's title when drawer is closed.
         // mDrawer title is the title that appears when the drawer opens.
         mTitle = getResources().getString(R.string.title_activity_main_screen);
@@ -316,16 +318,17 @@ public class MainScreen extends Activity {
 
     String playerTwoName;
     ParseUser playerTwoUser;
+
     public void findFriendOpponent() {
 
         // Set up dialog
         chooseFriendDlog = new android.app.Dialog(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth);
         chooseFriendDlog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        chooseFriendDlog.setContentView(R.layout.message);
+        chooseFriendDlog.setContentView(R.layout.dialog_choose_friend);
 
 
         // Set up edit text
-        final EditText editText = (EditText) dlog.findViewById(R.id.friendName);
+        final EditText editText = (EditText) chooseFriendDlog.findViewById(R.id.friendName);
        /* editText.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
                 playerTwoName = s.toString();
@@ -374,9 +377,10 @@ public class MainScreen extends Activity {
 
                 startActivity(new Intent(MainScreen.this, LevelSelectActivity.class));
                 chooseFriendDlog.dismiss();
-
             }
         });
+        chooseFriendDlog.show();
+
     }
 
 
