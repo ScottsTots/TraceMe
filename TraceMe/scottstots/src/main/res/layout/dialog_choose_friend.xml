@@ -15,6 +15,7 @@
         android:text="Choose Your Friend"
         android:textSize="20sp" />
 
+    <requestFocus />
     <EditText
         android:id="@+id/friendName"
         android:layout_width="fill_parent"

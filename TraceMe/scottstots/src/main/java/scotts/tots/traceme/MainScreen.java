@@ -5,9 +5,11 @@ import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
@@ -40,11 +42,13 @@ import java.util.List;
 
 import gamescreens.AboutFrag;
 import gamescreens.GameActivity;
+import gamescreens.GameLoop;
 import gamescreens.HomeScreenFragment;
 import gamescreens.HighScoreFragment;
 import gamescreens.LevelSelectFragment;
 import helperClasses.Game;
 import helperClasses.GameStatus;
+import helperClasses.Level;
 
 public class MainScreen extends Activity {
     Game game;
@@ -58,6 +62,7 @@ public class MainScreen extends Activity {
     private android.app.Dialog dlog;
     private android.app.Dialog randDlog;
     private Dialog chooseFriendDlog;
+    ProgressDialog loadingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +72,9 @@ public class MainScreen extends Activity {
         setContentView(R.layout.activity_main_screen);
 
         game = ((TraceMeApplication)this.getApplicationContext()).getGame();
+        loadingDialog = new ProgressDialog(this);
+        loadingDialog.setMessage("Loading...");
+        loadingDialog.setCanceledOnTouchOutside(false);
 
         //mTitle is the action bar's title when drawer is closed.
         // mDrawer title is the title that appears when the drawer opens.
@@ -359,18 +367,8 @@ public class MainScreen extends Activity {
                 playerTwoName = editText.getText().toString().trim();
                 // PlayerTwo validation
                 if(playerTwoName != null) {
-                    // verify playerTwo is not current user
-                    if(playerTwoName.equals(ParseUser.getCurrentUser().getUsername())) {
-                        Toast.makeText(MainScreen.this, "This ain't single player mode :(" ,
-                                Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    // Verify player exists
-                    if((playerTwoUser = getPlayer(playerTwoName)) == null) {
-                        Toast.makeText(MainScreen.this, "Username " + "\"" + playerTwoName + "\"does not exist." ,
-                                Toast.LENGTH_SHORT).show();
-                        return;
-                    }
+                    new checkUsernameTask().execute(playerTwoName);
+
                 } else { // empty field
                     Toast.makeText(MainScreen.this, "Player Two's username required to play!" ,
                             Toast.LENGTH_SHORT).show();
@@ -378,15 +376,10 @@ public class MainScreen extends Activity {
                 }
 
 
-                // All good to go!
-                // Update Game object with our playerOne and playerTwo, and start Level select
-                game.setPlayerOne(ParseUser.getCurrentUser());
-                game.setPlayerTwo(playerTwoUser);
-                game.setGameStatus(GameStatus.IN_PROGRESS);
-
 
                 startActivity(new Intent(MainScreen.this, LevelSelectFragment.class));
                 chooseFriendDlog.dismiss();
+
             }
         });
         chooseFriendDlog.show();
@@ -394,6 +387,45 @@ public class MainScreen extends Activity {
     }
 
 
+
+    public class checkUsernameTask extends AsyncTask<String, Integer, ParseUser> {
+        @Override
+        protected void onPreExecute() {
+            loadingDialog.show();
+        }
+
+        @Override
+        protected ParseUser doInBackground(String... params) {
+            return getPlayer(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(ParseUser user) {
+            loadingDialog.dismiss();
+            // verify playerTwo is not current user
+            if (playerTwoName.equals(ParseUser.getCurrentUser().getUsername())) {
+                Toast.makeText(MainScreen.this, "This ain't single player mode :(",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+            // Verify player exists
+            if (user  == null) {
+                Toast.makeText(MainScreen.this, "Username " + "\"" + playerTwoName + "\"does not exist.",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // All good to go!
+            // Update Game object with our playerOne and playerTwo, and start Level select
+            game.setPlayerOne(ParseUser.getCurrentUser());
+            game.setPlayerTwo(user);
+            game.setGameStatus(GameStatus.IN_PROGRESS);
+
+
+            startActivity(new Intent(MainScreen.this, LevelSelectFragment.class));
+            chooseFriendDlog.dismiss();
+        }
+    }
 
     private ParseUser getPlayer(String s) {
         ParseQuery<ParseUser> query = ParseUser.getQuery();
