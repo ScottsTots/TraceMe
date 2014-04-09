@@ -146,18 +146,11 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
                     for (ParseObject game : parseObjects) {
                         // TODO: Make this a switch statement instead. Tried, but got error so come back.
 
-                        if (game.getInt("game_status") == GameStatus.WAITING_FOR_OPPONENT.id) {         // Waiting on opponent
-                            challenges.add(new GameMenuListItem("Awaiting opponent..", game.getUpdatedAt()));
-                        } else if (game.getInt("game_status") == GameStatus.IN_PROGRESS.id) {           // Game currently in progress
-                            ParseUser opponent = (game.getParseUser("player_one").getUsername().equals(ParseUser.getCurrentUser().getUsername())) ? game.getParseUser("player_two") : game.getParseUser("player_one");
-                            currentgames.add(new GameMenuListItem("Game with " + opponent.getUsername(), game.getUpdatedAt()));
-                        } else if (game.getInt("game_status") == GameStatus.CHALLENGED.id) {            // Display a game challenge
-                            // The current user is the challenger
-                            if (game.getParseUser("player_one").getUsername().equals(ParseUser.getCurrentUser().getUsername())) {
-                                challenges.add(new GameMenuListItem("Waiting for response from " + game.getParseUser("player_two").getUsername(), game.getUpdatedAt()));
-                            } else {        // The user has been challenged by 'player_one'
-                                challenges.add(new GameMenuListItem("Challenged by " + game.getParseUser("player_one").getUsername(), game.getUpdatedAt()));
-                            }
+                        if (game.getInt("game_status") == GameStatus.WAITING_FOR_OPPONENT.id ||
+                                game.getInt("game_status") == GameStatus.CHALLENGED.id) {         // Waiting on opponent
+                            challenges.add(new GameMenuListItem(game));
+                        } else if (game.getInt("game_status") == GameStatus.IN_PROGRESS.id) {
+                            currentgames.add(new GameMenuListItem(game));
                         } else if (game.getInt("game_status") == GameStatus.GAME_OVER.id) {
                             // TODO: Display the game over list items
                         }

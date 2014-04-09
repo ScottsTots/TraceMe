@@ -62,7 +62,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         TextView txtListTime = (TextView) convertView
                 .findViewById(R.id.time_item);
 
-        txtListUsername.setText(child.getUsername());
+        txtListUsername.setText(child.getStatusString());
         txtListTime.setText(child.getLastUpdatedString());
         return convertView;
     }
