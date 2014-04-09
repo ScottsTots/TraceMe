@@ -118,29 +118,11 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
 
         // Adding child data
         final List<GameMenuListItem> challenges = new ArrayList<GameMenuListItem>();
-
-        // Query for this user's current games w/out an opponent
-        ParseQuery<ParseObject> awaitingQuery = ParseQuery.getQuery("Game");
-        awaitingQuery.orderByDescending("updatedAt");
-        awaitingQuery.whereEqualTo("player_one", ParseUser.getCurrentUser());
-        awaitingQuery.whereEqualTo("game_status", GameStatus.WAITING_FOR_OPPONENT.id);
-        awaitingQuery.findInBackground(new FindCallback<ParseObject>() {
-            public void done(List<ParseObject> gameList, ParseException e) {
-                if (e == null) {
-                    for (ParseObject game : gameList) {
-                        challenges.add(new GameMenuListItem("Waiting for opponent..", game.getUpdatedAt()));
-                    }
-                    listAdapter.notifyDataSetChanged();
-                } else {
-                    Log.d("prepareListData", "Error: " + e.getMessage());
-                }
-            }
-        });
+        final List<GameMenuListItem> currentgames = new ArrayList<GameMenuListItem>();
+        final List<GameMenuListItem> pastgames = new ArrayList<GameMenuListItem>();
 
         // TODO: Find challenges involving this current user.
         // TODO: Awaiting opponent should have click and hold to cancel
-
-        final List<GameMenuListItem> currentgames = new ArrayList<GameMenuListItem>();
 
         ParseQuery<ParseObject> currentGameQuery1 = ParseQuery.getQuery("Game");
         currentGameQuery1.whereEqualTo("player_one", ParseUser.getCurrentUser());
@@ -162,18 +144,22 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
             public void done(List<ParseObject> parseObjects, ParseException e) {
                 if (e == null) {    // Successful query
                     for (ParseObject game : parseObjects) {
-
                         // TODO: Make this a switch statement instead. Tried, but got error so come back.
-                        if (game.getInt("game_status") == GameStatus.IN_PROGRESS.id) {          // Game currently in progress
+
+                        if (game.getInt("game_status") == GameStatus.WAITING_FOR_OPPONENT.id) {         // Waiting on opponent
+                            challenges.add(new GameMenuListItem("Awaiting opponent..", game.getUpdatedAt()));
+                        } else if (game.getInt("game_status") == GameStatus.IN_PROGRESS.id) {           // Game currently in progress
                             ParseUser opponent = (game.getParseUser("player_one").getUsername().equals(ParseUser.getCurrentUser().getUsername())) ? game.getParseUser("player_two") : game.getParseUser("player_one");
-                            currentgames.add(new GameMenuListItem(opponent.getUsername(), game.getUpdatedAt()));
-                        } else if (game.getInt("game_status") == GameStatus.CHALLENGED.id) {    // Display a game challenge
+                            currentgames.add(new GameMenuListItem("Game with " + opponent.getUsername(), game.getUpdatedAt()));
+                        } else if (game.getInt("game_status") == GameStatus.CHALLENGED.id) {            // Display a game challenge
                             // The current user is the challenger
                             if (game.getParseUser("player_one").getUsername().equals(ParseUser.getCurrentUser().getUsername())) {
                                 challenges.add(new GameMenuListItem("Waiting for response from " + game.getParseUser("player_two").getUsername(), game.getUpdatedAt()));
                             } else {        // The user has been challenged by 'player_one'
                                 challenges.add(new GameMenuListItem("Challenged by " + game.getParseUser("player_one").getUsername(), game.getUpdatedAt()));
                             }
+                        } else if (game.getInt("game_status") == GameStatus.GAME_OVER.id) {
+                            // TODO: Display the game over list items
                         }
                     }
                     listAdapter.notifyDataSetChanged();
@@ -182,9 +168,6 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
                 }
             }
         });
-
-
-        List<GameMenuListItem> pastgames = new ArrayList<GameMenuListItem>();
 
         //New Game Button == listDataHeader.get(0)
         listDataChild.put(listDataHeader.get(1), challenges); // Header, Child data
