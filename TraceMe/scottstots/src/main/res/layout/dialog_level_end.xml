@@ -12,12 +12,11 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Level Results"
+        android:textSize="30sp"
         android:id="@+id/textView"
         android:textColor="@color/darker_black"
         android:gravity="fill_vertical"
-        android:textSize="25sp"
         android:layout_gravity="center" />
 
     <LinearLayout
