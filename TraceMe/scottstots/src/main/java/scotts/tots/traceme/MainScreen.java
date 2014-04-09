@@ -364,9 +364,6 @@ public class MainScreen extends Activity {
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
-
-
-
             }
         });
         chooseFriendDlog.show();
@@ -407,7 +404,6 @@ public class MainScreen extends Activity {
             game.setPlayerOne(ParseUser.getCurrentUser());
             game.setPlayerTwo(user);
             game.setGameStatus(GameStatus.IN_PROGRESS);
-
 
             startActivity(new Intent(MainScreen.this, LevelSelectActivity.class));
             chooseFriendDlog.dismiss();
