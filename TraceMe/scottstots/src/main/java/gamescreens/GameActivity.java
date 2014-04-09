@@ -30,6 +30,7 @@ import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.model.GraphUser;
 import com.google.gson.Gson;
+import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseObject;
 import com.parse.ParseTwitterUtils;
@@ -72,7 +73,7 @@ import scotts.tots.traceme.TraceMeApplication;
  */
 public class GameActivity extends Activity {
     static String TAG = "GameActivity";
-    Game game;
+    static Game game;
     // Contains all points for the trace separated by the path they were at.
     // This array is used to do the drawing animation in ViewingBoard
     public static ArrayList<CustomPath> pathsArray;
@@ -89,7 +90,7 @@ public class GameActivity extends Activity {
     private Timer myTimer;
     private long mStartTime;
 
-    ProgressDialog loadingDialog;
+    static ProgressDialog loadingDialog;
     static Dialog endGameDlog;
     static TextView scoreText;
 
@@ -118,11 +119,14 @@ public class GameActivity extends Activity {
         loadingDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         loadingDialog.setProgress(0);
         loadingDialog.setMax(100);
+
         if(game.isMultiplayer())
             new LoadTask().execute("loadOnline");
         else {
             new LoadTask().execute("load");
         }
+
+
 
         // UI
         countdownTimerView = (TextView) findViewById(R.id.countdown_timer);
@@ -140,6 +144,43 @@ public class GameActivity extends Activity {
         });
     }
 
+    // Called by the level object when there's no more traces.
+    public static void endGame() {
+        gameLoop.running = false;
+        new SaveGame().execute(game);
+        // Sets the text on the dialog box that shows the final score.. todo: reorganize or initialize it here
+        scoreText.setText(Integer.toString(level.getScore()));
+        endGameDlog.show();
+
+        // Notify player2:
+
+    }
+
+
+    public static class SaveGame extends AsyncTask<Game, Integer, Void> {
+        @Override
+        protected void onPreExecute() {
+            loadingDialog.show();
+        }
+        @Override
+        protected Void doInBackground(Game... params) {
+            Game game = params[0];
+            try {
+                game.save();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void param) {
+            loadingDialog.dismiss();
+        }
+        @Override
+        protected void onProgressUpdate(Integer... progress) {
+        }
+
+    }
 
     public class LoadTask extends AsyncTask<String, Integer, Void> {
         @Override
@@ -231,21 +272,9 @@ public class GameActivity extends Activity {
         }
     };
 
-    // Called by the level object when there's no more traces.
-    public static void endGame() {
-        gameLoop.running = false;
-        scoreText.setText(Integer.toString(level.getScore()));
-        endGameDlog.show();
-    }
 
 
-    public void createLevel() {
 
-    }
-
-    public void loadMultiplayer() {
-
-    }
 
 
 

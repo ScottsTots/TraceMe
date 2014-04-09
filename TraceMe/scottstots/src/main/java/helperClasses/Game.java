@@ -6,6 +6,7 @@ import android.view.View;
 
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
@@ -97,6 +98,10 @@ public class Game extends ParseObject {
 
     public boolean isMultiplayer() {
         return isMultiplayer;
+    }
+
+    public static ParseQuery<Game> getQuery() {
+        return ParseQuery.getQuery(Game.class);
     }
 
 }

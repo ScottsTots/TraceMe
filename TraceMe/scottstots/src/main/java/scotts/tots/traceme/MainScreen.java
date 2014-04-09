@@ -290,7 +290,7 @@ public class MainScreen extends Activity {
             List<ParseObject> gameList = query.find();
 
             if (gameList.size() == 0) {         // No games, create a new one awaiting an opponent
-                ParseObject game = new ParseObject("Game");
+                ParseObject game = ParseObject.create("Game");
                 game.put("player_one", ParseUser.getCurrentUser());
                 game.put("game_status", GameStatus.WAITING_FOR_OPPONENT.id);
                 game.saveInBackground();
@@ -364,9 +364,6 @@ public class MainScreen extends Activity {
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
-
-
-
             }
         });
         chooseFriendDlog.show();
@@ -407,7 +404,6 @@ public class MainScreen extends Activity {
             game.setPlayerOne(ParseUser.getCurrentUser());
             game.setPlayerTwo(user);
             game.setGameStatus(GameStatus.IN_PROGRESS);
-
 
             startActivity(new Intent(MainScreen.this, LevelSelectActivity.class));
             chooseFriendDlog.dismiss();
