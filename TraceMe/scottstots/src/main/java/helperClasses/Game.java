@@ -31,6 +31,7 @@ public class Game extends ParseObject {
 
     private int levelNum = 1;
     public Level level;
+
     // For singlePlayer
     public Game() {
 

@@ -36,6 +36,7 @@ import com.parse.ParseObject;
 import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.util.List;
 
@@ -329,36 +330,24 @@ public class MainScreen extends Activity {
 
     public void findFriendOpponent() {
 
-        // Set up dialog
+        // Set up the dialog
         chooseFriendDlog = new android.app.Dialog(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth);
         chooseFriendDlog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         chooseFriendDlog.setContentView(R.layout.dialog_choose_friend);
 
 
-        // Set up edit text
+        // Set up the edit text
         final EditText editText = (EditText) chooseFriendDlog.findViewById(R.id.friendName);
-       /* editText.addTextChangedListener(new TextWatcher() {
-            public void afterTextChanged(Editable s) {
-                playerTwoName = s.toString();
-            }
-
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-        });
-*/
 
         Button startGameButton = (Button) chooseFriendDlog.findViewById(R.id.startButton);
         startGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 playerTwoName = editText.getText().toString().trim();
+
                 // PlayerTwo validation
                 if(playerTwoName != null) {
                     new checkUsernameTask().execute(playerTwoName);
-
                 } else { // empty field
                     Toast.makeText(MainScreen.this, "Player Two's username required to play!" ,
                             Toast.LENGTH_SHORT).show();
@@ -386,26 +375,39 @@ public class MainScreen extends Activity {
         @Override
         protected void onPostExecute(ParseUser user) {
             loadingDialog.dismiss();
-            // verify playerTwo is not current user
+            // You cannot challenge yourself
             if (playerTwoName.equals(ParseUser.getCurrentUser().getUsername())) {
-                Toast.makeText(MainScreen.this, "This ain't single player mode :(",
+                Toast.makeText(MainScreen.this, "You cannot challenge yourself :(",
                         Toast.LENGTH_SHORT).show();
                 return;
             }
-            // Verify player exists
+            // Verify the given player exists
             if (user  == null) {
                 Toast.makeText(MainScreen.this, "Username " + "\"" + playerTwoName + "\"does not exist.",
                         Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // All good to go!
-            // Update Game object with our playerOne and playerTwo, and start Level select
-            game.setPlayerOne(ParseUser.getCurrentUser());
-            game.setPlayerTwo(user);
-            game.setGameStatus(GameStatus.IN_PROGRESS);
+            // At this point you're good to go.. Create the new Challenge object.
+            // TODO: For now I am adding a game object this way, may want to figure out using Game class
+            ParseObject newChallenge = ParseObject.create("Game");
+            newChallenge.put("game_status", GameStatus.CHALLENGED.id);
+            newChallenge.put("player_one", ParseUser.getCurrentUser());
+            newChallenge.put("player_two", user);
+            newChallenge.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException ex) {
+                    if (ex == null) {
+                        Log.d("Challenge", "Succesfully created challenge object.");
+                    } else {
+                        Log.d("Challenge", "Error creating challenge object.");
+                        ex.printStackTrace();
+                    }
+                }
+            });
 
-            startActivity(new Intent(MainScreen.this, LevelSelectActivity.class));
+            // TODO: Should this take them to the level select, or simply create a new 'challenge' game?
+            // startActivity(new Intent(MainScreen.this, LevelSelectActivity.class));
             chooseFriendDlog.dismiss();
         }
     }

@@ -7,7 +7,9 @@ package helperClasses;
 public enum GameStatus {
     WAITING_FOR_OPPONENT("Waiting on Opponent..", 0),
     IN_PROGRESS("Game in Progress..", 1),
-    GAME_OVER("Game Over..", 2);
+    GAME_OVER("Game Over..", 2),
+    CHALLENGED("Challenged", 3),
+    CHALLENGE_DECLINED("Challenge Declined", 4);
 
     private int intValue;
     private String stringValue;
