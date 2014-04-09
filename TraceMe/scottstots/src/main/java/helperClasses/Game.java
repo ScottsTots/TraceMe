@@ -18,7 +18,7 @@ import gamescreens.GameLoop;
  */
 
 /**
- * The Game class will switch and load levels, save the user's path data
+ * The Game class will determine which level is loaded, save the user's path data
  * manage player turns, and communicate with the network.
  */
 
@@ -104,4 +104,14 @@ public class Game extends ParseObject {
         return ParseQuery.getQuery(Game.class);
     }
 
+    /**
+     * When we finish a multiplayer game, we want to save some things online:
+     *      1. All our paths drawn (the custom paths array)
+     *           TODO add score per point drawn in addition to the time it was drawn
+     *      3. We also have to check whether this 
+     */
+    public void saveUserDrawings() {
+
+
+    }
 }

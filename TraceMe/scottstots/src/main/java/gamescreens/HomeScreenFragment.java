@@ -104,6 +104,7 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
 //            }
 //        });
 
+        listAdapter.notifyDataSetChanged();
     }
 
     private void prepareListData() {
@@ -196,11 +197,11 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
 
         //Retrieves games he/she belongs to, no matter if there is or there isn't another player.
         ParseQuery<Game> query = game.getQuery();
-        query.whereEqualTo("player_one", ParseUser.getCurrentUser().getUsername());
+        query.whereEqualTo("player_one", ParseUser.getCurrentUser());
         query.whereEqualTo("game_status", GameStatus.IN_PROGRESS.id);
 
         ParseQuery<Game> query2 = game.getQuery();
-        query2.whereEqualTo("player_two", ParseUser.getCurrentUser().getUsername());
+        query2.whereEqualTo("player_two", ParseUser.getCurrentUser());
         query2.whereEqualTo("game_status", GameStatus.IN_PROGRESS.id);
 
         List<ParseQuery<Game>> queries = new ArrayList<ParseQuery<Game>>();

@@ -323,10 +323,8 @@ public class MainScreen extends Activity {
         randDlog.show();
     }
 
-
+    // Saves the name from the editText the user inputs
     String playerTwoName;
-    ParseUser playerTwoUser;
-
     public void findFriendOpponent() {
 
         // Set up dialog
@@ -337,18 +335,6 @@ public class MainScreen extends Activity {
 
         // Set up edit text
         final EditText editText = (EditText) chooseFriendDlog.findViewById(R.id.friendName);
-       /* editText.addTextChangedListener(new TextWatcher() {
-            public void afterTextChanged(Editable s) {
-                playerTwoName = s.toString();
-            }
-
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-        });
-*/
 
         Button startGameButton = (Button) chooseFriendDlog.findViewById(R.id.startButton);
         startGameButton.setOnClickListener(new View.OnClickListener() {

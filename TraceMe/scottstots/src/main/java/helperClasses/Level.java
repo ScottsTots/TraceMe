@@ -611,6 +611,7 @@ public class Level{
             TraceFile trace = new TraceFile(traceBitmaps.get(i), tracePoints);
             traceArray.add(trace);
         }
+        // Finally initialize the score manager
         scoreManager = new ScoreManager(traceArray.get(0));
     }
 
