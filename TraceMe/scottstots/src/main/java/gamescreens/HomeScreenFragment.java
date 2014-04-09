@@ -142,7 +142,6 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
 
         final List<GameMenuListItem> currentgames = new ArrayList<GameMenuListItem>();
 
-
         ParseQuery<ParseObject> currentGameQuery1 = ParseQuery.getQuery("Game");
         currentGameQuery1.whereEqualTo("player_one", ParseUser.getCurrentUser());
         currentGameQuery1.whereEqualTo("game_status", GameStatus.IN_PROGRESS.id);
@@ -157,25 +156,18 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
 
         ParseQuery<ParseObject> combinedQuery = ParseQuery.or(queries);
         combinedQuery.orderByDescending("updatedAt");
-        combinedQuery.include("User");  // TODO: Which one of these is actually the one we want
-        combinedQuery.include("_User");
+        combinedQuery.include("player_one");
+        combinedQuery.include("player_two");
 
         combinedQuery.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> parseObjects, ParseException e) {
                 if (e == null) {    // Successful query
                     for (ParseObject game : parseObjects) {
-
-                        ParseUser opponent = (game.getParseUser("player_one") == ParseUser.getCurrentUser()) ? game.getParseUser("player_two") : game.getParseUser("player_one");
-                        
-                        try {
-                            opponent.fetchIfNeeded();
-                            currentgames.add(new GameMenuListItem(opponent.getUsername(), game.getUpdatedAt()));
-                        } catch (ParseException e1) {
-                            e1.printStackTrace();
-                        }
-                        listAdapter.notifyDataSetChanged();
+                        ParseUser opponent = (game.getParseUser("player_one").getUsername().equals(ParseUser.getCurrentUser().getUsername())) ? game.getParseUser("player_two") : game.getParseUser("player_one");
+                        currentgames.add(new GameMenuListItem(opponent.getUsername(), game.getUpdatedAt()));
                     }
+                    listAdapter.notifyDataSetChanged();
                 } else {
                     Log.d("prepareListData", "Error: " + e.getMessage());
                 }
