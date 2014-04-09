@@ -141,89 +141,32 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
         // TODO: Find challenges involving this current user.
         // TODO: Awaiting opponent should have click and hold to cancel
 
-
-        // TODO: Collapse these two into one query
         final List<GameMenuListItem> currentgames = new ArrayList<GameMenuListItem>();
-        // For player one
-       /* ParseQuery<ParseObject> currentGameQuery1 = ParseQuery.getQuery("Game");
+
+        ParseQuery<ParseObject> currentGameQuery1 = ParseQuery.getQuery("Game");
         currentGameQuery1.whereEqualTo("player_one", ParseUser.getCurrentUser());
         currentGameQuery1.whereEqualTo("game_status", GameStatus.IN_PROGRESS.id);
-        currentGameQuery1.orderByDescending("updatedAt");
-        currentGameQuery1.include("_User");
-        currentGameQuery1.findInBackground(new FindCallback<ParseObject>() {
-            public void done(List<ParseObject> gameList, ParseException e) {
-                if (e == null) {
-                    for (ParseObject game :  gameList) {
-                        ParseUser user = game.getParseUser("player_two");
-                        try {
-                            user.fetchIfNeeded();
-                            currentgames.add(new GameMenuListItem(user.getUsername(), game.getUpdatedAt()));
-                        } catch (ParseException e1) {
-                            e1.printStackTrace();
-                        }
-                    }
-                    listAdapter.notifyDataSetChanged();
-                } else {
-                    Log.d("prepareListData", "Error: " + e.getMessage());
-                }
-            }
-        });
 
         ParseQuery<ParseObject> currentGameQuery2 = ParseQuery.getQuery("Game");
         currentGameQuery2.whereEqualTo("player_two", ParseUser.getCurrentUser());
         currentGameQuery2.whereEqualTo("game_status", GameStatus.IN_PROGRESS.id);
-        currentGameQuery2.orderByDescending("updatedAt");
-        currentGameQuery2.include("_User");
-        currentGameQuery2.findInBackground(new FindCallback<ParseObject>() {
-            public void done(List<ParseObject> gameList, ParseException e) {
-                if (e == null) {
-                    for (ParseObject game :  gameList) {
-                        ParseUser user = game.getParseUser("player_one");
-                        try {
-                            user.fetchIfNeeded();
-                            currentgames.add(new GameMenuListItem(user.getUsername(), game.getUpdatedAt()));
-                        } catch (ParseException e1) {
-                            e1.printStackTrace();
-                        }
-                    }
-                    listAdapter.notifyDataSetChanged();
-                } else {
-                    Log.d("prepareListData", "Error: " + e.getMessage());
-                }
-            }
-        });
-        */
 
+        List<ParseQuery<ParseObject>> queries = new ArrayList<ParseQuery<ParseObject>>();
+        queries.add(currentGameQuery1);
+        queries.add(currentGameQuery2);
 
-        //Retrieves games he/she belongs to, no matter if there is or there isn't another player.
-        ParseQuery<Game> query = game.getQuery();
-        query.whereEqualTo("player_one", ParseUser.getCurrentUser());
-        query.whereEqualTo("game_status", GameStatus.IN_PROGRESS.id);
+        ParseQuery<ParseObject> combinedQuery = ParseQuery.or(queries);
+        combinedQuery.orderByDescending("updatedAt");
+        combinedQuery.include("player_one");
+        combinedQuery.include("player_two");
 
-        ParseQuery<Game> query2 = game.getQuery();
-        query2.whereEqualTo("player_two", ParseUser.getCurrentUser());
-        query2.whereEqualTo("game_status", GameStatus.IN_PROGRESS.id);
-
-        List<ParseQuery<Game>> queries = new ArrayList<ParseQuery<Game>>();
-        queries.add(query);
-        queries.add(query2);
-
-        // Gets the "or" of these two queries
-        ParseQuery<Game> mainQuery = ParseQuery.or(queries);
-        mainQuery.orderByDescending("updatedAt");
-        mainQuery.setLimit(10);
-
-        mainQuery.findInBackground(new FindCallback<Game>() {
-            public void done(List<Game> gameList, ParseException e) {
-                if (e == null) {
-                    for (Game game :  gameList) {
-                        ParseUser user = game.getParseUser("player_one");
-                        try {
-                            user.fetchIfNeeded();
-                            currentgames.add(new GameMenuListItem(user.getUsername(), game.getUpdatedAt()));
-                        } catch (ParseException e1) {
-                            e1.printStackTrace();
-                        }
+        combinedQuery.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> parseObjects, ParseException e) {
+                if (e == null) {    // Successful query
+                    for (ParseObject game : parseObjects) {
+                        ParseUser opponent = (game.getParseUser("player_one").getUsername().equals(ParseUser.getCurrentUser().getUsername())) ? game.getParseUser("player_two") : game.getParseUser("player_one");
+                        currentgames.add(new GameMenuListItem(opponent.getUsername(), game.getUpdatedAt()));
                     }
                     listAdapter.notifyDataSetChanged();
                 } else {
@@ -239,15 +182,6 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
         listDataChild.put(listDataHeader.get(1), challenges); // Header, Child data
         listDataChild.put(listDataHeader.get(2), currentgames);
         listDataChild.put(listDataHeader.get(3), pastgames);
-
-
-
-
-
-
-
-
-
 
     }
 

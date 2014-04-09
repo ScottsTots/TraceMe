@@ -290,7 +290,7 @@ public class MainScreen extends Activity {
             List<ParseObject> gameList = query.find();
 
             if (gameList.size() == 0) {         // No games, create a new one awaiting an opponent
-                ParseObject game = new ParseObject("Game");
+                ParseObject game = ParseObject.create("Game");
                 game.put("player_one", ParseUser.getCurrentUser());
                 game.put("game_status", GameStatus.WAITING_FOR_OPPONENT.id);
                 game.saveInBackground();
