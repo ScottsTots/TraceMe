@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -45,7 +46,7 @@ import gamescreens.GameActivity;
 import gamescreens.GameLoop;
 import gamescreens.HomeScreenFragment;
 import gamescreens.HighScoreFragment;
-import gamescreens.LevelSelectActivity;
+import gamescreens.LevelSelectFragment;
 import helperClasses.Game;
 import helperClasses.GameStatus;
 import helperClasses.Level;
@@ -148,7 +149,16 @@ public class MainScreen extends Activity {
                     Log.d("Mainscreen.java", "SinglePlayer Button Clicked.");
                     dlog.dismiss();
                     game.setMultiplayer(false);
-                    startActivity(new Intent(MainScreen.this, LevelSelectActivity.class));
+
+                    Fragment frag = new LevelSelectFragment();
+                    String nTag = frag.getTag(); // instance method of a to get a tag
+
+                    FragmentTransaction nFrag = getFragmentManager().beginTransaction();
+
+                    nFrag.setCustomAnimations(R.anim.slide_in_left,R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left);
+                    nFrag.replace(R.id.content_frame, frag);
+                    nFrag.addToBackStack(nTag);
+                    nFrag.commit();
                     break;
                 case R.id.randomOpponentButton:
                     Log.d("Mainscreen.java", "RandomOpponent Button Clicked.");
@@ -353,6 +363,13 @@ public class MainScreen extends Activity {
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+
+
+                startActivity(new Intent(MainScreen.this, LevelSelectFragment.class));
+                chooseFriendDlog.dismiss();
+
+
             }
         });
         chooseFriendDlog.show();

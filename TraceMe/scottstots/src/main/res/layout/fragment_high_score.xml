@@ -12,18 +12,19 @@
 
         <TextView
             android:layout_width="fill_parent"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:background="@color/black"
             android:text="Top 10 Rankings"
             android:gravity="center"
             android:textSize="25dp"
+            android:padding="15dp"
             android:textColor="@color/white"/>
 
         <ListView
             android:id="@+id/highscoreListView"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="@color/com_facebook_blue"/>
+            android:background="@color/white"/>
 
     </LinearLayout>
 </FrameLayout>

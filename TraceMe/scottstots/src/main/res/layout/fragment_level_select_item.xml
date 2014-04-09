@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/level_number"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:text="0"
+        android:textSize="30sp"
+        android:gravity="center"
+        android:background="@drawable/sign_up_selector"
+        android:textColor="@android:color/white"
+        />

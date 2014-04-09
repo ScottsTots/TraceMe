@@ -85,10 +85,6 @@
             android:label="@string/title_activity_login_screen"
             android:theme="@style/NoActionBarTheme" >
         </activity>
-        <activity
-            android:name="gamescreens.LevelSelectActivity"
-            android:label="@string/title_activity_level_select" >
-        </activity>
     </application>
 
 </manifest>
