@@ -4,9 +4,11 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
@@ -27,7 +29,9 @@ public class LevelSelectFragment extends Fragment {// implements View.OnClickLis
 
     private Game game;
     private GridView gridview;
-    private LevelAdapter adapter;
+//    private ArrayAdapter<String> adapter;
+    private LevelSelectAdapter adapter;
+    private ArrayList<String> level_list;
 
     public LevelSelectFragment() {
         // Empty constructor required for fragment subclasses
@@ -37,58 +41,65 @@ public class LevelSelectFragment extends Fragment {// implements View.OnClickLis
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_level_select, container, false);
+        gridview = (GridView) rootView.findViewById(R.id.gridview);
+
+
         return rootView;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-//        level1 = (TextView) view.findViewById(R.id.level1);
         game = ((TraceMeApplication)view.getContext().getApplicationContext()).getGame();
-//        level1.setOnClickListener(levelListener);
 
-//        scoreListView = (ListView) view.findViewById(R.id.highscoreListView);
-//        scoreList = new ArrayList<Score>();
-//        scoreList.add(new Score("Loading information..", 0));
-//
-//        adapter = new CustomHighScoreListAdapter(getActivity().getApplicationContext(),
-//                R.layout.list_score,
-//                scoreList);
-//        scoreListView.setAdapter(adapter);
-//        adapter.notifyDataSetChanged();
+        level_list  = new ArrayList<String>();
+        for(int i = 1; i <= NUM_LEVELS;++i ){
+            level_list.add(""+i);
+        }
 
-        gridview = (GridView) view.findViewById(R.id.gridview);
-
-        adapter = new LevelAdapter(getActivity().getApplicationContext(),R.layout.fragment_level_select_item);
+        adapter = new LevelSelectAdapter(getActivity().getApplicationContext(),
+                R.layout.fragment_level_select_item, level_list);
+        gridview.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+        gridview.setOnItemClickListener(levelListener);
+
+
     }
 
-    View.OnClickListener levelListener= new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            switch(view.getId()) {
-                case R.id.level1:
+//    View.OnClickListener levelListener= new View.OnClickListener() {
+//        @Override
+//        public void onClick(View view) {
+//            switch(view.getId()) {
+//                case R.id.level1:
 //                    game.setLevel(1);
+//                    startActivity(new Intent(getActivity(), GameActivity.class));
+//                    break;
+//            }
+//        }
+//    };
+
+    AdapterView.OnItemClickListener levelListener = new AdapterView.OnItemClickListener(){
+
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
+            switch(pos){
+                case 0:
+                    game.setLevel(1);
                     startActivity(new Intent(getActivity(), GameActivity.class));
                     break;
             }
         }
     };
 
-    class LevelAdapter extends ArrayAdapter<String> {
+    class LevelSelectAdapter extends ArrayAdapter<String> {
         Context mContext;
         int textViewResourceId;
         ArrayList<String> data;
 
-        public LevelAdapter(Context context, int textViewResourceId) {
-            super(context, textViewResourceId);
+        public LevelSelectAdapter(Context context, int textViewResourceId, ArrayList<String> objects) {
+            super(context, textViewResourceId, objects);
             this.mContext = context;
             this.textViewResourceId = textViewResourceId;
-
-            data = new ArrayList<String>();
-
-            for(int i = 1; i <= NUM_LEVELS;++i ){
-                data.add(""+1);
-            }
+            this.data = objects;
         }
 
         @Override
@@ -98,8 +109,9 @@ public class LevelSelectFragment extends Fragment {// implements View.OnClickLis
                 convertView = inflater.inflate(textViewResourceId, parent, false);
             }
 
-            TextView usernameTextView = (TextView) convertView.findViewById(R.id.level_number);
-            usernameTextView.setText(data.get(position));
+            Log.d("LevelSelectAdapter", "Updating View");
+            TextView levelView = (TextView) convertView.findViewById(R.id.level_number);
+            levelView.setText(data.get(position));
 
             return convertView;
         }

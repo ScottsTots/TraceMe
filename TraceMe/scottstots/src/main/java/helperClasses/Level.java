@@ -146,6 +146,7 @@ public class Level{
         // Game over
         else {
             saveHighScore();
+
             GameActivity.endGame();
         }
     }

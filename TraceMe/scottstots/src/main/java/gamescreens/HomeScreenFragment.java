@@ -32,6 +32,7 @@ import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseQueryAdapter;
 import com.parse.ParseTwitterUtils;
 import com.parse.ParseUser;
 
@@ -42,6 +43,7 @@ import java.util.List;
 import helperClasses.Game;
 import helperClasses.GameMenuListItem;
 import helperClasses.GameStatus;
+import scotts.tots.traceme.DispatchActivity;
 import scotts.tots.traceme.R;
 
 /**
@@ -55,6 +57,7 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
     private ExpandableListView expListView;
     private List<String> listDataHeader;
     private HashMap<String, List<GameMenuListItem>> listDataChild;
+    private RefreshThread refreshThread;
 
     public HomeScreenFragment() {
         // Empty constructor required for fragment subclasses
@@ -69,7 +72,7 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-
+        refreshThread = new RefreshThread();
         // get the listview
         expListView = (ExpandableListView) view.findViewById(R.id.lvExp);
 
@@ -83,6 +86,24 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
         expListView.expandGroup(1);
         expListView.expandGroup(2);
         expListView.expandGroup(3);
+
+//        //noinspection ConstantConditions
+//        getActivity().runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                while(true) {
+//                    try {
+//                        Thread.sleep(5000);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                    Log.d("parseNetwork", "refreshing views");
+//                    listAdapter.notifyDataSetChanged();
+//                }
+//
+//            }
+//        });
+
     }
 
     private void prepareListData() {
@@ -119,50 +140,32 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
         // TODO: Find challenges involving this current user.
         // TODO: Awaiting opponent should have click and hold to cancel
 
-
-        // TODO: Collapse these two into one query
         final List<GameMenuListItem> currentgames = new ArrayList<GameMenuListItem>();
-        // For player one
+
         ParseQuery<ParseObject> currentGameQuery1 = ParseQuery.getQuery("Game");
         currentGameQuery1.whereEqualTo("player_one", ParseUser.getCurrentUser());
         currentGameQuery1.whereEqualTo("game_status", GameStatus.IN_PROGRESS.id);
-        currentGameQuery1.orderByDescending("updatedAt");
-        currentGameQuery1.include("_User");
-        currentGameQuery1.findInBackground(new FindCallback<ParseObject>() {
-            public void done(List<ParseObject> gameList, ParseException e) {
-                if (e == null) {
-                    for (ParseObject game :  gameList) {
-                        ParseUser user = game.getParseUser("player_two");
-                        try {
-                            user.fetchIfNeeded();
-                            currentgames.add(new GameMenuListItem(user.getUsername(), game.getUpdatedAt()));
-                        } catch (ParseException e1) {
-                            e1.printStackTrace();
-                        }
-                    }
-                    listAdapter.notifyDataSetChanged();
-                } else {
-                    Log.d("prepareListData", "Error: " + e.getMessage());
-                }
-            }
-        });
 
         ParseQuery<ParseObject> currentGameQuery2 = ParseQuery.getQuery("Game");
         currentGameQuery2.whereEqualTo("player_two", ParseUser.getCurrentUser());
         currentGameQuery2.whereEqualTo("game_status", GameStatus.IN_PROGRESS.id);
-        currentGameQuery2.orderByDescending("updatedAt");
-        currentGameQuery2.include("_User");
-        currentGameQuery2.findInBackground(new FindCallback<ParseObject>() {
-            public void done(List<ParseObject> gameList, ParseException e) {
-                if (e == null) {
-                    for (ParseObject game :  gameList) {
-                        ParseUser user = game.getParseUser("player_one");
-                        try {
-                            user.fetchIfNeeded();
-                            currentgames.add(new GameMenuListItem(user.getUsername(), game.getUpdatedAt()));
-                        } catch (ParseException e1) {
-                            e1.printStackTrace();
-                        }
+
+        List<ParseQuery<ParseObject>> queries = new ArrayList<ParseQuery<ParseObject>>();
+        queries.add(currentGameQuery1);
+        queries.add(currentGameQuery2);
+
+        ParseQuery<ParseObject> combinedQuery = ParseQuery.or(queries);
+        combinedQuery.orderByDescending("updatedAt");
+        combinedQuery.include("player_one");
+        combinedQuery.include("player_two");
+
+        combinedQuery.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> parseObjects, ParseException e) {
+                if (e == null) {    // Successful query
+                    for (ParseObject game : parseObjects) {
+                        ParseUser opponent = (game.getParseUser("player_one").getUsername().equals(ParseUser.getCurrentUser().getUsername())) ? game.getParseUser("player_two") : game.getParseUser("player_one");
+                        currentgames.add(new GameMenuListItem(opponent.getUsername(), game.getUpdatedAt()));
                     }
                     listAdapter.notifyDataSetChanged();
                 } else {
@@ -170,6 +173,7 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
                 }
             }
         });
+
 
         List<GameMenuListItem> pastgames = new ArrayList<GameMenuListItem>();
 
@@ -177,25 +181,61 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
         listDataChild.put(listDataHeader.get(1), challenges); // Header, Child data
         listDataChild.put(listDataHeader.get(2), currentgames);
         listDataChild.put(listDataHeader.get(3), pastgames);
+
     }
 
-    // When we start the game, it must be the case that all game components are set to how the user wants them. (time limit, etc)
-    // If we want to add new game modes, game content later on, those game modes must be set before reaching this.
-//    public void startSinglePlayer() {
-//        dlog.dismiss();
-//        startActivity(new Intent(getActivity(), GameActivity.class));
-//    }
 
-//    public void startMultiPlayer(ParseUser opponent) {
-//        dlog.dismiss();
-//        //startActivity(new Intent(getActivity(), DrawingActivityMultiplayer.class);
-//    }
 
-    public ParseUser getRandomOpponent() {
-        return null;
+
+    /** Refreshes the UI listviews every 5 seconds. After 16 refreshes it stops to save API accesses
+     * Currently is not used because this is a fragment...
+     */
+    private class RefreshThread extends Thread {
+        int count = 0;
+        boolean stop = false;
+        @Override
+        public void run() {
+            try {
+                while (!stop) {
+                    Thread.sleep(5000);
+                    // after ~1.3 minutes stop querying so we don't waste API accesses
+                    // counter resets at onResume();
+                    if (count < 16)
+                        listAdapter.notifyDataSetChanged();
+                    Log.d("parseNetwork", "querying database");
+                    count++;
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void stopThread() {
+            stop = true;
+            while(true) {
+                try {
+                    this.join();
+                    Log.d("gameloop", " ended thread");
+                    break;
+                } catch (InterruptedException e) {
+                }
+            }
+        }
+
     }
 
-    public void showFriendPicker() {
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(!refreshThread.isAlive()) {
+       //     refreshThread.start();
+        }
+    }
+
+    @Override
+    public void onPause() {
+       // refreshThread.stopThread();
+        super.onPause();
     }
 }
