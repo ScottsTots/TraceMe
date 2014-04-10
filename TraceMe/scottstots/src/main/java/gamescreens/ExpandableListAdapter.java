@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.TextView;
@@ -75,6 +77,11 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         txtListTime.setText(child.getLastUpdatedString());
 
         convertView.setOnClickListener(getGameItemsListener(child));
+
+        // Super duper cool animation
+        Animation animation = AnimationUtils.loadAnimation(_context, R.anim.fadein);
+        convertView.startAnimation(animation);
+
         return convertView;
     }
 
