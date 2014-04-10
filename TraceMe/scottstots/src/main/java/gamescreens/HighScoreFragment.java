@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.app.Fragment;
 import android.util.Log;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.content.Context;
@@ -129,6 +131,9 @@ class CustomHighScoreListAdapter extends ArrayAdapter<Score> {
 
         TextView scoreTextView = (TextView) convertView.findViewById(R.id.list_score_highscore);
         scoreTextView.setText(scoreObj.getScore());
+
+        Animation animation = AnimationUtils.loadAnimation(mContext.getApplicationContext(), R.anim.fadein);
+        convertView.startAnimation(animation);
 
         return convertView;
     }
