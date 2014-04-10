@@ -361,8 +361,8 @@ public class MainScreen extends Activity {
                 }
 
 
-
-                startActivity(new Intent(MainScreen.this, LevelSelectFragment.class));
+                // TODO: Needs to be undone. Currently crashed.
+                // startActivity(new Intent(MainScreen.this, LevelSelectFragment.class));
                 chooseFriendDlog.dismiss();
 
 

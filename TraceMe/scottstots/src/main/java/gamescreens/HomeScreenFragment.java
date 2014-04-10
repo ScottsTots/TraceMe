@@ -137,6 +137,7 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
 
         ParseQuery<ParseObject> combinedQuery = ParseQuery.or(queries);
         combinedQuery.orderByDescending("updatedAt");
+        combinedQuery.whereNotEqualTo("game_status", GameStatus.INVALID.id);
         combinedQuery.include("player_one");
         combinedQuery.include("player_two");
 
