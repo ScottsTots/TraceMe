@@ -12,6 +12,7 @@
     <color name="twitter_blue">#23bbed</color>
     <color name="twitter_dark_blue">#ff1d9ec7</color>
     <color name="light_blue">#73C8B3</color>
+    <color name="translucent_blue">#805ac8bb</color>
     <color name="darker_black">#ff353535</color>
     <color name="black">#424242</color>
     <color name="red">#fc5628</color>

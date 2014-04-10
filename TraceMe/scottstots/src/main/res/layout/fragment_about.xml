@@ -4,16 +4,20 @@
     android:layout_height="match_parent"
     android:layout_weight="5"
     android:orientation="vertical"
+    android:background="@color/black"
     tools:context="gamescreens.AboutFrag">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="15dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:text="@string/about_how_to"
-        android:background="@color/com_facebook_picker_search_bar_background"
+        android:textColor="@color/white"
+        android:background="@color/blue"
         android:gravity="center"
-        android:textSize="25dp"
+        android:textSize="25sp"
         />
 
     <TextView
@@ -21,9 +25,11 @@
         android:layout_height="match_parent"
         android:layout_weight="4"
         android:text="@string/about_the_game"
-        android:background="@color/com_facebook_blue"
+        android:background="@color/white"
         android:id="@+id/about_text"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
         android:textSize="18dp"
         android:padding="11dp"
         />

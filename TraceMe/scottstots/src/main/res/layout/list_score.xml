@@ -3,7 +3,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="75dp"
+    android:layout_height="60dp"
     android:weightSum="4">
 
     <TextView
@@ -16,9 +16,7 @@
         android:layout_weight="3"
         android:gravity="center"
         android:text="Loading Username.."
-        android:textColor="@color/black"
-        android:background="@color/com_facebook_usersettingsfragment_not_connected_text_color"
-    />
+        android:textColor="@color/black"/>
 
     <TextView
         android:id="@+id/list_score_highscore"
@@ -28,9 +26,7 @@
         android:text=""
         android:gravity="center"
         android:textSize="25sp"
-        android:textColor="@color/black"
-        android:background="@color/com_facebook_usersettingsfragment_not_connected_text_color"
-    />
+        android:textColor="@color/black"/>
 
 
 </LinearLayout>
