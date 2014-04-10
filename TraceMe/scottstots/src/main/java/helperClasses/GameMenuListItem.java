@@ -16,9 +16,7 @@ import java.util.Date;
  */
 
 public class GameMenuListItem {
-
     private ParseObject game;
-
     public GameMenuListItem(ParseObject game) {
         this.game = game;
     }

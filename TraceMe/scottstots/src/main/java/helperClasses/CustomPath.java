@@ -27,6 +27,19 @@ public class CustomPath {
         startTime = System.currentTimeMillis();
     }
 
+    // When we load a user's customPath we don't do any time analysis so we use these two methods
+    // below
+    public CustomPath() {
+        pointArray = new ArrayList<DataPoint>();
+    }
+
+    public void addUserPoint(float x, float y, long time, int score) {
+        pointArray.add(new DataPoint(x, y, time, score));
+    }
+
+
+
+
     public DataPoint get(int index) {
         return pointArray.get(index);
     }

@@ -255,14 +255,12 @@ public class MainScreen extends Activity {
         } else if (position == 2) {     // About
             Fragment fragment = new AboutFrag();
             Bundle args = new Bundle();
-
             args.putInt("Foo", 0);
             fragment.setArguments(args);
 
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
         }
-
         setTitle(navMenuTitles[position]);
         mDrawerList.setItemChecked(position, true);     // update selected item and title so it doesn't
                                                         // show up in the menu if we reopen it, then close the drawer

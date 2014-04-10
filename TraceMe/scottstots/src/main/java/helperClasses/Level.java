@@ -469,7 +469,6 @@ public class Level{
     ArrayList<ParseFile> fileArray;
     public void createLevel() {
         levelObject = new ParseObject("Level");
-
         // Step 1: build trace data.-----------------------
         JSONArray levelTraces = new JSONArray();
         // Iterate through all the traces
@@ -581,7 +580,6 @@ public class Level{
         } // end all image downloads
 
         // Step 2: Retrieve trace data -------------------------------
-
         // this is a JSON array(traces) of JSONArrays(datapoints for each trace) that contain JSON objects with x and y keys(point coords
         JSONArray jsonTraces = retrievedLevel.getJSONArray("trace_array");
         for(int i = 0; i < jsonTraces.length(); i++) {
@@ -592,7 +590,6 @@ public class Level{
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
             ArrayList<DataPoint> tracePoints = new ArrayList<DataPoint>();
             // Iterate through all the points and build a pointArray to add to our traceFile
             for(int j = 0; j < jsonPointData.length(); j++) {

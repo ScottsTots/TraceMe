@@ -27,6 +27,7 @@ public class TraceMeApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+
         // Set up the parse magic
         Parse.initialize(this, "gTBa2AMXgWvTNIBO1liUk1hisZzUs8CVcn7q6dT4", "4DywYi8KYdM1COhfOt3hNNOssWV4Pq9DeXsO9Xme");
 

@@ -145,6 +145,11 @@ public class GameActivity extends Activity {
     }
 
     // Called by the level object when there's no more traces.
+    /**
+     * When we finish a multiplayer game, we want to save some things online:
+     *      1. All our paths drawn (the custom paths array)
+     *      3. We also have to check whether the other player already played in GameActivity.
+     */
     public static void endGame() {
         gameLoop.running = false;
         new SaveGame().execute(game);
@@ -165,6 +170,7 @@ public class GameActivity extends Activity {
         @Override
         protected Void doInBackground(Game... params) {
             Game game = params[0];
+            game.saveUserDrawings(pathsArray);
             try {
                 game.save();
             } catch (ParseException e) {
