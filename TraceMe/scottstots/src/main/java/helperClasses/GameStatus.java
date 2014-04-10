@@ -9,7 +9,7 @@ public enum GameStatus {
     IN_PROGRESS("Game in Progress..", 1),
     GAME_OVER("Game Over..", 2),
     CHALLENGED("Challenged", 3),
-    CHALLENGE_DECLINED("Challenge Declined", 4);
+    INVALID("Game is invalid.", 4);
 
     private int intValue;
     private String stringValue;

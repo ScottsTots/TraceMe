@@ -29,9 +29,9 @@ public class GameMenuListItem {
         } else if (game.getInt("game_status") == GameStatus.CHALLENGED.id) {
             // This user is the one being challenged
             if (game.getParseUser("player_one").getUsername().equals(ParseUser.getCurrentUser().getUsername()))
-                return "Challenged by " + game.getParseUser("player_two").getUsername();
-            else
                 return "Waiting for " + game.getParseUser("player_one").getUsername();
+            else
+                return "Challenged by " + game.getParseUser("player_two").getUsername();
         } else if (game.getInt("game_status") == GameStatus.IN_PROGRESS.id) {
             ParseUser opponent = (game.getParseUser("player_one").getUsername().equals(ParseUser.getCurrentUser().getUsername())) ? game.getParseUser("player_two") : game.getParseUser("player_one");
             return opponent.getUsername();
@@ -46,5 +46,9 @@ public class GameMenuListItem {
     public String getLastUpdatedString() {
         PrettyTime p = new PrettyTime();
         return p.format(game.getUpdatedAt());
+    }
+
+    public ParseObject getGameParseObject() {
+        return game;
     }
 }
