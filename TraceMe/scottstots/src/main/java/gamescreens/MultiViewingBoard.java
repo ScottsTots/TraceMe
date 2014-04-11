@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
@@ -24,34 +25,19 @@ import helperClasses.Game;
  */
 
     public class MultiViewingBoard extends View {
-    //    ArrayList<CustomPath> paths; // player one's drawings
-    //    ArrayList<CustomPath> paths2; // player two's drawings
-     //   CustomPath currentPath;
-
         public Bitmap mBitmap;
         public Canvas mCanvas;
 
-        // The path we'll be drawing using our points.
-    //    private Path mPath;
         private Paint mBitmapPaint;
         private Paint mPaint;
 
         private static final int secondsPerFrame = (int) (1.0 / 60.0f * 1000); // 60fps
-//        int currPathNumber;
-//        int currPointNumber;
-//        private long previous;
-
         float scaleX;
         float scaleY;
         int width;
         int height;
         int frameBufferWidth;
         int frameBufferHeight;
-
-        // The current point of a path being drawn.
-    //    DataPoint point;
-
-
     Player playerOne;
     Player playerTwo;
 
@@ -60,10 +46,8 @@ import helperClasses.Game;
     public MultiViewingBoard(Context c, AttributeSet attrs) {
         super(c, attrs);
         if(!isInEditMode()) {
-         //   paths = GameActivity.pathsArray;
-        //    currentPath = new CustomPath(0, 0);
+
             Log.d("view", "ViewingBoard start");
-          //  mPath = new Path();
             mBitmapPaint = new Paint(Paint.DITHER_FLAG);
             mPaint = new Paint();
             mPaint.setAntiAlias(true);
@@ -100,11 +84,8 @@ import helperClasses.Game;
             float frameBufferH2 = 800 / 2;
             scaleX2 = (float)  frameBufferW2 / frameBufferWidth;
             scaleY2 = (float) frameBufferH2 / frameBufferHeight;
-//            currPathNumber = 0;
-//            previous = System.currentTimeMillis();
             mBitmap = Bitmap.createBitmap(frameBufferWidth, frameBufferHeight, Bitmap.Config.ARGB_8888);
             mCanvas = new Canvas(mBitmap);
-
         }
 
     }
@@ -112,8 +93,6 @@ import helperClasses.Game;
     public void setGameData(Game game) {
         playerOne = new Player(game.playerOneData);
         playerTwo = new Player(game.playerTwoData);
-       // paths = game.playerOneData;
-        //paths2 = game.playerTwoData;
     }
 
 
@@ -140,55 +119,8 @@ import helperClasses.Game;
             pointCounter++;
         }
         */
-
-        /*
-        // If we still have paths to draw
-        if(currPathNumber < paths.size()) {
-            // Retrieve the current path
-            currentPath = paths.get(currPathNumber);
-            // If there's still points in this path to draw
-            if(currPointNumber < currentPath.size()) {        // WE'RE GOOD TO DRAW
-                // Get the latest point on this path.
-                point = currentPath.get(currPointNumber);
-                // draw all path stuff to our framebuffer: mBitmap
-                drawPath(canvas);
-                // See if enough time has passed to move on to the next point:
-                //TODO need to also take into account time passed between two paths...
-                timeNow = System.currentTimeMillis();
-                if(timeNow - previous > point.time) {
-                    previous = System.currentTimeMillis();
-                    currPointNumber++;
-                }
-            }
-            else {
-                // no more points in this path, so we can reset the currentPointNumber to go to the beginning of the
-                // next path,
-                currPointNumber = 0;
-                currPathNumber++;
-            }
-        }
-
-        else {
-            // no more paths, no mo points!!
-            // Reset to 0 so we loop around once more, and reset the canvas buffer (which saves paths
-            // that have been drawn so far).
-            currPathNumber = 0;
-            currPointNumber = 0;
-            // TODO every time we reset the canvas there's an empty frame and it flashes all white.
-
-            // Clear/Reset our actual Bitmap buffer, which had our saved paths
-            // mBitmap.eraseColor(Color.WHITE); // doesn't work, we need to create a new bitmap to clear it well...(not sure why)
-            mBitmap = Bitmap.createBitmap(frameBufferWidth, frameBufferHeight, Bitmap.Config.ARGB_8888);
-            // Now we set this new, clear buffer to the mCanvas, which is used to draw into our bitmap.
-            mCanvas.setBitmap(mBitmap);
-        }
-        */
-
-    // TODO make it possible to save all paths
         playerOne.updatePlayerData(canvas);
         playerTwo.updatePlayerData(canvas);
-        // Draw the actual framebuffer.
-        //canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
         postInvalidate(); //force a redraw
     }
 
@@ -200,57 +132,13 @@ import helperClasses.Game;
 //    float mX;
 //    float mY;
     private static final float TOUCH_TOLERANCE = 4;
-/*
-    public void drawPath(Canvas canvas) {
-        if(currentPath.size() < 3)
-            return;
 
-        float pointX = point.x * scaleX2;
-        float pointY = point.y * scaleY2;
-        // touch_start ---------------------------
-        if(currPointNumber == 0) {
-            mPath.reset();
-            mPath.moveTo(pointX, pointY);
-
-            mX = pointX;
-            mY = pointY;
-        }
-
-        // touch_move ----------------------------
-        if(currPointNumber > 0 && currPointNumber < currentPath.size() -1) {
-            float dx = Math.abs(pointX - mX);
-            float dy = Math.abs(pointY - mY);
-            if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
-                // Since we're drawing smooth curves we need the previous point to get a good average.
-                DataPoint prevPoint = currentPath.get(currPointNumber-1); //same thing as mx,mY
-                float prevPointX = prevPoint.x * scaleX2;
-                float prevPointY = prevPoint.y * scaleY2;
-                mPath.quadTo(prevPointX, prevPointY, (pointX + prevPointX) / 2, (pointY + prevPointY) / 2);
-            }
-        }
-        // touch_up ------------------------------
-        if(currPointNumber == currentPath.size() - 1)
-        {
-            // For some strange reason we don't do these 2 lines or it glitches out.. but seems to work fine without them.
-            // DataPoint prevPoint = currentPath.get(currPointNumber-1);
-            // mPath.lineTo(prevPoint.x, prevPoint.y);
-            // This saves the path we have into the buffer, so we don't lose this path when we
-            // go to the next.
-            mCanvas.drawPath(mPath, mPaint);
-            mPath.reset();
-            return;
-        }
-        //draw current path on the actual canvas.
-        canvas.drawPath(mPath, mPaint);
-    }
-*/
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         return true;
     }
 
     public void startDrawing() {
-        //paths = GameActivity.pathsArray; // TODO this line should be uncommented for singleplayer... separate singleplayer / multiplayer on viewingBoard
         postInvalidate();
     }
 
@@ -322,11 +210,10 @@ import helperClasses.Game;
                 // TODO every time we reset the canvas there's an empty frame and it flashes all white.
 
                 // Clear/Reset our actual Bitmap buffer, which had our saved paths
-                // mBitmap.eraseColor(Color.WHITE); // doesn't work, we need to create a new bitmap to clear it well...(not sure why)
-                mBitmap2 = Bitmap.createBitmap(frameBufferWidth, frameBufferHeight, Bitmap.Config.ARGB_8888);
-                // Now we set this new, clear buffer to the mCanvas, which is used to draw into our bitmap.
-                mCanvas2.setBitmap(mBitmap2);
+                mBitmap2.eraseColor(Color.TRANSPARENT);
             }
+            canvas.drawBitmap(mBitmap2, 0, 0, mBitmapPaint);
+            canvas.drawPath(mPath, mPaint);
         }
 
         // Draw this player's bitmap
@@ -367,10 +254,7 @@ import helperClasses.Game;
                 // go to the next.
                 mCanvas2.drawPath(mPath, mPaint);
                 mPath.reset();
-                return;
             }
-            //draw current path on the actual canvas.
-            canvas.drawPath(mPath, mPaint);
         }
 
 
