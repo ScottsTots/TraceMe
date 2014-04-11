@@ -34,13 +34,15 @@ public class Game extends ParseObject {
     private ParseUser playerTwo;
     private GameStatus gameStatus;
     private boolean isMultiplayer = true;
-
+    public ArrayList<CustomPath> playerOneData;
+    public ArrayList<CustomPath> playerTwoData;
     private int levelNum = 1;
     public Level level;
 
     // For singlePlayer
     public Game() {
-
+        playerOneData = new ArrayList<CustomPath>();
+        playerTwoData = new ArrayList<CustomPath>();
     }
 
     // Called before starting the game. It basically loads the level,
@@ -112,7 +114,14 @@ public class Game extends ParseObject {
     }
 
 
+
+    /** Converts user path data to json to be stored in parse **/
     public void saveUserDrawings(ArrayList<CustomPath> userPaths) {
+        if(getParseUser("player_one").equals(ParseUser.getCurrentUser()))
+            playerOneData = userPaths;
+        else {
+            playerTwoData = userPaths;
+        }
         // We will save userPath data in a JSONArray (array of paths)
         // full of JSON arrays (path) full of JSON objects (individual point)
         JSONArray customPathArray = new JSONArray();
@@ -144,33 +153,52 @@ public class Game extends ParseObject {
                 e.printStackTrace();
             }
         }
-
+    //TODO load all data into the local vars when we load the game... so we dont have to be calling getParseUser.. etc
         // Add all this json data into the correct player_one_data or player_two_data slot
         Log.d("parseNetwork", "aP1 " + getParseUser("player_one").getUsername() + " p2 " + getParseUser("player_two"));
-        if(playerOne.equals(ParseUser.getCurrentUser()))
+        if(getParseUser("player_one").equals(ParseUser.getCurrentUser()))
             put("player_one_data", customPathArray);
         else {
             put("player_two_data", customPathArray);
         }
     }
 
+    public void loadUserData() {
+        // Load player two's data if it exists
+        // Player two is null when we just start a random game and noone has accepted the challenge
+        playerOne = getParseUser("player_one");
+        playerTwo = getParseUser("player_two");
+        Log.d("parseNetwork", "loading game... p1 " + playerOne.getUsername() + " p2 " + playerTwo.getUsername() + " current: " + ParseUser.getCurrentUser().getUsername() );
+        // Load the opposite player's paths
+        if(ParseUser.getCurrentUser().getUsername().equals(playerOne.getUsername()) && playerTwo != null) {
+           playerTwoData = getCustomPaths(playerTwo);
+        }
+        // Load player one's data if we are playerTwo  (p1 is assumed to exist.)
+        else if(ParseUser.getCurrentUser().getUsername().equals(playerTwo.getUsername())) {
+            playerOneData = getCustomPaths(playerOne);
+        }
+
+    }
+
+
     /**
-     * Gets a player's JSON data from parse, and converts it back to an array of CustomPaths
+     * Gets a player's JSON path data from parse, and converts it back to an array of CustomPaths
      * that we can draw.
      * @return
      */
-    public ArrayList<CustomPath> getCustomPaths(ParseUser user) {
+    private ArrayList<CustomPath> getCustomPaths(ParseUser user) {
         ArrayList<CustomPath> pathsArray = new ArrayList<CustomPath>();
         JSONArray jsonPathsArray = new JSONArray();
 
         // Grab the right json data
-        if(user.equals(playerOne)) {
+        if(user.getUsername().equals(playerOne.getUsername())) {
             jsonPathsArray = getJSONArray("player_one_data");
         }
-        else if(user.equals(playerTwo)) {
+        else if(user.getUsername().equals(playerTwo.getUsername())) {
             jsonPathsArray = getJSONArray("player_two_data");
         }
-
+        if(jsonPathsArray == null)
+            return pathsArray;
         // decode it into an array of custom paths.
         for(int i = 0; i < jsonPathsArray.length(); i++) {
             // First get an individual path

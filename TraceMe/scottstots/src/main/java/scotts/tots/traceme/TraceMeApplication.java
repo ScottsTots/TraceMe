@@ -58,5 +58,5 @@ public class TraceMeApplication extends Application {
         return game;
     }
 
-
+    public void setGame(Game g) { game = g;}
 }

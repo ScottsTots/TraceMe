@@ -18,6 +18,7 @@ import java.util.ArrayList;
 
 import helperClasses.CustomPath;
 import helperClasses.DataPoint;
+import helperClasses.Game;
 
 /**
  * Created by Aaron on 3/9/14.
@@ -26,7 +27,8 @@ import helperClasses.DataPoint;
 
 
 public class ViewingBoard extends View {
-    ArrayList<CustomPath> paths;
+    ArrayList<CustomPath> paths; // player one's drawings
+    ArrayList<CustomPath> paths2; // player two's drawings
     CustomPath currentPath;
 
     public Bitmap mBitmap;
@@ -96,8 +98,14 @@ public class ViewingBoard extends View {
             previous = System.currentTimeMillis();
             mBitmap = Bitmap.createBitmap(frameBufferWidth, frameBufferHeight, Bitmap.Config.ARGB_8888);
             mCanvas = new Canvas(mBitmap);
+
         }
 
+    }
+
+    public void setGameData(Game game) {
+        paths = game.playerOneData;
+        paths2 = game.playerTwoData;
     }
 
 
@@ -224,7 +232,7 @@ public class ViewingBoard extends View {
     }
 
     public void startDrawing() {
-        paths = GameActivity.pathsArray;
+        //paths = GameActivity.pathsArray; // TODO this line should be uncommented for singleplayer... separate singleplayer / multiplayer on viewingBoard
         postInvalidate();
     }
 }
