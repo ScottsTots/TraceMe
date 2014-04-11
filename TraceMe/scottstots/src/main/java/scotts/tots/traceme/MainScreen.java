@@ -400,27 +400,42 @@ public class MainScreen extends Activity {
                         Toast.LENGTH_SHORT).show();
                 return;
             }
-
             // At this point you're good to go.. Create the new Challenge object.
             // TODO: For now I am adding a game object this way, may want to figure out using Game class
-            ParseObject newChallenge = ParseObject.create("Game");
-            newChallenge.put("game_status", GameStatus.CHALLENGED.id);
-            newChallenge.put("player_one", ParseUser.getCurrentUser());
-            newChallenge.put("player_two", user);
-            newChallenge.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException ex) {
-                    if (ex == null) {
-                        Log.d("Challenge", "Succesfully created challenge object.");
-                    } else {
-                        Log.d("Challenge", "Error creating challenge object.");
-                        ex.printStackTrace();
-                    }
-                }
-            });
+//            ParseObject newChallenge = ParseObject.create("Game");
+//            newChallenge.put("game_status", GameStatus.CHALLENGED.id);
+//            newChallenge.put("player_one", ParseUser.getCurrentUser());
+//            newChallenge.put("player_two", user);
+//            game.put("game_status", GameStatus.CHALLENGED.id);
+//            game.put("player_one", ParseUser.getCurrentUser());
+//            game.put("player_two", user);
+            game.setPlayerOne(ParseUser.getCurrentUser());
+            game.setPlayerTwo(user);
+            game.setGameStatus(GameStatus.CHALLENGED);
+          //  game.saveInBackground();
+//            newChallenge.saveInBackground(new SaveCallback() {
+//                @Override
+//                public void done(ParseException ex) {
+//                    if (ex == null) {
+//                        Log.d("Challenge", "Succesfully created challenge object.");
+//                    } else {
+//                        Log.d("Challenge", "Error creating challenge object.");
+//                        ex.printStackTrace();
+//                    }
+//                }
+//            });
 
             // TODO: Should this take them to the level select, or simply create a new 'challenge' game?
             // startActivity(new Intent(MainScreen.this, LevelSelectActivity.class));
+            Fragment frag = new LevelSelectFragment();
+            String nTag = frag.getTag(); // instance method of a to get a tag
+
+            FragmentTransaction nFrag = getFragmentManager().beginTransaction();
+
+            nFrag.setCustomAnimations(R.anim.slide_in_left,R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left);
+            nFrag.replace(R.id.content_frame, frag);
+            nFrag.addToBackStack(nTag);
+            nFrag.commit();
             chooseFriendDlog.dismiss();
         }
     }

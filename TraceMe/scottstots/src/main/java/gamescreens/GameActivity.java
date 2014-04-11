@@ -152,7 +152,11 @@ public class GameActivity extends Activity {
      */
     public static void endGame() {
         gameLoop.running = false;
-        new SaveGame().execute(game);
+        if(game.isMultiplayer()) {
+            Log.d("parseNetwork", "P1 " + game.getPlayerOne() + " p2 " + game.getPlayerTwo());
+            new SaveGame().execute(game);
+
+        }
         // Sets the text on the dialog box that shows the final score.. todo: reorganize or initialize it here
         scoreText.setText(Integer.toString(level.getScore()));
         endGameDlog.show();
@@ -212,6 +216,11 @@ public class GameActivity extends Activity {
                 level = new Level(1, ctx, gameLoop);
                 level.loadLevelFromParse();
                 gameLoop.setLevel(level);
+                try {
+                    game.fetch();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             }
 
 

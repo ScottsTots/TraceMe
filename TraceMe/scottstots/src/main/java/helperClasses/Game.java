@@ -2,6 +2,7 @@ package helperClasses;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.View;
 
 import com.parse.Parse;
@@ -131,20 +132,21 @@ public class Game extends ParseObject {
                     jsonPoint.put("time", point.time); // time is a long
                     jsonPoint.put("score", point.score); //score is a double
                     // Add it to json path array
-                    jsonPath.put(j, point);
+                    jsonPath.put(j, jsonPoint);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
             // Add this path to our list of paths
             try {
-                jsonPath.put(i, jsonPath);
+                customPathArray.put(i, jsonPath);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
 
         // Add all this json data into the correct player_one_data or player_two_data slot
+        Log.d("parseNetwork", "aP1 " + getParseUser("player_one").getUsername() + " p2 " + getParseUser("player_two"));
         if(playerOne.equals(ParseUser.getCurrentUser()))
             put("player_one_data", customPathArray);
         else {
