@@ -38,11 +38,11 @@
          with the content view. -->
     <ListView
         android:id="@+id/left_drawer"
-        android:layout_width="240dp"
+        android:layout_width="300dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:choiceMode="singleChoice"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="0dp"
-        android:background="#ff353535"/>
+        android:divider="@color/black"
+        android:dividerHeight="1dp"
+        android:background="#dd353535"/>
 </android.support.v4.widget.DrawerLayout>
