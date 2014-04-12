@@ -41,8 +41,7 @@ import helperClasses.Game;
     Player playerOne;
     Player playerTwo;
 
-    float scaleX2;
-    float scaleY2;
+
     public MultiViewingBoard(Context c, AttributeSet attrs) {
         super(c, attrs);
         if(!isInEditMode()) {
@@ -79,11 +78,7 @@ import helperClasses.Game;
             scaleY = (float) frameBufferHeight
                     / height;
 
-            // shrink it even smaller to 1/4 of current framebuffer screen.
-            float frameBufferW2 = 480 / 2;
-            float frameBufferH2 = 800 / 2;
-            scaleX2 = (float)  frameBufferW2 / frameBufferWidth;
-            scaleY2 = (float) frameBufferH2 / frameBufferHeight;
+
             mBitmap = Bitmap.createBitmap(frameBufferWidth, frameBufferHeight, Bitmap.Config.ARGB_8888);
             mCanvas = new Canvas(mBitmap);
         }
@@ -91,8 +86,22 @@ import helperClasses.Game;
     }
 
     public void setGameData(Game game) {
-        playerOne = new Player(game.playerOneData);
-        playerTwo = new Player(game.playerTwoData);
+        // shrink it even smaller to 1/4 of current framebuffer screen.
+
+        // Player one's traces will be drawn on upper left.
+        float frameBufferW2 = 480 / 2;
+        float frameBufferH2 = 800 / 2;
+        float scaleX2 = (float)  frameBufferW2 / frameBufferWidth;
+        float scaleY2 = (float) frameBufferH2 / frameBufferHeight;
+
+
+        playerOne = new Player(game.playerOneData, scaleX2, scaleY2, 0, 0);
+
+
+        // Player two's traces will be drawn on lower right
+        ;
+
+        playerTwo = new Player(game.playerTwoData, scaleX2, scaleY2, frameBufferW2, frameBufferH2 );
     }
 
 
@@ -163,7 +172,9 @@ import helperClasses.Game;
         Bitmap mBitmap2;
         Canvas mCanvas2;
         private Path mPath;
-        public Player(ArrayList<CustomPath> p) {
+
+        float scaleX, scaleY, translateX, translateY;
+        public Player(ArrayList<CustomPath> p, float scaleX, float scaleY, float translateX, float translateY) {
             paths = p;
             mCanvas2 = new Canvas();
             mBitmap2 = Bitmap.createBitmap(frameBufferWidth, frameBufferHeight, Bitmap.Config.ARGB_8888);
@@ -172,6 +183,10 @@ import helperClasses.Game;
             currPathNumber = 0;
             previous = System.currentTimeMillis();
             mPath = new Path();
+            this.scaleX = scaleX;
+            this.scaleY = scaleY;
+            this.translateX = translateX;
+            this.translateY = translateY;
         }
 
         public void updatePlayerData(Canvas canvas) {
@@ -207,7 +222,6 @@ import helperClasses.Game;
                 // that have been drawn so far).
                 currPathNumber = 0;
                 currPointNumber = 0;
-                // TODO every time we reset the canvas there's an empty frame and it flashes all white.
 
                 // Clear/Reset our actual Bitmap buffer, which had our saved paths
                 mBitmap2.eraseColor(Color.TRANSPARENT);
@@ -221,8 +235,8 @@ import helperClasses.Game;
             if(currentPath.size() < 3)
                 return;
 
-            float pointX = point.x * scaleX2;
-            float pointY = point.y * scaleY2;
+            float pointX = point.x * scaleX + translateX;
+            float pointY = point.y * scaleY + translateY;
             // touch_start ---------------------------
             if(currPointNumber == 0) {
                 mPath.reset();
@@ -239,8 +253,8 @@ import helperClasses.Game;
                 if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
                     // Since we're drawing smooth curves we need the previous point to get a good average.
                     DataPoint prevPoint = currentPath.get(currPointNumber-1); //same thing as mx,mY
-                    float prevPointX = prevPoint.x * scaleX2;
-                    float prevPointY = prevPoint.y * scaleY2;
+                    float prevPointX = prevPoint.x * scaleX + translateX;
+                    float prevPointY = prevPoint.y * scaleY + translateY;
                     mPath.quadTo(prevPointX, prevPointY, (pointX + prevPointX) / 2, (pointY + prevPointY) / 2);
                 }
             }

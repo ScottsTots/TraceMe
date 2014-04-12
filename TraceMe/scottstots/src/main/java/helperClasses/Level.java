@@ -203,8 +203,11 @@ public class Level{
         mCanvas.drawText("Score: " + Integer.toString(getScore()), 20, 120, textPaint);
 
         PathMeasure pm = new PathMeasure(mPath, false);
-
-        mCanvas.drawRect(100, 100, 150, 200, textPaint);
+        int x = 20;
+        int y = frameBufferHeight - 50;
+        int w = 200;
+        int h = 15;
+        mCanvas.drawRect(x, y, x + w, y + h, mPaint); // left top right bottom
         //Log.d("gameloop", "path length " + pm.getLength());
     }
 

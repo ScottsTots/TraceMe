@@ -121,11 +121,11 @@ public class GameActivity extends Activity {
         loadingDialog.setProgress(0);
         loadingDialog.setMax(100);
 
-        if(game.isMultiplayer())
+    //    if(game.isMultiplayer())
             new LoadTask().execute("loadOnline");
-        else {
-            new LoadTask().execute("load");
-        }
+     //   else {
+       //     new LoadTask().execute("load");
+     //   }
 
 
 
@@ -138,15 +138,21 @@ public class GameActivity extends Activity {
             @Override
             public void onClick(View view) {
                 viewingBoard = (ViewingBoard) findViewById(R.id.view);
-                multiViewingBoard = (MultiViewingBoard) findViewById(R.id.view2);
-                flipper.setDisplayedChild(3); //gameloop is 0, viewingBoard is 1
-                playButton.setVisibility(View.INVISIBLE);
+                if(game.isMultiplayer()) {
+                    multiViewingBoard = (MultiViewingBoard) findViewById(R.id.view2);
+                    flipper.setDisplayedChild(3); //gameloop is 0, viewingBoard is 1
+                    playButton.setVisibility(View.INVISIBLE);
 
-                multiViewingBoard.setGameData(game);
-                multiViewingBoard.startDrawing();
-
-                //viewingBoard.setGameData(game); // passes player's drawing data they just did. TODO reorganize this method and one below into 1
-                //viewingBoard.startDrawing(); // this updates our viewingBoard to the current data.
+                    multiViewingBoard.setGameData(game);
+                    multiViewingBoard.startDrawing();
+                }
+                else {
+                    viewingBoard = (ViewingBoard) findViewById(R.id.view);
+                    flipper.setDisplayedChild(2); //gameloop is 0, viewingBoard is 1
+                    playButton.setVisibility(View.INVISIBLE);
+                    viewingBoard.setGameData(game); // passes player's drawing data they just did. TODO reorganize this method and one below into 1
+                    viewingBoard.startDrawing(); // this updates our viewingBoard to the current data.
+                }
             }
         });
     }

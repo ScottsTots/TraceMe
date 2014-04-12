@@ -19,6 +19,7 @@ public class TraceFile {
     public int[] pixels;
     int width = 800;
     int height = 480;
+    int length; // TODO add the length of a trace by using path measure
     // What we use to score a trace.
     // Saves the equidistant points that make up the bitmap drawing, used for scoring purposes
     public ArrayList<DataPoint> points;

@@ -55,7 +55,6 @@ public class ViewingBoard extends View {
     DataPoint point;
 
 
-
     public ViewingBoard(Context c, AttributeSet attrs) {
         super(c, attrs);
         if(!isInEditMode()) {
