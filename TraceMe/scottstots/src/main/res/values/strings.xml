@@ -11,13 +11,13 @@
     <string name="join_game">Join Random Game</string>
     <string name="game_options">Game Options</string>
     <string name="app_id">1477514169137067</string>
-    <string name="title_activity_main_screen">Home</string>
+    <string name="title_activity_main_screen">Traceme</string>
     <string name="about_us">About Us</string>
     <string name="high_scores">High Scores</string>
     <string name="about_how_to">About / How To Play</string>
 
     <string-array name="nav_drawer_array">
-        <item>Home</item>
+        <item>Traceme</item>
         <item>High Scores</item>
         <item>About</item>
         <item>Logout</item>

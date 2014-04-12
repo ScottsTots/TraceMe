@@ -6,50 +6,49 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.parse.FindCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import gamescreens.AboutFrag;
-import gamescreens.GameActivity;
-import gamescreens.GameLoop;
-import gamescreens.HomeScreenFragment;
 import gamescreens.HighScoreFragment;
+import gamescreens.HomeScreenFragment;
 import gamescreens.LevelSelectFragment;
 import helperClasses.Game;
 import helperClasses.GameStatus;
-import helperClasses.Level;
 
 public class MainScreen extends Activity {
     Game game;
@@ -60,10 +59,15 @@ public class MainScreen extends Activity {
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
     private String[] navMenuTitles;
+    private ArrayList<String> datalist;
     private android.app.Dialog dlog;
     private android.app.Dialog randDlog;
     private Dialog chooseFriendDlog;
     ProgressDialog loadingDialog;
+    Typeface roboto_light;
+    Typeface roboto_regular;
+
+    DrawerListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +76,17 @@ public class MainScreen extends Activity {
         // This layout contains a navigation drawable and a fragment (defined as "content_frame"), which contains the game lobby etc..
         setContentView(R.layout.activity_main_screen);
 
-        game = ((TraceMeApplication)this.getApplicationContext()).getGame();
+        final int actionBarTitle = Resources.getSystem().getIdentifier("action_bar_title", "id", "android");
+        final TextView title = (TextView) getWindow().findViewById(actionBarTitle);
+        Typeface face = Typeface.createFromAsset(getAssets(), "GrandHotel-Regular.otf");
+        roboto_light = Typeface.createFromAsset(getAssets(),"Roboto/Roboto-Light.ttf");
+        roboto_regular = Typeface.createFromAsset(getAssets(),"Roboto/Roboto-Regular.ttf");
+
+        title.setTypeface(face);
+        title.setTextSize(30);
+
+
+        game = ((TraceMeApplication) this.getApplicationContext()).getGame();
         loadingDialog = new ProgressDialog(this);
         loadingDialog.setMessage("Loading...");
         loadingDialog.setCanceledOnTouchOutside(false);
@@ -88,10 +102,19 @@ public class MainScreen extends Activity {
         // set a custom shadow that overlays the main content when the drawer opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         // set up the drawer's list view with items and click listener
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_item, navMenuTitles));
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+//        mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, navMenuTitles));
 
+        datalist = new ArrayList<String>();
+        datalist.add("John Smith");
+        datalist.add("Messages");
+        datalist.add("Friends");
+        datalist.add("Rankings");
+        datalist.add("Logout");
+        adapter = new DrawerListAdapter(this, R.layout.drawer_list_item, datalist);
+        mDrawerList.setAdapter(adapter);
+
+        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+        adapter.notifyDataSetChanged();
         // enable ActionBar app icon to behave as action to toggle nav drawer
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
@@ -122,7 +145,7 @@ public class MainScreen extends Activity {
         }
     }
 
-    public void showDialog (View v){
+    public void showDialog(View v) {
         Log.d("Group Click", "New Button Pressed");
         dlog = new android.app.Dialog(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth);
         dlog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
@@ -141,10 +164,10 @@ public class MainScreen extends Activity {
         dlog.show();
     }
 
-    View.OnClickListener viewListener = new View.OnClickListener(){
+    View.OnClickListener viewListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            switch(v.getId()){
+            switch (v.getId()) {
                 case R.id.singlePlayer:
                     Log.d("Mainscreen.java", "SinglePlayer Button Clicked.");
                     dlog.dismiss();
@@ -155,7 +178,7 @@ public class MainScreen extends Activity {
 
                     FragmentTransaction nFrag = getFragmentManager().beginTransaction();
 
-                    nFrag.setCustomAnimations(R.anim.slide_in_left,R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left);
+                    nFrag.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left);
                     nFrag.replace(R.id.content_frame, frag);
                     nFrag.addToBackStack(nTag);
                     nFrag.commit();
@@ -175,6 +198,7 @@ public class MainScreen extends Activity {
             }
         }
     };
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -191,7 +215,9 @@ public class MainScreen extends Activity {
         return super.onPrepareOptionsMenu(menu);
     }
 
-    /** This is for the actual items on the action bar **/
+    /**
+     * This is for the actual items on the action bar *
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // The action bar home/up action should open or close the drawer.
@@ -200,7 +226,7 @@ public class MainScreen extends Activity {
             return true;
         }
         // Handle action buttons
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -210,17 +236,68 @@ public class MainScreen extends Activity {
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            selectItem(position);
+            switch(position){
+                case 0: // User
+                    // If we're not trying to logout, we might try to change our content_view fragment based
+                    // on the item we clicked, so we do the following steps:
+
+                    // update the main content by replacing fragments
+                    Fragment fragment = new HomeScreenFragment();
+                    Bundle args = new Bundle();
+
+                    // We send an int containing which item on the list was pressed.
+                    // The "planet_number" stuff is from the tutorial.
+                    args.putInt(HomeScreenFragment.ARG_PLANET_NUMBER, position);
+                    fragment.setArguments(args);
+
+                    // We replace the fragment
+                    FragmentManager fragmentManager = getFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+                    break;
+                case 1: //Messages
+                    Fragment frag1 = new AboutFrag();
+                    Bundle args1 = new Bundle();
+                    args1.putInt("Foo", 0);
+                    frag1.setArguments(args1);
+
+                    FragmentManager fragManager1 = getFragmentManager();
+                    fragManager1.beginTransaction().replace(R.id.content_frame, frag1).commit();
+                    break;
+                case 2: //Friends
+                    break;
+                case 3: //Rankings
+                    Fragment fragment2 = new HighScoreFragment();
+                    Bundle args2 = new Bundle();
+
+                    args2.putInt("Foo", 0);
+                    fragment2.setArguments(args2);
+
+                    FragmentManager fragmentManager2 = getFragmentManager();
+                    fragmentManager2.beginTransaction().replace(R.id.content_frame, fragment2).commit();
+                    break;
+                case 4: //Logout
+                    ParseUser.logOut();
+                    Intent intent = new Intent(view.getContext(), LoginScreen.class);
+                    startActivity(intent);
+                    finish();
+                    break;
+            }
+//            setTitle(navMenuTitles[position]);
+            mDrawerList.setItemChecked(position, true);     // update selected item and title so it doesn't
+            // show up in the menu if we reopen it, then close the drawer
+            mDrawerLayout.closeDrawer(mDrawerList);         // now the actionbar will have the same title as the item name.
         }
     }
 
-    /** This handles the items that we click on the left menu (the opened drawer) **/
+    /**
+     * This handles the items that we click on the left menu (the opened drawer) *
+     */
     private void selectItem(int position) {
         String choiceStr = getResources().getStringArray(R.array.nav_drawer_array)[position];
 
 
         // If selected the Logout option, simply log them out
-        if(choiceStr.equals("Logout")) {
+        if (choiceStr.equals("Logout")) {
             ParseUser.logOut();
             Intent intent = new Intent(this, LoginScreen.class);
             startActivity(intent);
@@ -263,7 +340,7 @@ public class MainScreen extends Activity {
         }
         setTitle(navMenuTitles[position]);
         mDrawerList.setItemChecked(position, true);     // update selected item and title so it doesn't
-                                                        // show up in the menu if we reopen it, then close the drawer
+        // show up in the menu if we reopen it, then close the drawer
         mDrawerLayout.closeDrawer(mDrawerList);         // now the actionbar will have the same title as the item name.
     }
 
@@ -334,6 +411,7 @@ public class MainScreen extends Activity {
 
     // Saves the name from the editText the user inputs
     String playerTwoName;
+
     public void findFriendOpponent() {
 
         // Set up the dialog
@@ -352,10 +430,10 @@ public class MainScreen extends Activity {
                 playerTwoName = editText.getText().toString().trim();
 
                 // PlayerTwo validation
-                if(playerTwoName != null) {
+                if (playerTwoName != null) {
                     new checkUsernameTask().execute(playerTwoName);
                 } else { // empty field
-                    Toast.makeText(MainScreen.this, "Player Two's username required to play!" ,
+                    Toast.makeText(MainScreen.this, "Player Two's username required to play!",
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -371,7 +449,6 @@ public class MainScreen extends Activity {
         chooseFriendDlog.show();
 
     }
-
 
 
     public class checkUsernameTask extends AsyncTask<String, Integer, ParseUser> {
@@ -395,7 +472,7 @@ public class MainScreen extends Activity {
                 return;
             }
             // Verify the given player exists
-            if (user  == null) {
+            if (user == null) {
                 Toast.makeText(MainScreen.this, "Username " + "\"" + playerTwoName + "\"does not exist.",
                         Toast.LENGTH_SHORT).show();
                 return;
@@ -412,7 +489,7 @@ public class MainScreen extends Activity {
             game.setPlayerOne(ParseUser.getCurrentUser());
             game.setPlayerTwo(user);
             game.setGameStatus(GameStatus.CHALLENGED);
-          //  game.saveInBackground();
+            //  game.saveInBackground();
 //            newChallenge.saveInBackground(new SaveCallback() {
 //                @Override
 //                public void done(ParseException ex) {
@@ -432,7 +509,7 @@ public class MainScreen extends Activity {
 
             FragmentTransaction nFrag = getFragmentManager().beginTransaction();
 
-            nFrag.setCustomAnimations(R.anim.slide_in_left,R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left);
+            nFrag.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left);
             nFrag.replace(R.id.content_frame, frag);
             nFrag.addToBackStack(nTag);
             nFrag.commit();
@@ -452,7 +529,6 @@ public class MainScreen extends Activity {
             return null;
         }
     }
-
 
 
     /**
@@ -475,6 +551,56 @@ public class MainScreen extends Activity {
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
+
+    class DrawerListAdapter extends ArrayAdapter<String> {
+        Context mContext;
+        int textViewResourceId;
+        ArrayList<String> data;
+
+        public DrawerListAdapter(Context context, int textViewResourceId, ArrayList<String> objects) {
+            super(context, textViewResourceId, objects);
+            this.mContext = context;
+            this.textViewResourceId = textViewResourceId;
+            this.data = objects;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if (convertView == null) {
+                LayoutInflater inflater = (LayoutInflater) mContext.getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                convertView = inflater.inflate(textViewResourceId, parent, false);
+            }
+            switch(position){
+                case 0: // User
+                    ImageView a = (ImageView) convertView.findViewById(R.id.drawer_right_image);
+                    a.setVisibility(View.VISIBLE);
+                    break;
+                case 1: //Messages
+                    ImageView b = (ImageView) convertView.findViewById(R.id.drawer_image);
+                    b.setImageResource(R.drawable.icon_messages);
+                    break;
+                case 2: //Friends
+                    ImageView c = (ImageView) convertView.findViewById(R.id.drawer_image);
+                    c.setImageResource(R.drawable.icon_friends);
+                    break;
+                case 3: //Rankings
+                    ImageView d = (ImageView) convertView.findViewById(R.id.drawer_image);
+                    d.setImageResource(R.drawable.icon_rankings);
+                    break;
+                case 4: //Logout
+                    ImageView e = (ImageView) convertView.findViewById(R.id.drawer_image);
+                    e.setVisibility(View.GONE);
+                    break;
+            }
+            Log.d("LevelSelectAdapter", "Updating View");
+            TextView levelView = (TextView) convertView.findViewById(R.id.drawer_text);
+            levelView.setText(data.get(position));
+            levelView.setTypeface(roboto_regular);
+
+            return convertView;
+        }
+
+    }
 
 
 }

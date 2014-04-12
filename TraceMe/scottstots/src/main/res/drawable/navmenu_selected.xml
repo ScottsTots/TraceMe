@@ -1,9 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <!-- Bottom 2dp Shadow -->
-
-    <solid android:color="#003539"/>
-    <corners android:radius="5dip"/>
+    <solid android:color="#ff2c2c2c"/>
 </shape>
-
