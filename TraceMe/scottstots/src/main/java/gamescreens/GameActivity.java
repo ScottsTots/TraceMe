@@ -79,6 +79,7 @@ public class GameActivity extends Activity {
     public static ArrayList<CustomPath> pathsArray;
 
     ViewingBoard viewingBoard;
+    MultiViewingBoard multiViewingBoard;
 
     public static GameLoop gameLoop;
     Button playButton;
@@ -137,10 +138,15 @@ public class GameActivity extends Activity {
             @Override
             public void onClick(View view) {
                 viewingBoard = (ViewingBoard) findViewById(R.id.view);
-                flipper.setDisplayedChild(2); //gameloop is 0, viewingBoard is 1
+                multiViewingBoard = (MultiViewingBoard) findViewById(R.id.view2);
+                flipper.setDisplayedChild(3); //gameloop is 0, viewingBoard is 1
                 playButton.setVisibility(View.INVISIBLE);
-                viewingBoard.setGameData(game); // passes player's drawing data they just did. TODO reorganize this method and one below into 1
-                viewingBoard.startDrawing(); // this updates our viewingBoard to the current data.
+
+                multiViewingBoard.setGameData(game);
+                multiViewingBoard.startDrawing();
+
+                //viewingBoard.setGameData(game); // passes player's drawing data they just did. TODO reorganize this method and one below into 1
+                //viewingBoard.startDrawing(); // this updates our viewingBoard to the current data.
             }
         });
     }

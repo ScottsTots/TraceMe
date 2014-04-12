@@ -170,9 +170,9 @@ public class ViewingBoard extends View {
 
             // Clear/Reset our actual Bitmap buffer, which had our saved paths
             // mBitmap.eraseColor(Color.WHITE); // doesn't work, we need to create a new bitmap to clear it well...(not sure why)
-            mBitmap = Bitmap.createBitmap(frameBufferWidth, frameBufferHeight, Bitmap.Config.ARGB_8888);
+           // mBitmap = Bitmap.createBitmap(frameBufferWidth, frameBufferHeight, Bitmap.Config.ARGB_8888);
             // Now we set this new, clear buffer to the mCanvas, which is used to draw into our bitmap.
-            mCanvas.setBitmap(mBitmap);
+            mBitmap.eraseColor(Color.TRANSPARENT);
         }
         // Draw the actual framebuffer.
         canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);

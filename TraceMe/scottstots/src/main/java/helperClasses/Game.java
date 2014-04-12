@@ -177,7 +177,6 @@ public class Game extends ParseObject {
         else if(ParseUser.getCurrentUser().getUsername().equals(playerTwo.getUsername())) {
             playerOneData = getCustomPaths(playerOne);
         }
-
     }
 
 
