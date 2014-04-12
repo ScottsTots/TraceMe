@@ -16,8 +16,8 @@ import java.util.Date;
  */
 
 public class GameMenuListItem {
-    private ParseObject game;
-    public GameMenuListItem(ParseObject game) {
+    private Game game;
+    public GameMenuListItem(Game game) {
         this.game = game;
     }
 
@@ -27,9 +27,9 @@ public class GameMenuListItem {
         } else if (game.getInt("game_status") == GameStatus.CHALLENGED.id) {
             // This user is the one being challenged
             if (game.getParseUser("player_one").getUsername().equals(ParseUser.getCurrentUser().getUsername()))
-                return "Waiting for " + game.getParseUser("player_one").getUsername();
+                return "Waiting for " + game.getParseUser("player_two").getUsername();
             else
-                return "Challenged by " + game.getParseUser("player_two").getUsername();
+                return "Challenged by " + game.getParseUser("player_one").getUsername();
         } else if (game.getInt("game_status") == GameStatus.IN_PROGRESS.id) {
             ParseUser opponent = (game.getParseUser("player_one").getUsername().equals(ParseUser.getCurrentUser().getUsername())) ? game.getParseUser("player_two") : game.getParseUser("player_one");
             return opponent.getUsername();
@@ -46,7 +46,7 @@ public class GameMenuListItem {
         return p.format(game.getUpdatedAt());
     }
 
-    public ParseObject getGameParseObject() {
+    public Game getGameParseObject() {
         return game;
     }
 }

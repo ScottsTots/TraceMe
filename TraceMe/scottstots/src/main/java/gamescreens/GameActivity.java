@@ -139,6 +139,7 @@ public class GameActivity extends Activity {
                 viewingBoard = (ViewingBoard) findViewById(R.id.view);
                 flipper.setDisplayedChild(2); //gameloop is 0, viewingBoard is 1
                 playButton.setVisibility(View.INVISIBLE);
+                viewingBoard.setGameData(game); // passes player's drawing data they just did. TODO reorganize this method and one below into 1
                 viewingBoard.startDrawing(); // this updates our viewingBoard to the current data.
             }
         });
@@ -152,12 +153,16 @@ public class GameActivity extends Activity {
      */
     public static void endGame() {
         gameLoop.running = false;
-        new SaveGame().execute(game);
+        if(game.isMultiplayer()) {
+            Log.d("parseNetwork", "P1 " + game.getPlayerOne() + " p2 " + game.getPlayerTwo());
+            new SaveGame().execute(game);
+
+        }
         // Sets the text on the dialog box that shows the final score.. todo: reorganize or initialize it here
         scoreText.setText(Integer.toString(level.getScore()));
         endGameDlog.show();
 
-        // Notify player2:
+        // Notify player2/player1 about game status:
 
     }
 
@@ -212,6 +217,12 @@ public class GameActivity extends Activity {
                 level = new Level(1, ctx, gameLoop);
                 level.loadLevelFromParse();
                 gameLoop.setLevel(level);
+                try {
+                    game.fetch();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                game.loadUserData();
             }
 
 

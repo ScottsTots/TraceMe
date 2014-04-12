@@ -125,27 +125,27 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
         // TODO: Find challenges involving this current user.
         // TODO: Awaiting opponent should have click and hold to cancel
 
-        ParseQuery<ParseObject> currentGameQuery1 = ParseQuery.getQuery("Game");
+        ParseQuery<Game> currentGameQuery1 = ParseQuery.getQuery("Game");
         currentGameQuery1.whereEqualTo("player_one", ParseUser.getCurrentUser());
 
-        ParseQuery<ParseObject> currentGameQuery2 = ParseQuery.getQuery("Game");
+        ParseQuery<Game> currentGameQuery2 = ParseQuery.getQuery("Game");
         currentGameQuery2.whereEqualTo("player_two", ParseUser.getCurrentUser());
 
-        List<ParseQuery<ParseObject>> queries = new ArrayList<ParseQuery<ParseObject>>();
+        List<ParseQuery<Game>> queries = new ArrayList<ParseQuery<Game>>();
         queries.add(currentGameQuery1);
         queries.add(currentGameQuery2);
 
-        ParseQuery<ParseObject> combinedQuery = ParseQuery.or(queries);
+        ParseQuery<Game> combinedQuery = ParseQuery.or(queries);
         combinedQuery.orderByDescending("updatedAt");
         combinedQuery.whereNotEqualTo("game_status", GameStatus.INVALID.id);
         combinedQuery.include("player_one");
         combinedQuery.include("player_two");
 
-        combinedQuery.findInBackground(new FindCallback<ParseObject>() {
+        combinedQuery.findInBackground(new FindCallback<Game>() {
             @Override
-            public void done(List<ParseObject> parseObjects, ParseException e) {
+            public void done(List<Game> parseObjects, ParseException e) {
                 if (e == null) {    // Successful query
-                    for (ParseObject game : parseObjects) {
+                    for (Game game : parseObjects) {
                         // TODO: Make this a switch statement instead. Tried, but got error so come back.
 
                         if (game.getInt("game_status") == GameStatus.WAITING_FOR_OPPONENT.id ||

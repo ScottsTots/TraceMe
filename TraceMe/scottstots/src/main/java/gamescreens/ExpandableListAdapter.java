@@ -4,10 +4,16 @@ package gamescreens;
  * Created by nlaz on 4/4/14.
  */
 
+import android.app.Activity;
 import android.app.Dialog;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,9 +33,11 @@ import com.parse.SaveCallback;
 import java.util.HashMap;
 import java.util.List;
 
+import helperClasses.Game;
 import helperClasses.GameMenuListItem;
 import helperClasses.GameStatus;
 import scotts.tots.traceme.R;
+import scotts.tots.traceme.TraceMeApplication;
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
@@ -37,12 +45,14 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     private List<String> _listDataHeader; // header titles
     // child data in format of header title, child title
     private HashMap<String, List<GameMenuListItem>> _listDataChild;
+    Game game;
 
     public ExpandableListAdapter(Context context, List<String> listDataHeader,
                                  HashMap<String, List<GameMenuListItem>> listChildData) {
         this._context = context;
         this._listDataHeader = listDataHeader;
         this._listDataChild = listChildData;
+        game = ((TraceMeApplication)context.getApplicationContext()).getGame();
     }
 
     @Override
@@ -146,7 +156,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
 
     public View.OnClickListener getGameItemsListener(GameMenuListItem gameListItem) {
-        ParseObject gameObj = gameListItem.getGameParseObject();
+        Game gameObj = gameListItem.getGameParseObject();
 
 
         // Listener for a Game that is awaiting an opponent.
@@ -154,9 +164,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             return getWaitingOpponentListener(gameObj);
         } else if (gameObj.getInt("game_status") == GameStatus.CHALLENGED.id) {
             if (gameObj.getParseUser("player_one").getUsername().equals(ParseUser.getCurrentUser().getUsername()))
-                return getChallengerListener(gameObj);
+                return getChallengerListener(gameObj); // "waiting for an opponent...."
             else
-                return getChallengedListener(gameObj);
+                return getChallengedListener(gameObj); // "challenged by ...."
         } else if (gameObj.getInt("game_status") == GameStatus.IN_PROGRESS.id) {
             return getActiveGameListener(gameObj);
         }
@@ -266,7 +276,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         };
     }
 
-    public View.OnClickListener getChallengedListener(final ParseObject obj) {
+    public View.OnClickListener getChallengedListener(final Game obj) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -283,6 +293,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                 ((Button) acceptDlogButton).setText("Accept");
                 ((Button) declineDlogButton).setText("Decline");
 
+                // Accept
                 acceptDlogButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -301,6 +312,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                         dlog.dismiss();
 
                         // TODO: Render the actual game. The game has been accepted.
+                        game = obj;
+                       // ((TraceMeApplication)_context.getApplicationContext()).setGame(obj);
+                        _context.startActivity(new Intent(_context, GameActivity.class));
                     }
                 });
 
@@ -329,13 +343,17 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         };
     }
 
-    public View.OnClickListener getActiveGameListener(final  ParseObject obj) {
+    public View.OnClickListener getActiveGameListener(final  Game obj) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(_context,
                         "TODO: Show actual game.",
                         Toast.LENGTH_LONG).show();
+                // Starts game
+               // game = obj;
+                ((TraceMeApplication)_context.getApplicationContext()).setGame(obj);
+                _context.startActivity(new Intent(_context, GameActivity.class));
             }
         };
     }
