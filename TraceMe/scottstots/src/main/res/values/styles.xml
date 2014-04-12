@@ -13,7 +13,7 @@
 
     <style name="MyTheme.MyActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
         <item name="android:titleTextStyle">@style/MyTheme.MyActionBar.TitleTextStyle</item>
-        <item name="android:background">#ff353535</item>
+        <item name="android:background">@drawable/actionbar_custom</item>
     </style>
 
     <style name="MyTheme.MyActionBar.TitleTextStyle" parent="@android:style/Widget.Holo.Light.ActionBar">

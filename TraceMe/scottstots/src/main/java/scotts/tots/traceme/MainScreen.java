@@ -1,5 +1,6 @@
 package scotts.tots.traceme;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.Fragment;
@@ -8,6 +9,8 @@ import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -71,6 +74,14 @@ public class MainScreen extends Activity {
 
         // This layout contains a navigation drawable and a fragment (defined as "content_frame"), which contains the game lobby etc..
         setContentView(R.layout.activity_main_screen);
+
+        final int actionBarTitle = Resources.getSystem().getIdentifier("action_bar_title", "id", "android");
+        final TextView title = (TextView)getWindow().findViewById(actionBarTitle);
+        Typeface face = Typeface.createFromAsset(getAssets(), "GrandHotel-Regular.otf");
+
+        title.setTypeface(face);
+        title.setTextSize(30);
+
 
         game = ((TraceMeApplication)this.getApplicationContext()).getGame();
         loadingDialog = new ProgressDialog(this);
