@@ -78,7 +78,9 @@ public class Level{
     ScoreManager scoreManager;
     Bitmap traceBitmap;
     public static int TOTAL_TRACES = 8;
-    public int currentTrace = 0;
+    private int currentTrace = 0;
+    private float pathLength;
+    private float maxPathLength;
     public int timeLeft = 15;
 
     Context ctx;
@@ -204,13 +206,15 @@ public class Level{
         mCanvas.drawText("Score: " + Integer.toString(getScore()), 20, 120, textPaint);
 
         PathMeasure pm = new PathMeasure(mPath, false);
-        float length = pm.getLength();
-        if(length > 1000)
-            length = 1000;
+        pathLength = pm.getLength();
+        maxPathLength = traceArray.get(currentTrace).getLength() * .75f;
+        if(pathLength > maxPathLength)
+            pathLength = maxPathLength;
         int x = 20;
         int y = frameBufferHeight - 50;
-        int w = (int)((length / 1000) * 400);
+        int w = 420 - (int)((pathLength / maxPathLength) * 420); //400 is width in pixels of the ink bar on the screen
         int h = 15;
+        mCanvas.drawText("Ink Level", frameBufferWidth/2 - 55, y - 20, textPaint);
         mCanvas.drawRect(x, y, x + w, y + h, mPaint); // left top right bottom
         //Log.d("gameloop", "path length " + pm.getLength());
     }
@@ -357,16 +361,18 @@ public class Level{
     }
 
     private void touch_move(float x, float y) {
-        // Insert the next point in our current CustomPath, which should be at the end of the stack.
-        // This is an array of CustomPaths, which contains points USED FOR DRAWING ANIMATION
-        GameActivity.pathsArray.get(GameActivity.pathsArray.size() - 1).addUserPoint(x, y, System.currentTimeMillis()- startTime,  scoreManager.totalScore);
-        startTime = System.currentTimeMillis();
-        float dx = Math.abs(x - mX);
-        float dy = Math.abs(y - mY);
-        if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
-            mPath.quadTo(mX, mY, (x + mX) / 2, (y + mY) / 2);
-            mX = x;
-            mY = y;
+        if(pathLength < maxPathLength) {
+            // Insert the next point in our current CustomPath, which should be at the end of the stack.
+            // This is an array of CustomPaths, which contains points USED FOR DRAWING ANIMATION
+            GameActivity.pathsArray.get(GameActivity.pathsArray.size() - 1).addUserPoint(x, y, System.currentTimeMillis() - startTime, scoreManager.totalScore);
+            startTime = System.currentTimeMillis();
+            float dx = Math.abs(x - mX);
+            float dy = Math.abs(y - mY);
+            if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
+                mPath.quadTo(mX, mY, (x + mX) / 2, (y + mY) / 2);
+                mX = x;
+                mY = y;
+            }
         }
     }
 

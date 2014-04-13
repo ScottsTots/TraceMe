@@ -6,6 +6,8 @@ package helperClasses;
 
 
 import android.graphics.Bitmap;
+import android.graphics.Path;
+import android.graphics.PathMeasure;
 
 import java.util.ArrayList;
 
@@ -19,9 +21,10 @@ public class TraceFile {
     public int[] pixels;
     int width = 800;
     int height = 480;
-    int length; // TODO add the length of a trace by using path measure
     // What we use to score a trace.
     // Saves the equidistant points that make up the bitmap drawing, used for scoring purposes
+
+    float length;
     public ArrayList<DataPoint> points;
     public TraceFile(Bitmap bitmap, ArrayList<DataPoint> points) {
         if(bitmap == null) {
@@ -32,6 +35,16 @@ public class TraceFile {
         this.points = points;
         width = bitmap.getWidth();
         height = bitmap.getHeight();
+        Path mPath = new Path();
+        mPath.reset();
+        for(int i = 0; i < points.size(); i++) {
+            if( i == 0) {
+                mPath.lineTo(points.get(i).x, points.get(i).y);
+            }
+            mPath.lineTo(points.get(i).x, points.get(i).y);
+        }
+        PathMeasure pm = new PathMeasure(mPath, false);
+        length = pm.getLength();
     }
 
     public Bitmap getBitmap() {
@@ -47,6 +60,10 @@ public class TraceFile {
 
     public ArrayList<DataPoint> getPointArray() {
         return points;
+    }
+
+    public float getLength() {
+        return length;
     }
 
 }
