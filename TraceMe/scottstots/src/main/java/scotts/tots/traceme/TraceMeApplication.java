@@ -60,6 +60,8 @@ public class TraceMeApplication extends Application {
 
     public void setGame(Game g) { game = g;}
 
+    public Game getNewGame() { game = new Game(); return game;}
+
 
 
 

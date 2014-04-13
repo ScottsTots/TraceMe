@@ -57,7 +57,6 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
     private ExpandableListView expListView;
     private List<String> listDataHeader;
     private HashMap<String, List<GameMenuListItem>> listDataChild;
-    private RefreshThread refreshThread;
 
     public HomeScreenFragment() {
         // Empty constructor required for fragment subclasses
@@ -72,7 +71,6 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        refreshThread = new RefreshThread();
         // get the listview
         expListView = (ExpandableListView) view.findViewById(R.id.lvExp);
 
@@ -86,24 +84,6 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
         expListView.expandGroup(1);
         expListView.expandGroup(2);
         expListView.expandGroup(3);
-
-//        //noinspection ConstantConditions
-//        getActivity().runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                while(true) {
-//                    try {
-//                        Thread.sleep(5000);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                    Log.d("parseNetwork", "refreshing views");
-//                    listAdapter.notifyDataSetChanged();
-//                }
-//
-//            }
-//        });
-
         listAdapter.notifyDataSetChanged();
     }
 
@@ -154,7 +134,7 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
                         } else if (game.getInt("game_status") == GameStatus.IN_PROGRESS.id) {
                             currentgames.add(new GameMenuListItem(game));
                         } else if (game.getInt("game_status") == GameStatus.GAME_OVER.id) {
-                            // TODO: Display the game over list items
+                            pastgames.add(new GameMenuListItem(game));
                         }
                     }
                     listAdapter.notifyDataSetChanged();
@@ -172,57 +152,14 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
     }
 
 
-
-
-    /** Refreshes the UI listviews every 5 seconds. After 16 refreshes it stops to save API accesses
-     * Currently is not used because this is a fragment...
-     */
-    private class RefreshThread extends Thread {
-        int count = 0;
-        boolean stop = false;
-        @Override
-        public void run() {
-            try {
-                while (!stop) {
-                    Thread.sleep(5000);
-                    // after ~1.3 minutes stop querying so we don't waste API accesses
-                    // counter resets at onResume();
-                    if (count < 16)
-                        listAdapter.notifyDataSetChanged();
-                    Log.d("parseNetwork", "querying database");
-                    count++;
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        public void stopThread() {
-            stop = true;
-            while(true) {
-                try {
-                    this.join();
-                    Log.d("gameloop", " ended thread");
-                    break;
-                } catch (InterruptedException e) {
-                }
-            }
-        }
-
-    }
-
-
     @Override
     public void onResume() {
         super.onResume();
-        if(!refreshThread.isAlive()) {
-       //     refreshThread.start();
-        }
+        listAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onPause() {
-       // refreshThread.stopThread();
         super.onPause();
     }
 }

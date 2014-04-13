@@ -97,10 +97,7 @@ import helperClasses.Game;
 
         playerOne = new Player(game.playerOneData, scaleX2, scaleY2, 0, 0);
 
-
         // Player two's traces will be drawn on lower right
-        ;
-
         playerTwo = new Player(game.playerTwoData, scaleX2, scaleY2, frameBufferW2, frameBufferH2 );
     }
 

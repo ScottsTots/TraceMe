@@ -432,7 +432,7 @@ public class MainScreen extends Activity {
 
                 // PlayerTwo validation
                 if (playerTwoName != null) {
-                    new checkUsernameTask().execute(playerTwoName); // initiates game if name is valid
+                    new startGameTask().execute(playerTwoName); // initiates game if name is valid
                 } else { // empty field
                     Toast.makeText(MainScreen.this, "Player Two's username required to play!",
                             Toast.LENGTH_SHORT).show();
@@ -444,8 +444,8 @@ public class MainScreen extends Activity {
 
     }
 
-
-    public class checkUsernameTask extends AsyncTask<String, Integer, ParseUser> {
+    /** Checks if a user name exists and starts the game if it is valid **/
+    public class startGameTask extends AsyncTask<String, Integer, ParseUser> {
         @Override
         protected void onPreExecute() {
             loadingDialog.show();
@@ -483,7 +483,7 @@ public class MainScreen extends Activity {
             FragmentTransaction nFrag = getFragmentManager().beginTransaction();
             nFrag.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left);
             nFrag.replace(R.id.content_frame, frag);
-            nFrag.addToBackStack(nTag);
+           // nFrag.addToBackStack(nTag);
             nFrag.commit();
             chooseFriendDlog.dismiss();
         }
@@ -507,8 +507,6 @@ public class MainScreen extends Activity {
      * When using the ActionBarDrawerToggle, you must call it during
      * onPostCreate() and onConfigurationChanged()...
      */
-
-
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -568,7 +566,6 @@ public class MainScreen extends Activity {
             TextView levelView = (TextView) convertView.findViewById(R.id.drawer_text);
             levelView.setText(data.get(position));
             levelView.setTypeface(roboto_regular);
-
             return convertView;
         }
 
@@ -579,6 +576,7 @@ public class MainScreen extends Activity {
     @Override
     public void onPause() {
         super.onPause();
+        // Subscribe to notifications when app is gone from view.
         if(ParseUser.getCurrentUser() != null)
             PushService.subscribe(this, ParseUser.getCurrentUser().getUsername(), DispatchActivity.class);
         //ParseInstallation.getCurrentInstallation().saveEventually();
@@ -588,6 +586,7 @@ public class MainScreen extends Activity {
     @Override
     public void onResume() {
         super.onResume();
+        game = ((TraceMeApplication) this.getApplicationContext()).getNewGame();
         // No notifications received while user is using the app. Uncomment to see notifications at all times.
         PushService.unsubscribe(this, ParseUser.getCurrentUser().getUsername());
     }

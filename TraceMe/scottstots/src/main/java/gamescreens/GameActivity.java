@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -52,9 +53,11 @@ import java.util.TimerTask;
 import helperClasses.CustomPath;
 import helperClasses.DataPoint;
 import helperClasses.Game;
+import helperClasses.GameStatus;
 import helperClasses.Level;
 import helperClasses.ScoreManager;
 import helperClasses.TraceFile;
+import scotts.tots.traceme.MainScreen;
 import scotts.tots.traceme.R;
 import scotts.tots.traceme.TraceMeApplication;
 
@@ -78,11 +81,12 @@ public class GameActivity extends Activity {
     // This array is used to do the drawing animation in ViewingBoard
     public static ArrayList<CustomPath> pathsArray;
 
-    ViewingBoard viewingBoard;
+    static ViewingBoard viewingBoard;
     static MultiViewingBoard multiViewingBoard;
 
     public static GameLoop gameLoop;
     static Button playButton;
+    static Button endTurnButton;
     static ViewFlipper flipper;
     private final int COUNTDOWN_TIME = 2;
     private int time_left;
@@ -96,7 +100,7 @@ public class GameActivity extends Activity {
     static TextView scoreText;
 
     public static Level level;
-    Context ctx;
+    static Context ctx;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -108,27 +112,28 @@ public class GameActivity extends Activity {
 
 
         multiViewingBoard = (MultiViewingBoard) findViewById(R.id.view2);
+        viewingBoard = (ViewingBoard) findViewById(R.id.view);
 
         endGameDlog = new android.app.Dialog(this,
                 android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth);
         endGameDlog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         endGameDlog.setContentView(R.layout.dialog_level_end);
+        endGameDlog.setCanceledOnTouchOutside(false);
+
         scoreText = (TextView) endGameDlog.findViewById(R.id.scoreTextView);
+        endTurnButton = (Button) endGameDlog.findViewById(R.id.endTurnButton);
 
         // Load the game
         game = ((TraceMeApplication)this.getApplicationContext()).getGame();
         loadingDialog = new ProgressDialog(GameActivity.this);
         loadingDialog.setMessage("Loading...");
         loadingDialog.setCanceledOnTouchOutside(false);
-        loadingDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        loadingDialog.setProgress(0);
-        loadingDialog.setMax(100);
+//      loadingDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+//      loadingDialog.setProgress(0);
+//      loadingDialog.setMax(100);
 
-    //    if(game.isMultiplayer())
-            new LoadTask().execute("loadOnline");
-    //   else {
-    //     new LoadTask().execute("load");
-    //   }
+//      if(game.isMultiplayer())
+        new LoadTask().execute("loadOnline");
 
 
 
@@ -137,7 +142,8 @@ public class GameActivity extends Activity {
         flipper = (ViewFlipper) findViewById(R.id.viewFlipper);
         // Switch into the viewingBoard using the viewFlipper if we press "play"
         playButton = (Button) findViewById(R.id.playButton);
-        playButton.setOnClickListener(new View.OnClickListener() {
+        playButton.setVisibility(View.INVISIBLE);
+   /*     playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 viewingBoard = (ViewingBoard) findViewById(R.id.view);
@@ -149,47 +155,40 @@ public class GameActivity extends Activity {
                     multiViewingBoard.startDrawing();
                 }
                 else {
-                    viewingBoard = (ViewingBoard) findViewById(R.id.view);
+
                     flipper.setDisplayedChild(2); //gameloop is 0, viewingBoard is 1
                     playButton.setVisibility(View.INVISIBLE);
                     viewingBoard.setGameData(game); // passes player's drawing data they just did. TODO reorganize this method and one below into 1
                     viewingBoard.startDrawing(); // this updates our viewingBoard to the current data.
                 }
             }
-        });
+        });*/
     }
 
     // Called by the level object when there's no more traces.
     /**
-     * When we finish a multiplayer game, we want to save some things online:
-     *      1. All our paths drawn (the custom paths array)
-     *      3. We also have to check whether the other player already played in GameActivity to decide
-     *          if we are going to show both animations
+     * When we finish a multiplayer game, save stuff online, move on to the endGame Activity, which handles all drawing
+     * and score showing.
      */
     public static void endGame() {
         gameLoop.running = false;
-        // Both players done, show final end game stuff.
-        if(game.isMultiplayer() && game.isComplete()) {
-            Log.d("parseNetwork", "P1 " + game.getPlayerOne() + " p2 " + game.getPlayerTwo());
-            // Load and show multiplayer end game.
-            new SaveGame().execute(game);
-
-        }
-        // Only player A has moved. Show him/her a dialog that says "We will notify you when B finishes!"
-        // And his/her current score maybe?
-        else if(game.isMultiplayer() && !game.isComplete()) {
-
-        }
+        // Saves the game, then checks game status to see what to do next.
+        if(game.isMultiplayer())
+            new endGameTask().execute(game);
         else {
-            // TODO show single player end game.
+            // TODO show the viewingBoard for single player, repeat animation once.
+            // TODO after animation is done, show dialog that shows medals/score/level/repeat animation button.
+
+            flipper.setDisplayedChild(2); //gameloop is 0, viewingBoard is 1
+            playButton.setVisibility(View.INVISIBLE);
+            viewingBoard.startDrawing(); // this updates our viewingBoard to the current
+            //scoreText.setText(Integer.toString(level.getScore()));
+            //endGameDlog.show();
         }
-        // Sets the text on the dialog box that shows the final score.. todo: reorganize or initialize it here
-       // scoreText.setText(Integer.toString(level.getScore()));
-       // endGameDlog.show();
     }
 
 
-    public static class SaveGame extends AsyncTask<Game, Integer, Void> {
+    public static class endGameTask extends AsyncTask<Game, Integer, Void> {
         @Override
         protected void onPreExecute() {
             loadingDialog.show();
@@ -197,35 +196,53 @@ public class GameActivity extends Activity {
         @Override
         protected Void doInBackground(Game... params) {
             Game game = params[0];
+            game.setGameStatus(GameStatus.GAME_OVER);
             game.saveUserDrawings(pathsArray);
             try {
                 game.save();
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            // Notify player2/player1 about game status:
+            // send push notification to opponent about game status:
             game.notifyOpponent();
 
             return null;
         }
         @Override
         protected void onPostExecute(Void param) {
-            flipper.setDisplayedChild(3); //gameloop is 0, viewingBoard is 1
-            playButton.setVisibility(View.INVISIBLE);
-            multiViewingBoard.setGameData(game);
-            multiViewingBoard.startDrawing();
             loadingDialog.dismiss();
+            // Both players done, show final end game stuff.
+            if(game.isComplete()) {
+                flipper.setDisplayedChild(3); //gameloop is 0, viewingBoard is 1
+                multiViewingBoard.setGameData(game);
+                multiViewingBoard.startDrawing();
+                //((Activity)ctx).finish();
+            }
+            // Only player A has moved. Show him/her a dialog that says "We will notify you when B finishes!"
+            // And his/her current score maybe?
+            else {
+                scoreText.setText(Integer.toString(level.getScore()));
+                endTurnButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ((Activity)ctx).startActivity(new Intent((Activity)ctx, MainScreen.class));
+                        endGameDlog.dismiss();
+                        ((Activity)ctx).finish();
+                    }
+                });
+                endGameDlog.show();
+            }
         }
         @Override
         protected void onProgressUpdate(Integer... progress) {
         }
-
     }
 
     public class LoadTask extends AsyncTask<String, Integer, Void> {
         @Override
         protected void onPreExecute() {
             loadingDialog.show();
+
         }
 
         @Override
@@ -260,7 +277,8 @@ public class GameActivity extends Activity {
         protected void onPostExecute(Void param) {
             loadingDialog.dismiss();
 
-            if(game.isComplete()) {
+            // If we already have everything we need, start the whole animation with the 2 players.
+            if(game.isMultiplayer() && game.isComplete()) {
                 flipper.setDisplayedChild(3); //gameloop is 0, viewingBoard is 1
                 playButton.setVisibility(View.INVISIBLE);
 

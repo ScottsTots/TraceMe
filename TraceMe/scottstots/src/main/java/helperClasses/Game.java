@@ -35,7 +35,7 @@ public class Game extends ParseObject {
     private ParseUser playerOne;
     private ParseUser playerTwo;
     private GameStatus gameStatus;
-    private boolean isMultiplayer = true;
+    private boolean isMultiplayer = false;
     public ArrayList<CustomPath> playerOneData;
     public ArrayList<CustomPath> playerTwoData;
     private int levelNum = 1;

@@ -21,6 +21,12 @@ public class CustomPath {
         pointArray.add(new DataPoint(x, y, 0));
     }
 
+    public CustomPath(float x, float y, long timeElapsed) {
+        pointArray = new ArrayList<DataPoint>();
+        pointArray.add(new DataPoint(x, y, timeElapsed));
+        startTime = System.currentTimeMillis();
+    }
+
     public void addPoint(float x, float y) {
         // We record the time difference between the last point and this one.
         pointArray.add(new DataPoint(x, y, System.currentTimeMillis() - startTime));
@@ -33,11 +39,9 @@ public class CustomPath {
         pointArray = new ArrayList<DataPoint>();
     }
 
-    public void addUserPoint(float x, float y, long time, int score) {
-        pointArray.add(new DataPoint(x, y, time, score));
+    public void addUserPoint(float x, float y, long timeElapsed, int score) {
+        pointArray.add(new DataPoint(x, y, timeElapsed, score));
     }
-
-
 
 
     public DataPoint get(int index) {

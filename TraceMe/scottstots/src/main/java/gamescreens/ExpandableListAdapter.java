@@ -320,8 +320,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                         dlog.dismiss();
 
                         // Start game
-                        game = obj;
-                       // ((TraceMeApplication)_context.getApplicationContext()).setGame(obj);
+                        //game = obj;
+                        ((TraceMeApplication)_context.getApplicationContext()).setGame(obj);
                         _context.startActivity(new Intent(_context, GameActivity.class));
                     }
                 });

@@ -117,5 +117,10 @@ public class LevelSelectFragment extends Fragment {// implements View.OnClickLis
         }
 
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+
+    }
 
 }

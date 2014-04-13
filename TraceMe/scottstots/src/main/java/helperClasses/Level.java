@@ -70,7 +70,7 @@ public class Level{
     public static boolean GAME_OVER = false;
 
 
-
+    long startTime;
 
     static final String TAG = "LEVEL";
     Bitmap framebuffer;
@@ -169,6 +169,7 @@ public class Level{
     public void update(float deltaTime) {
         // Start the game timer if it's the first update.
         if(startTimer) {
+            startTime = System.currentTimeMillis();
             timer.start();
             startTimer = false;
         }
@@ -346,14 +347,17 @@ public class Level{
         mX = x;
         mY = y;
         // This is an array of CustomPaths, which contains points for drawing animation later..
-        GameActivity.pathsArray.add(new CustomPath(x, y));
+
+        GameActivity.pathsArray.add(new CustomPath(x, y, System.currentTimeMillis() - startTime));
+        startTime = System.currentTimeMillis();
         Log.d("view",  "size" + GameActivity.pathsArray.size());
     }
 
     private void touch_move(float x, float y) {
         // Insert the next point in our current CustomPath, which should be at the end of the stack.
         // This is an array of CustomPaths, which contains points USED FOR DRAWING ANIMATION
-        GameActivity.pathsArray.get(GameActivity.pathsArray.size() - 1).addPoint(x, y);
+        GameActivity.pathsArray.get(GameActivity.pathsArray.size() - 1).addUserPoint(x, y, System.currentTimeMillis()- startTime,  scoreManager.totalScore);
+        startTime = System.currentTimeMillis();
         float dx = Math.abs(x - mX);
         float dy = Math.abs(y - mY);
         if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {

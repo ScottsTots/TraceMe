@@ -102,10 +102,7 @@ public class ViewingBoard extends View {
 
     }
 
-    public void setGameData(Game game) {
-        paths = game.playerOneData;
-        paths2 = game.playerTwoData;
-    }
+
 
 
     @Override
@@ -231,7 +228,8 @@ public class ViewingBoard extends View {
     }
 
     public void startDrawing() {
-        //paths = GameActivity.pathsArray; // TODO this line should be uncommented for singleplayer... separate singleplayer / multiplayer on viewingBoard
+        previous = System.currentTimeMillis();
+        paths = GameActivity.pathsArray; // TODO this line should be uncommented for singleplayer... separate singleplayer / multiplayer on viewingBoard
         postInvalidate();
     }
 }
