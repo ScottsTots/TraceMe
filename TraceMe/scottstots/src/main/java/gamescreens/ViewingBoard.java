@@ -128,8 +128,6 @@ public class ViewingBoard extends View {
             pointCounter++;
         }
         */
-
-
         // If we still have paths to draw
         if(currPathNumber < paths.size()) {
             // Retrieve the current path
@@ -141,7 +139,6 @@ public class ViewingBoard extends View {
                 // draw all path stuff to our framebuffer: mBitmap
                 drawPath(canvas);
                 // See if enough time has passed to move on to the next point:
-                //TODO need to also take into account time passed between two paths...
                 timeNow = System.currentTimeMillis();
                 if(timeNow - previous > point.time) {
                     previous = System.currentTimeMillis();
@@ -155,7 +152,6 @@ public class ViewingBoard extends View {
                 currPathNumber++;
             }
         }
-
         else {
             // no more paths, no mo points!!
             // Reset to 0 so we loop around once more, and reset the canvas buffer (which saves paths

@@ -27,6 +27,8 @@ public class CustomPath {
         startTime = System.currentTimeMillis();
     }
 
+    // Use this method if you want this class to count time elapsed between points, with
+    // no extra time added between paths.
     public void addPoint(float x, float y) {
         // We record the time difference between the last point and this one.
         pointArray.add(new DataPoint(x, y, System.currentTimeMillis() - startTime));
