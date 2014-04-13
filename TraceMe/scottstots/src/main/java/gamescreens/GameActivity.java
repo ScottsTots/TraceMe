@@ -79,11 +79,11 @@ public class GameActivity extends Activity {
     public static ArrayList<CustomPath> pathsArray;
 
     ViewingBoard viewingBoard;
-    MultiViewingBoard multiViewingBoard;
+    static MultiViewingBoard multiViewingBoard;
 
     public static GameLoop gameLoop;
-    Button playButton;
-    ViewFlipper flipper;
+    static Button playButton;
+    static ViewFlipper flipper;
     private final int COUNTDOWN_TIME = 2;
     private int time_left;
     private TextView countdownTimerView;
@@ -106,6 +106,9 @@ public class GameActivity extends Activity {
         ctx = this;
         pathsArray = new ArrayList<CustomPath>(); //used to play animation
 
+
+        multiViewingBoard = (MultiViewingBoard) findViewById(R.id.view2);
+
         endGameDlog = new android.app.Dialog(this,
                 android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth);
         endGameDlog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
@@ -123,9 +126,9 @@ public class GameActivity extends Activity {
 
     //    if(game.isMultiplayer())
             new LoadTask().execute("loadOnline");
-     //   else {
-       //     new LoadTask().execute("load");
-     //   }
+    //   else {
+    //     new LoadTask().execute("load");
+    //   }
 
 
 
@@ -139,7 +142,6 @@ public class GameActivity extends Activity {
             public void onClick(View view) {
                 viewingBoard = (ViewingBoard) findViewById(R.id.view);
                 if(game.isMultiplayer()) {
-                    multiViewingBoard = (MultiViewingBoard) findViewById(R.id.view2);
                     flipper.setDisplayedChild(3); //gameloop is 0, viewingBoard is 1
                     playButton.setVisibility(View.INVISIBLE);
 
@@ -161,21 +163,29 @@ public class GameActivity extends Activity {
     /**
      * When we finish a multiplayer game, we want to save some things online:
      *      1. All our paths drawn (the custom paths array)
-     *      3. We also have to check whether the other player already played in GameActivity.
+     *      3. We also have to check whether the other player already played in GameActivity to decide
+     *          if we are going to show both animations
      */
     public static void endGame() {
         gameLoop.running = false;
-        if(game.isMultiplayer()) {
+        // Both players done, show final end game stuff.
+        if(game.isMultiplayer() && game.isComplete()) {
             Log.d("parseNetwork", "P1 " + game.getPlayerOne() + " p2 " + game.getPlayerTwo());
+            // Load and show multiplayer end game.
             new SaveGame().execute(game);
 
         }
+        // Only player A has moved. Show him/her a dialog that says "We will notify you when B finishes!"
+        // And his/her current score maybe?
+        else if(game.isMultiplayer() && !game.isComplete()) {
+
+        }
+        else {
+            // TODO show single player end game.
+        }
         // Sets the text on the dialog box that shows the final score.. todo: reorganize or initialize it here
-        scoreText.setText(Integer.toString(level.getScore()));
-        endGameDlog.show();
-
-        // Notify player2/player1 about game status:
-
+       // scoreText.setText(Integer.toString(level.getScore()));
+       // endGameDlog.show();
     }
 
 
@@ -193,10 +203,17 @@ public class GameActivity extends Activity {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
+            // Notify player2/player1 about game status:
+            game.notifyOpponent();
+
             return null;
         }
         @Override
         protected void onPostExecute(Void param) {
+            flipper.setDisplayedChild(3); //gameloop is 0, viewingBoard is 1
+            playButton.setVisibility(View.INVISIBLE);
+            multiViewingBoard.setGameData(game);
+            multiViewingBoard.startDrawing();
             loadingDialog.dismiss();
         }
         @Override
@@ -234,10 +251,8 @@ public class GameActivity extends Activity {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                game.loadUserData();
+                game.loadUserData(); // load arrays
             }
-
-
             return null;
         }
 
@@ -245,7 +260,16 @@ public class GameActivity extends Activity {
         protected void onPostExecute(Void param) {
             loadingDialog.dismiss();
 
-            startCountDownTimer();
+            if(game.isComplete()) {
+                flipper.setDisplayedChild(3); //gameloop is 0, viewingBoard is 1
+                playButton.setVisibility(View.INVISIBLE);
+
+                multiViewingBoard.setGameData(game);
+                multiViewingBoard.startDrawing();
+            }
+            else {
+                startCountDownTimer();
+            }
         }
 
         @Override

@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParsePush;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
@@ -256,6 +257,10 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                                             Toast.LENGTH_LONG).show();
 
                                     // TODO: Send the user a push notification for cancelled game.
+                                    // From Aaron: Instead of sending a notification to player B that the game was cancelled,
+                                    // We can instead verify the game is still valid when we get it from the listview,
+                                    // If it is NOT valid, then player A cancelled the game, so we notify player B
+                                    // that A cancelled the game with a "toast" or a simple message instead of notification, and refresh the listview?
                                 }
                                 else
                                     e.printStackTrace();
@@ -304,6 +309,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                                 if (e == null) {
                                     Log.d("getWaitingOpponentListener", "game accepted successfully");
                                     // TODO: Send the user a push notification for accepted
+                                    // From Aaron: We should just send a push notification after player2 finishes his/her game.
+                                    // So we don't spam the user. So for now I'll leave this blank and send a notification at the end of the game saying
+                                    // "player B accepted your challenge, results are in!" when B finishes the game.
                                 }
                                 else
                                     e.printStackTrace();
@@ -311,7 +319,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                         });
                         dlog.dismiss();
 
-                        // TODO: Render the actual game. The game has been accepted.
+                        // Start game
                         game = obj;
                        // ((TraceMeApplication)_context.getApplicationContext()).setGame(obj);
                         _context.startActivity(new Intent(_context, GameActivity.class));
@@ -329,7 +337,13 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                                     Toast.makeText(_context,
                                             "Declined Successfully",
                                             Toast.LENGTH_LONG).show();
-                                    // TODO: Send the user a push notification for decline
+                                    // Send the user a push notification for decline
+                                    ParseUser p1 = obj.getParseUser("player_one");
+                                    ParsePush push = new ParsePush();
+                                    push.setChannel(p1.getUsername());
+                                    push.setMessage("Player " + ParseUser.getCurrentUser().getUsername() + " has declined your challenge");
+                                    push.sendInBackground();
+                                    // TODO: refresh lists
                                 }
                                 else
                                     e.printStackTrace();
@@ -348,8 +362,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             @Override
             public void onClick(View view) {
                 Toast.makeText(_context,
-                        "TODO: Show actual game.",
-                        Toast.LENGTH_LONG).show();
+                        "Starting game",
+                        Toast.LENGTH_SHORT).show();
                 // Starts game
                // game = obj;
                 ((TraceMeApplication)_context.getApplicationContext()).setGame(obj);

@@ -11,6 +11,7 @@ public enum GameStatus {
     CHALLENGED("Challenged", 3),
     INVALID("Game is invalid.", 4);
 
+
     private int intValue;
     private String stringValue;
     public int id;

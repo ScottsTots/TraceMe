@@ -39,6 +39,7 @@ import com.parse.ParseObject;
 import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.PushService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -431,19 +432,12 @@ public class MainScreen extends Activity {
 
                 // PlayerTwo validation
                 if (playerTwoName != null) {
-                    new checkUsernameTask().execute(playerTwoName);
+                    new checkUsernameTask().execute(playerTwoName); // initiates game if name is valid
                 } else { // empty field
                     Toast.makeText(MainScreen.this, "Player Two's username required to play!",
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
-
-
-                // TODO: Needs to be undone. Currently crashed.
-                // startActivity(new Intent(MainScreen.this, LevelSelectFragment.class));
-               // chooseFriendDlog.dismiss();
-
-
             }
         });
         chooseFriendDlog.show();
@@ -478,37 +472,15 @@ public class MainScreen extends Activity {
                 return;
             }
             // At this point you're good to go.. Create the new Challenge object.
-            // TODO: For now I am adding a game object this way, may want to figure out using Game class
-//            ParseObject newChallenge = ParseObject.create("Game");
-//            newChallenge.put("game_status", GameStatus.CHALLENGED.id);
-//            newChallenge.put("player_one", ParseUser.getCurrentUser());
-//            newChallenge.put("player_two", user);
-//            game.put("game_status", GameStatus.CHALLENGED.id);
-//            game.put("player_one", ParseUser.getCurrentUser());
-//            game.put("player_two", user);
             game.setPlayerOne(ParseUser.getCurrentUser());
             game.setPlayerTwo(user);
             game.setGameStatus(GameStatus.CHALLENGED);
-            //  game.saveInBackground();
-//            newChallenge.saveInBackground(new SaveCallback() {
-//                @Override
-//                public void done(ParseException ex) {
-//                    if (ex == null) {
-//                        Log.d("Challenge", "Succesfully created challenge object.");
-//                    } else {
-//                        Log.d("Challenge", "Error creating challenge object.");
-//                        ex.printStackTrace();
-//                    }
-//                }
-//            });
+            //  game.saveInBackground(); // game isn't saved to parse until we end the game.
 
-            // TODO: Should this take them to the level select, or simply create a new 'challenge' game?
-            // startActivity(new Intent(MainScreen.this, LevelSelectActivity.class));
+            // Initiate level select
             Fragment frag = new LevelSelectFragment();
             String nTag = frag.getTag(); // instance method of a to get a tag
-
             FragmentTransaction nFrag = getFragmentManager().beginTransaction();
-
             nFrag.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left);
             nFrag.replace(R.id.content_frame, frag);
             nFrag.addToBackStack(nTag);
@@ -602,5 +574,22 @@ public class MainScreen extends Activity {
 
     }
 
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(ParseUser.getCurrentUser() != null)
+            PushService.subscribe(this, ParseUser.getCurrentUser().getUsername(), DispatchActivity.class);
+        //ParseInstallation.getCurrentInstallation().saveEventually();
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // No notifications received while user is using the app. Uncomment to see notifications at all times.
+        PushService.unsubscribe(this, ParseUser.getCurrentUser().getUsername());
+    }
 
 }
