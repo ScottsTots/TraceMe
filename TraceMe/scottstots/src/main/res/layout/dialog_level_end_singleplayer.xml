@@ -1,0 +1,98 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:background="@drawable/game_select_menu" >
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Level Results"
+        android:textSize="30sp"
+        android:id="@+id/textView"
+        android:textColor="@color/darker_black"
+        android:gravity="fill_vertical"
+        android:layout_gravity="center" />
+
+    <LinearLayout
+        android:id="@+id/singlePlayer"
+        android:layout_width="fill_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="50dp"
+            android:layout_height="fill_parent"
+            android:orientation="vertical"
+            android:layout_weight="4"
+            android:gravity="center"
+            android:paddingLeft="0dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="You got"
+                android:textAlignment="center"
+                android:textColor="@color/darker_black"
+                android:textSize="25sp"/>
+
+            <TextView
+                android:id="@+id/scoreTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="@color/darker_black"
+                android:textSize="18sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="points!"
+                android:textColor="@color/darker_black"
+                android:paddingTop="30sp"
+                android:textSize="25sp"/>
+
+
+
+
+        </LinearLayout>
+
+
+        </LinearLayout>
+        <Button
+        android:id="@+id/dialogHomeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp"
+        android:text="Level Select"
+        android:layout_gravity="center"
+        android:textColor="@color/white"
+        android:background="@drawable/sign_up_selector"
+        />
+    <Button
+        android:id="@+id/dialogReplayButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp"
+        android:text="Replay Animation"
+        android:layout_gravity="center"
+        android:textColor="@color/white"
+        android:background="@drawable/sign_up_selector"
+        />
+
+
+</LinearLayout>
