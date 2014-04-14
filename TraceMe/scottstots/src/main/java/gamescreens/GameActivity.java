@@ -196,7 +196,7 @@ public class GameActivity extends Activity {
         @Override
         protected Void doInBackground(Game... params) {
             Game game = params[0];
-            game.setGameStatus(GameStatus.GAME_OVER);
+
             game.saveUserDrawings(pathsArray);
             try {
                 game.save();
@@ -213,6 +213,7 @@ public class GameActivity extends Activity {
             loadingDialog.dismiss();
             // Both players done, show final end game stuff.
             if(game.isComplete()) {
+                game.setGameStatus(GameStatus.GAME_OVER); //TODO FIX THIS GAMEOVER STUFF
                 flipper.setDisplayedChild(3); //gameloop is 0, viewingBoard is 1
                 multiViewingBoard.setGameData(game);
                 multiViewingBoard.startDrawing();
