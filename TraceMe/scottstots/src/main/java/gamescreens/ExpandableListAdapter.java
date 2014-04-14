@@ -303,6 +303,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                     @Override
                     public void onClick(View view) {
                         obj.put("game_status", GameStatus.IN_PROGRESS.id);
+
                         obj.saveInBackground(new SaveCallback() {
                             @Override
                             public void done(ParseException e) {

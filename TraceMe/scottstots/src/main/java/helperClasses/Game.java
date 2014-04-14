@@ -116,7 +116,7 @@ public class Game extends ParseObject {
     }
 
     public boolean isMultiplayer() {
-        return isMultiplayer;
+        return getBoolean("multiplayer");
     }
 
     public static ParseQuery<Game> getQuery() {
