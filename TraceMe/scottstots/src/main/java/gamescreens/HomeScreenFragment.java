@@ -5,35 +5,16 @@ package gamescreens;
  */
 
 import android.app.Fragment;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ExpandableListView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.facebook.FacebookRequestError;
-import com.facebook.Request;
-import com.facebook.Response;
-import com.facebook.model.GraphUser;
 import com.parse.FindCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
-import com.parse.ParseFacebookUtils;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.ParseQueryAdapter;
-import com.parse.ParseTwitterUtils;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
@@ -43,7 +24,6 @@ import java.util.List;
 import helperClasses.Game;
 import helperClasses.GameMenuListItem;
 import helperClasses.GameStatus;
-import scotts.tots.traceme.DispatchActivity;
 import scotts.tots.traceme.R;
 
 /**
@@ -85,6 +65,16 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
         expListView.expandGroup(2);
         expListView.expandGroup(3);
         listAdapter.notifyDataSetChanged();
+
+        expListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener()
+        {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent,
+                                        View v, int groupPosition, long id)
+            {
+                return parent.isGroupExpanded(groupPosition);
+            }
+        });
     }
 
     private void prepareListData() {
@@ -162,4 +152,6 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
     public void onPause() {
         super.onPause();
     }
+
+
 }

@@ -4,16 +4,11 @@ package gamescreens;
  * Created by nlaz on 4/4/14.
  */
 
-import android.app.Activity;
 import android.app.Dialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -79,6 +74,11 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             convertView = infalInflater.inflate(R.layout.list_multiplayer, null);
         }
 
+        if (childPosition == this.getChildrenCount(groupPosition) - 1) {
+            convertView.setPadding(0, 0, 0, 20);
+        } else
+            convertView.setPadding(0, 0, 0, 0);
+
         TextView txtListUsername = (TextView) convertView
                 .findViewById(R.id.username_item);
         TextView txtListTime = (TextView) convertView
@@ -141,6 +141,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             lblListHeader.setText(headerTitle);
 
         }
+
 
         return convertView;
     }

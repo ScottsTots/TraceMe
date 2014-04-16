@@ -12,6 +12,7 @@
         android:paddingRight="20dp"
         android:paddingLeft="20dp"
         android:childDivider="#ffc4c5c8"
+        android:divider="@color/transparent"
         android:groupIndicator="@null"
         />
 
