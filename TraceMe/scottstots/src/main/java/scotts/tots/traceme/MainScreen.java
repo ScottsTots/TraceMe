@@ -50,6 +50,7 @@ import gamescreens.HomeScreenFragment;
 import gamescreens.LevelSelectFragment;
 import helperClasses.Game;
 import helperClasses.GameStatus;
+import helperClasses.UsefulMethods;
 
 public class MainScreen extends Activity {
     Game game;
@@ -106,7 +107,9 @@ public class MainScreen extends Activity {
 //        mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, navMenuTitles));
 
         datalist = new ArrayList<String>();
-        datalist.add("John Smith");
+
+        // Add the current name of the user
+        datalist.add(UsefulMethods.getParseUsername(ParseUser.getCurrentUser()));
         datalist.add("Messages");
         datalist.add("Friends");
         datalist.add("Rankings");
