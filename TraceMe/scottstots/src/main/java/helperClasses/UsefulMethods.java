@@ -57,4 +57,10 @@ public class UsefulMethods {
             return user.getUsername();
         }
     }
+
+    // Send a notification with the given String to a user,
+    // Double checks to make sure the user is has notifications on
+    public static void sendPushNotification(ParseUser user, String notificationStr) {
+
+    }
 }
