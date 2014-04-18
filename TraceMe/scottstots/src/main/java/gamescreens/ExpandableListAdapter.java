@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.media.Image;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +27,8 @@ import com.parse.ParseObject;
 import com.parse.ParsePush;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+
+import org.w3c.dom.Text;
 
 import java.util.HashMap;
 import java.util.List;
@@ -83,9 +87,15 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                 .findViewById(R.id.username_item);
         TextView txtListTime = (TextView) convertView
                 .findViewById(R.id.time_item);
+        TextView txtListSubtext = (TextView) convertView
+                .findViewById(R.id.game_status);
+        ImageView userImg = (ImageView) convertView
+                .findViewById(R.id.username_img);
 
-        txtListUsername.setText(child.getStatusString());
+        txtListUsername.setText(child.getUsernameString());
         txtListTime.setText(child.getLastUpdatedString());
+        txtListSubtext.setText(child.getStatusString());
+        userImg.setImageBitmap(child.getGameImage(_context ));
 
         convertView.setOnClickListener(getGameItemsListener(child));
 

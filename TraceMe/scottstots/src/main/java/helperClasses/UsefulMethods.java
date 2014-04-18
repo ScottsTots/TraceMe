@@ -3,6 +3,12 @@ package helperClasses;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.Log;
 
 import com.facebook.Request;
@@ -73,11 +79,33 @@ public class UsefulMethods {
     public static Bitmap getParseUserPicture(ParseUser user, Context context) {
         byte[] imgBytes = user.getBytes("profile_picture");
         if (imgBytes != null) {
-            return BitmapFactory.decodeByteArray(imgBytes, 0, imgBytes.length);
+            return getCroppedBitmap(BitmapFactory.decodeByteArray(imgBytes, 0, imgBytes.length));
         } else {
-            // TODO: If no picture check, Facebook and Twitter for images
-            return BitmapFactory.decodeResource(context.getResources(),
+            Bitmap img = BitmapFactory.decodeResource(context.getResources(),
                     R.drawable.traceme_logo);
+            return getCroppedBitmap(Bitmap.createScaledBitmap(img, 150, 150, false));
         }
+    }
+
+    public static Bitmap getCroppedBitmap(Bitmap bitmap) {
+        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
+                bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+
+        final int color = 0xff424242;
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(color);
+        // canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
+        canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
+                bitmap.getWidth() / 2, paint);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+        //Bitmap _bmp = Bitmap.createScaledBitmap(output, 60, 60, false);
+        //return _bmp;
+        return output;
     }
 }
