@@ -48,6 +48,7 @@ import gamescreens.AboutFrag;
 import gamescreens.HighScoreFragment;
 import gamescreens.HomeScreenFragment;
 import gamescreens.LevelSelectFragment;
+import gamescreens.SettingsFragment;
 import helperClasses.Game;
 import helperClasses.GameStatus;
 import helperClasses.UsefulMethods;
@@ -110,9 +111,9 @@ public class MainScreen extends Activity {
 
         // Add the current name of the user
         datalist.add(UsefulMethods.getParseUsername(ParseUser.getCurrentUser()));
-        datalist.add("Messages");
-        datalist.add("Friends");
+        datalist.add("About");
         datalist.add("Rankings");
+        datalist.add("Settings");
         datalist.add("Logout");
         adapter = new DrawerListAdapter(this, R.layout.drawer_list_item, datalist);
         mDrawerList.setAdapter(adapter);
@@ -258,18 +259,15 @@ public class MainScreen extends Activity {
                     FragmentManager fragmentManager = getFragmentManager();
                     fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
                     break;
-                case 1: //Messages
+                case 1: // About
                     Fragment frag1 = new AboutFrag();
                     Bundle args1 = new Bundle();
                     args1.putInt("Foo", 0);
                     frag1.setArguments(args1);
-
                     FragmentManager fragManager1 = getFragmentManager();
                     fragManager1.beginTransaction().replace(R.id.content_frame, frag1).commit();
                     break;
-                case 2: //Friends
-                    break;
-                case 3: //Rankings
+                case 2: //Rankings
                     Fragment fragment2 = new HighScoreFragment();
                     Bundle args2 = new Bundle();
 
@@ -278,6 +276,16 @@ public class MainScreen extends Activity {
 
                     FragmentManager fragmentManager2 = getFragmentManager();
                     fragmentManager2.beginTransaction().replace(R.id.content_frame, fragment2).commit();
+                    break;
+                case 3: // Settings
+                    Fragment fragment3 = new SettingsFragment();
+                    Bundle args3 = new Bundle();
+
+                    args3.putInt("Foo", 0);
+                    fragment3.setArguments(args3);
+
+                    FragmentManager fragmentManager3 = getFragmentManager();
+                    fragmentManager3.beginTransaction().replace(R.id.content_frame, fragment3).commit();
                     break;
                 case 4: //Logout
                     ParseUser.logOut();

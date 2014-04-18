@@ -1,5 +1,8 @@
 package helperClasses;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.facebook.Request;
@@ -12,6 +15,8 @@ import com.parse.ParseUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import scotts.tots.traceme.R;
 
 /**
  * Created by matthewebeweber on 4/16/14.
@@ -55,6 +60,24 @@ public class UsefulMethods {
             return "@" + ParseTwitterUtils.getTwitter().getScreenName();
         } else {
             return user.getUsername();
+        }
+    }
+
+    // Send a notification with the given String to a user,
+    // Double checks to make sure the user is has notifications on
+    public static void sendPushNotification(ParseUser user, String notificationStr) {
+        // TODO: Send push notification to the user if push notifications is on
+    }
+
+    // Given a parse user, return the appropriate Bitmap to be displayed
+    public static Bitmap getParseUserPicture(ParseUser user, Context context) {
+        byte[] imgBytes = user.getBytes("profile_picture");
+        if (imgBytes != null) {
+            return BitmapFactory.decodeByteArray(imgBytes, 0, imgBytes.length);
+        } else {
+            // TODO: If no picture check, Facebook and Twitter for images
+            return BitmapFactory.decodeResource(context.getResources(),
+                    R.drawable.traceme_logo);
         }
     }
 }

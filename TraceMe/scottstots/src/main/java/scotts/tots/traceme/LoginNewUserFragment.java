@@ -133,6 +133,7 @@ public class LoginNewUserFragment extends Fragment {// implements View.OnClickLi
         ParseUser user = new ParseUser();
         user.setUsername(usernameField.getText().toString());
         user.setPassword(passwordField.getText().toString());
+        user.put("notifications", true);
 
         // Try to sign up the user
         user.signUpInBackground(new SignUpCallback() {
