@@ -61,23 +61,31 @@ public class Game extends ParseObject {
 
     // getters
     public ParseUser getPlayerOne() {
-        return playerOne;
-        //return getParseUser("player_one");
+     //   return playerOne;
+        return getParseUser("player_one");
     }
 
     public ParseUser getPlayerTwo() {
-        return playerTwo;
-        //return getParseUser("player_two");
+      //  return playerTwo;
+        return getParseUser("player_two");
     }
 
     public GameStatus getGameStatus() {
         return gameStatus;
-        //return getInt("game_status");
+       // return getInt("game_status");
     }
 
     public int getLevelNum() {
-        return levelNum;
-       // return getInt("level");
+      //  return levelNum;
+        return getInt("level");
+    }
+
+    public boolean getBlocked() {
+        return getBoolean("blocked");
+    }
+
+    public void setBlocked(boolean b) {
+        put("blocked", b);
     }
 
     // setters
@@ -135,7 +143,8 @@ public class Game extends ParseObject {
                 push.setMessage("Player " + ParseUser.getCurrentUser().getUsername() + " accepted your challenge. Results are in!");
                 Log.d("notifications", " sent game over notification");
             }
-            // player two is known but not the playerdata.
+            // TODO send this notification if current users data is there, but not opponents'.
+            // player two is known but hasn't played yet... means we must send him challenge notification.
             if (playerTwoData.size() == 0 || playerTwoData == null) {
                 Log.d("notifications", " sent challenge notification");
                 push.setMessage("Player " + ParseUser.getCurrentUser().getUsername() + " has challenged you!");

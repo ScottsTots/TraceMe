@@ -110,11 +110,6 @@ public class Level{
         traceBitmaps = new ArrayList<Bitmap>();
     }
 
-
-
-
-
-
     String message;
     double lastScore;
     public void updateMessage(int possibleMaxPoints) {
@@ -148,7 +143,6 @@ public class Level{
         // Game over
         else {
             saveHighScore();
-
             GameActivity.endGame();
         }
     }

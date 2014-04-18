@@ -260,8 +260,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                                     // TODO: Send the user a push notification for cancelled game.
                                     // From Aaron: Instead of sending a notification to player B that the game was cancelled,
                                     // We can instead verify the game is still valid when we get it from the listview,
-                                    // If it is NOT valid, then player A cancelled the game, so we notify player B
-                                    // that A cancelled the game with a "toast" or a simple message instead of notification, and refresh the listview?
+                                    // If it is NOT valid, then player A cancelled the game, so we locally notify player B
+                                    // that A cancelled the game with a "toast" or a simple message instead of notification from A, and refresh the listview?
                                 }
                                 else
                                     e.printStackTrace();

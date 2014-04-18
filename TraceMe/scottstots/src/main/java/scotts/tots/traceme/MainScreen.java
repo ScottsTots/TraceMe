@@ -375,6 +375,7 @@ public class MainScreen extends Activity {
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Game");
         query.whereEqualTo("game_status", GameStatus.WAITING_FOR_OPPONENT.id);
         query.whereNotEqualTo("player_one", ParseUser.getCurrentUser());
+        query.whereNotEqualTo("blocked", true);
 
         try {
             List<ParseObject> gameList = query.find();
@@ -383,16 +384,20 @@ public class MainScreen extends Activity {
                 ParseObject game = ParseObject.create("Game");
                 game.put("player_one", ParseUser.getCurrentUser());
                 game.put("game_status", GameStatus.WAITING_FOR_OPPONENT.id);
+                game.put("blocked", false);
                 game.saveInBackground();
 
                 dlogText.setText("Unable to match you with opponent. You will be notified when an opponent is found.");
             } else {                                    // Retrived games, pair with one of the games
                 ParseObject game = gameList.get(0);     // Just grab the first item
                 game.put("player_two", ParseUser.getCurrentUser());
-                game.put("game_status", GameStatus.IN_PROGRESS.id);
-                game.saveInBackground();
+                //game.put("game_status", GameStatus.IN_PROGRESS.id); ---- not putting in progress just yet..
+                game.put("blocked", true); // when this player grabs the game, we lock it to keep it from pairing with other people looking for games.
+                game.saveInBackground(); // TODO is this really atomic? what if two people successfully block/play 1 game?
 
-                // Send the user a push notification
+                // From Aaron: Will instead send a notification after the player is done playing this game.
+                // And just say "player accepted your challenge", with the results already there.
+        /*        // Send the user a push notification
                 ParseQuery pushQuery = ParseInstallation.getQuery();
                 pushQuery.whereEqualTo("user", game.getParseUser("player_one")); // Set the channel
 
@@ -403,6 +408,7 @@ public class MainScreen extends Activity {
                 push.sendInBackground();
 
                 dlogText.setText("Found an opponent!");
+                */
             }
         } catch (ParseException e) {
             e.printStackTrace();

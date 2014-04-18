@@ -178,10 +178,8 @@ public class GameActivity extends Activity {
             new endGameTask().execute(game);
         }
         else {
-
             // TODO show the viewingBoard for single player, repeat animation once.
             // TODO after animation is done, show dialog that shows medals/score/level/repeat animation button.
-
             flipper.setDisplayedChild(2); //gameloop is 0, viewingBoard is 1
             playButton.setVisibility(View.INVISIBLE);
             viewingBoard.startDrawing(); // this updates our viewingBoard to the current
@@ -201,6 +199,11 @@ public class GameActivity extends Activity {
             Game game = params[0];
 
             game.saveUserDrawings(pathsArray);
+            if(!game.isComplete()) {
+                game.put("game_status", GameStatus.IN_PROGRESS.id);
+            } else {
+                game.put("game_status", GameStatus.GAME_OVER.id);
+            }
             try {
                 game.save();
             } catch (ParseException e) {
