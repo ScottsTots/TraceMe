@@ -61,23 +61,31 @@ public class Game extends ParseObject {
 
     // getters
     public ParseUser getPlayerOne() {
-        return playerOne;
-        //return getParseUser("player_one");
+     //   return playerOne;
+        return getParseUser("player_one");
     }
 
     public ParseUser getPlayerTwo() {
-        return playerTwo;
-        //return getParseUser("player_two");
+      //  return playerTwo;
+        return getParseUser("player_two");
     }
 
     public GameStatus getGameStatus() {
         return gameStatus;
-        //return getInt("game_status");
+       // return getInt("game_status");
     }
 
     public int getLevelNum() {
-        return levelNum;
-       // return getInt("level");
+      //  return levelNum;
+        return getInt("level");
+    }
+
+    public boolean getBlocked() {
+        return getBoolean("blocked");
+    }
+
+    public void setBlocked(boolean b) {
+        put("blocked", b);
     }
 
     // setters
@@ -107,6 +115,10 @@ public class Game extends ParseObject {
 
     }
 
+    public void setPlayerTurn(ParseUser user) {
+        put("player_turn", user);
+    }
+
     public ParseUser getOpponent() {
         if(getParseUser("player_one").getUsername().equals(ParseUser.getCurrentUser().getUsername()))
             return getParseUser("player_two");
@@ -123,22 +135,58 @@ public class Game extends ParseObject {
         return ParseQuery.getQuery(Game.class);
     }
 
+
+    public void updateState() {
+        // Check game over
+        if(!isComplete()) {
+            put("game_status", GameStatus.IN_PROGRESS.id);
+            setBlocked(false);
+        } else {
+            put("game_status", GameStatus.GAME_OVER.id);
+        }
+
+        // Check whose turn it is
+        if(playerOneData.size() > 0 && playerTwoData.size() == 0) {
+           //player two's turn.
+            Log.d("parseNetwork", "Logging player two's turn now");
+            setPlayerTurn(getPlayerTwo());
+
+        }
+        else if(playerTwoData.size() > 0 && playerOneData.size() == 0) {
+            Log.d("parseNetwork", "Logging player one's turn now");
+            setPlayerTurn(getPlayerOne());
+        }
+
+    }
+
+
     public void notifyOpponent() {
-        // TODO change this to just look at game statuses and decide what to send..
+        // TODO we change this to just look at game statuses and decide what to send..
         ParseUser opponent = getOpponent();
         // If both players are known: -------------
         if(opponent != null) {
             ParsePush push = new ParsePush();
             push.setChannel(opponent.getUsername());
             // Both arrays of data are in the cloud, game is over
-            if (playerOneData.size() > 0 && playerTwoData.size() > 0) {
+            if (isComplete()) {
+                // TODO change message to "player [] made a move, Results are in" if this was a "random game", otherwise leave it as is
                 push.setMessage("Player " + ParseUser.getCurrentUser().getUsername() + " accepted your challenge. Results are in!");
                 Log.d("notifications", " sent game over notification");
             }
-            // player two is known but not the playerdata.
-            if (playerTwoData.size() == 0 || playerTwoData == null) {
+
+            // player two is known but hasn't played yet... means we must send him challenge notification.
+            else if (playerTwoData.size() == 0 || playerTwoData == null) {
                 Log.d("notifications", " sent challenge notification");
                 push.setMessage("Player " + ParseUser.getCurrentUser().getUsername() + " has challenged you!");
+            }
+
+            // send this notification if we filled a random game and now we notify original user we played his/her random game.
+            // We check if opponent's game data is empty and ours isnt.
+            else if(getParseUser("player_one").getUsername().equals(ParseUser.getCurrentUser().getUsername()) && playerTwoData.size() == 0) {
+                    push.setMessage("Player " + ParseUser.getCurrentUser().getUsername() + " joined your game. Your turn!");
+            }
+            else if(getParseUser("player_two").getUsername().equals(ParseUser.getCurrentUser().getUsername()) && playerOneData.size() == 0) {
+                push.setMessage("Player " + ParseUser.getCurrentUser().getUsername() + " joined your game. Your turn!");
             }
             try {
                 push.send();
@@ -154,7 +202,7 @@ public class Game extends ParseObject {
 
     /** Converts the current user's path data to json to be stored in parse **/
     public void saveUserDrawings(ArrayList<CustomPath> userPaths) {
-        if(getParseUser("player_one").getUsername().equals(ParseUser.getCurrentUser().getUsername()))
+        if(getParseUser("player_one") != null && getParseUser("player_one").getUsername().equals(ParseUser.getCurrentUser().getUsername()))
             playerOneData = userPaths;
         else {
             playerTwoData = userPaths;

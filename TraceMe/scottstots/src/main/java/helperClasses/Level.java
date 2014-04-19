@@ -103,17 +103,14 @@ public class Level{
         // trace1.txt 5 seconds    normal
         // trace2.txt 10 seconds   disappearing
         // trace3.txt 6 seconds    blinking
+
+
         view = v;
         this.ctx = ctx;
         setUpDrawing();
         traceArray = new ArrayList<TraceFile>();
         traceBitmaps = new ArrayList<Bitmap>();
     }
-
-
-
-
-
 
     String message;
     double lastScore;
@@ -136,6 +133,10 @@ public class Level{
     }
 
     public void getNextTrace() {
+
+
+
+
         updateMessage(scoreManager.traceData.size());
         if(currentTrace + 1 < TOTAL_TRACES) {
             currentTrace++;
@@ -148,7 +149,6 @@ public class Level{
         // Game over
         else {
             saveHighScore();
-
             GameActivity.endGame();
         }
     }

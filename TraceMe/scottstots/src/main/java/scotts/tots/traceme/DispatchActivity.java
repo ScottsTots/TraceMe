@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.parse.ParseAnalytics;
 import com.parse.ParseUser;
+import com.parse.PushService;
 
 public class DispatchActivity extends Activity {
     // Application can only manipulate one Game object at time.
@@ -25,7 +26,7 @@ public class DispatchActivity extends Activity {
 
         // Check if there is current user info
         if (ParseUser.getCurrentUser() != null) {
-
+            PushService.subscribe(this, ParseUser.getCurrentUser().getUsername(), DispatchActivity.class);
             // Start an intent for the logged in activity
             Log.d("parseNetwork", "user" + ParseUser.getCurrentUser().getUsername());
             startActivity(new Intent(this, MainScreen.class));

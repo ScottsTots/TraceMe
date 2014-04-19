@@ -150,10 +150,8 @@ public class GameActivity extends Activity {
             new endGameTask().execute(game);
         }
         else {
-
             // TODO show the viewingBoard for single player, repeat animation once.
             // TODO after animation is done, show dialog that shows medals/score/level/repeat animation button.
-
             flipper.setDisplayedChild(2); //gameloop is 0, viewingBoard is 1
             playButton.setVisibility(View.INVISIBLE);
             viewingBoard.startDrawing(); // this updates our viewingBoard to the current
@@ -171,15 +169,17 @@ public class GameActivity extends Activity {
         @Override
         protected Void doInBackground(Game... params) {
             Game game = params[0];
-
             game.saveUserDrawings(pathsArray);
+
+            game.updateState();
             try {
                 game.save();
+                // send push notification to opponent about game status:
+                game.notifyOpponent();
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            // send push notification to opponent about game status:
-            game.notifyOpponent();
+
 
             return null;
         }
@@ -188,7 +188,6 @@ public class GameActivity extends Activity {
             loadingDialog.dismiss();
             // Both players done, show final end game stuff.
             if(game.isComplete()) {
-
                 flipper.setDisplayedChild(3); //gameloop is 0, viewingBoard is 1
                 multiViewingBoard.setGameData(game);
                 multiViewingBoard.startDrawing();
@@ -244,7 +243,7 @@ public class GameActivity extends Activity {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                game.loadUserData(); // load arrays
+                game.loadUserData(); // load arrays of user drawings, playerOneData and playerTwoData
             }
             return null;
         }
