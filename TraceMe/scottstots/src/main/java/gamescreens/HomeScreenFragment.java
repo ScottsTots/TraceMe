@@ -145,7 +145,7 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
     @Override
     public void onResume() {
         super.onResume();
-        listAdapter.notifyDataSetChanged();
+        prepareListData();
     }
 
     @Override

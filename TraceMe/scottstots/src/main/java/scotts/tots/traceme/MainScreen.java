@@ -395,51 +395,44 @@ public class MainScreen extends Activity {
                     @Override
                     public void onClick(View view) {
                         randDlog.dismiss();
-                    }
+                }
                 });
 
 
                 dlogText.setText("Unable to match you with opponent. You will be notified when an opponent is found.");
+                randDlog.show();
             } else {                                    // Retrived games, pair with one of the games
                 Game game = gameList.get(0);     // Just grab the first item
-
-
                 //game.put("game_status", GameStatus.IN_PROGRESS.id); ---- not putting in progress just yet..
                 game.put("blocked", true); // when this player grabs the game, we lock it to keep it from pairing with other people looking for games.
                 game.saveInBackground(); // TODO is this really atomic? what if two people successfully block/play 1 game?
                 game.put("player_two", ParseUser.getCurrentUser());
                 // From Aaron: Will instead send a notification after the player is done playing this game.
                 // And just say "player accepted your challenge", with the results already there.
-        /*        // Send the user a push notification
-                ParseQuery pushQuery = ParseInstallation.getQuery();
-                pushQuery.whereEqualTo("user", game.getParseUser("player_one")); // Set the channel
 
-                // Send push notification to query
-                ParsePush push = new ParsePush();
-                push.setQuery(pushQuery);
-                push.setMessage("Found an opponent");
-                push.sendInBackground();
-                */
-                // Set the game.
 
                 ((TraceMeApplication) this.getApplicationContext()).setGame((Game)game);
-                dlogText.setText("Found an opponent!"); //TODO maybe insert stats about opponent and profile pic here.
-                dismissButton.setText("Start Game!");
-                dismissButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        startActivity(new Intent(ctx, GameActivity.class));
-                        randDlog.dismiss();
-                    }
-                });
+                Toast.makeText(this, "Found a game!", Toast.LENGTH_SHORT).show();
+                // We start the game now because if we have a dialog we need to clear out the
+                // "blocked" var back to false if they exit the dialog instead of playing and it's kind of chaotic...
+                startActivity(new Intent(ctx, GameActivity.class));
+//                dlogText.setText("Found an opponent!"); //TODO maybe insert stats about opponent and profile pic here.
+//                dismissButton.setText("Start Game!");
+//                dismissButton.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//
+//                        startActivity(new Intent(ctx, GameActivity.class));
+//                        randDlog.dismiss();
+//                    }
+//                });
+
             }
         } catch (ParseException e) {
             e.printStackTrace();
 
             dlogText.setText("Error. Please try again.");
         }
-
-        randDlog.show();
     }
 
     // Saves the name from the editText the user inputs

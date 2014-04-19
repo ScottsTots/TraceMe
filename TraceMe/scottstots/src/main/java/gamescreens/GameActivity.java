@@ -67,6 +67,7 @@ public class GameActivity extends Activity {
     private Timer myTimer;
     private long mStartTime;
 
+    private Dialog warningDialog;
     static ProgressDialog loadingDialog;
     static Dialog endGameDlog;
     static TextView scoreText;
@@ -112,8 +113,14 @@ public class GameActivity extends Activity {
         new LoadTask().execute("loadOnline");
 
 
+        // Warning dialog to be played onBackPressed()
+        warningDialog = new android.app.Dialog(this,
+                android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth);
+        warningDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        warningDialog.setContentView(R.layout.dialog_warning);
 
-        // UI
+
+        // UI views
         countdownTimerView = (TextView) findViewById(R.id.countdown_timer);
         flipper = (ViewFlipper) findViewById(R.id.viewFlipper);
         // Switch into the viewingBoard using the viewFlipper if we press "play"
@@ -182,8 +189,6 @@ public class GameActivity extends Activity {
             flipper.setDisplayedChild(2); //gameloop is 0, viewingBoard is 1
 //            playButton.setVisibility(View.INVISIBLE);
             viewingBoard.startDrawing(); // this updates our viewingBoard to the current
-            //scoreText.setText(Integer.toString(level.getScore()));
-            //endGameDlog.show();
         }
     }
 
@@ -218,7 +223,6 @@ public class GameActivity extends Activity {
                 flipper.setDisplayedChild(3); //gameloop is 0, viewingBoard is 1
                 multiViewingBoard.setGameData(game);
                 multiViewingBoard.startDrawing();
-                //((Activity)ctx).finish();
             }
             // Only player A has moved. Show him/her a dialog that says "We will notify you when B finishes!"
             // And his/her current score maybe?
@@ -345,4 +349,41 @@ public class GameActivity extends Activity {
         }
     };
 
- }
+
+
+
+    // When user goes onPause, we should set any games we held to not blocked, and dismiss the
+    // game... They will have to resume it from main menu again.
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(game.isMultiplayer()) {
+            game.updateState();
+            game.saveInBackground();
+        }
+        finish();
+    }
+
+    // Warn user game will be lost
+    @Override
+    public void onBackPressed() {
+        if (game.isMultiplayer() && !game.isComplete()) {
+            Button dismissDialog = (Button) warningDialog.findViewById(R.id.dlogWarningDismissButton);
+            dismissDialog.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    warningDialog.dismiss();
+                    finish();
+                }
+            });
+            warningDialog.show();
+        }
+        else {
+            super.onBackPressed();
+        }
+    }
+
+
+
+}
+
