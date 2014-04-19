@@ -10,22 +10,18 @@ import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PathMeasure;
-import android.os.CountDownTimer;
-import android.os.Message;
+import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import com.facebook.FacebookRequestError;
 import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.model.GraphUser;
 import com.google.gson.Gson;
-import com.parse.FindCallback;
-import com.parse.ParseClassName;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseFile;
@@ -33,7 +29,6 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseTwitterUtils;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,14 +38,10 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
 
 import gamescreens.GameActivity;
 import gamescreens.GameLoop;
-import scotts.tots.traceme.R;
 
 
 /**
@@ -89,6 +80,7 @@ public class Level{
     boolean countDown = true;
     double ink = 0;
     CustomTimer timer = new CustomTimer(); // Our 3 second countdown timer.
+    private Handler handler;
     /**
      *
      * @param levelNum the level
@@ -96,7 +88,7 @@ public class Level{
      * @param v the surfaceView/GameView connected to this level. Used for detecting touch input
      *          in this view.
      */
-    public Level(int levelNum, Context ctx, GameLoop v) {
+    public Level(int levelNum, Context ctx, GameLoop v, Handler handler) {
         String levelFile = "level" + levelNum;
         // Reads all level data from this filename.
         // File would look like:
@@ -105,8 +97,9 @@ public class Level{
         // trace3.txt 6 seconds    blinking
 
 
-        view = v;
+        this.view = v;
         this.ctx = ctx;
+        this.handler = handler;
         setUpDrawing();
         traceArray = new ArrayList<TraceFile>();
         traceBitmaps = new ArrayList<Bitmap>();
@@ -115,20 +108,28 @@ public class Level{
     String message;
     double lastScore;
     public void updateMessage(int possibleMaxPoints) {
+
+
         // Actual points gotten.
         lastScore = scoreManager.getScore() - lastScore;
 
         double correct = (lastScore / possibleMaxPoints) * 100;
         Log.d("gameloop", "scoring:  max points " + possibleMaxPoints + "current " + lastScore + " correct: " + correct);
         // 0 sucks, 100 perfect
-        if(correct > 90) {
-            message = "GREAT";
+        if (correct > 100){
+            handler.sendMessage(handler.obtainMessage(0));
+        } else if(correct > 90) {
+            handler.sendMessage(handler.obtainMessage(1));
+//            message = "GREAT";
         } else if (correct> 70) {
-            message = "NOICE";
+            handler.sendMessage(handler.obtainMessage(2));
+//            message = "NICE JOB!";
         } else if (correct > 50) {
-            message = "Booooo";
+            handler.sendMessage(handler.obtainMessage(3));
+//            message = "Booooo";
         } else {
-            message = "wow..";
+            handler.sendMessage(handler.obtainMessage(4));
+//            message = "wow..";
         }
     }
 
@@ -184,7 +185,7 @@ public class Level{
 
         // If the user "touched up", draw congratulatory text for 2 seconds
         if(timer.getTime() < 2) {
-            mCanvas.drawText(message, 20, 200, textPaint);
+//            mCanvas.drawText(message, 20, 200, textPaint);
         }
 
         traceBitmap = traceBitmaps.get(currentTrace);

@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -71,6 +73,8 @@ public class GameActivity extends Activity {
 
     public static Level level;
     static Context ctx;
+    private Handler handler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -135,6 +139,29 @@ public class GameActivity extends Activity {
                 }
             }
         });*/
+
+       handler = new Handler() {
+            public void handleMessage(Message msg) {
+                Log.d("HandleMessage", "Messaged Handled!");
+                if (msg.what == 0) {
+                    feedback_text.setText("PERFECT!");
+                    feedback_text.setVisibility(View.VISIBLE);
+                } else if (msg.what == 1) {
+                    feedback_text.setText("GREAT!");
+                    feedback_text.setVisibility(View.VISIBLE);
+                } else if (msg.what == 2) {
+                    feedback_text.setText("NICE!");
+                    feedback_text.setVisibility(View.VISIBLE);
+                } else if (msg.what == 3) {
+                    feedback_text.setText("GOOD TRY");
+                    feedback_text.setVisibility(View.VISIBLE);
+                } else if (msg.what == 4) {
+                    feedback_text.setText("Well...");
+                    feedback_text.setVisibility(View.VISIBLE);
+                }
+            }
+        };
+
     }
 
     // Called by the level object when there's no more traces.
@@ -153,7 +180,7 @@ public class GameActivity extends Activity {
             // TODO show the viewingBoard for single player, repeat animation once.
             // TODO after animation is done, show dialog that shows medals/score/level/repeat animation button.
             flipper.setDisplayedChild(2); //gameloop is 0, viewingBoard is 1
-            playButton.setVisibility(View.INVISIBLE);
+//            playButton.setVisibility(View.INVISIBLE);
             viewingBoard.startDrawing(); // this updates our viewingBoard to the current
             //scoreText.setText(Integer.toString(level.getScore()));
             //endGameDlog.show();
@@ -224,7 +251,8 @@ public class GameActivity extends Activity {
         protected Void doInBackground(String... params) {
             if (params[0].equals("load")) {
                 gameLoop = (GameLoop) findViewById(R.id.surfaceView);
-                level = new Level(1, ctx, gameLoop);
+                // Will send a message when all images are uploaded
+                level = new Level(1, ctx, gameLoop, handler);
                 // Loads each trace
                 for(int i = 0; i < level.TOTAL_TRACES; i++) {
                     level.loadTrace();
@@ -235,7 +263,7 @@ public class GameActivity extends Activity {
             }
             else if(params[0].equals("loadOnline")) {
                 gameLoop = (GameLoop) findViewById(R.id.surfaceView);
-                level = new Level(1, ctx, gameLoop);
+                level = new Level(1, ctx, gameLoop, handler);
                 level.loadLevelFromParse();
                 gameLoop.setLevel(level);
                 try {
@@ -317,5 +345,4 @@ public class GameActivity extends Activity {
         }
     };
 
-
-}
+ }

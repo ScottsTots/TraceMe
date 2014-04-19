@@ -4,29 +4,6 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <TextView
-        android:id="@+id/feedback_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_marginTop="80dp"
-        android:textSize="75sp"
-        android:text="Great!"
-        android:visibility="gone"
-        android:textColor="@color/black"/>
-
-    <TextView
-        android:id="@+id/round_text"
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:gravity="center_horizontal"
-        android:textSize="40sp"
-        android:paddingTop="100dp"
-        android:layout_alignParentBottom="true"
-        android:text="Round 1"
-        android:textColor="@color/black"
-        android:visibility="gone"/>
-
     <ViewFlipper
         android:id="@+id/viewFlipper"
         android:layout_width="match_parent"
@@ -40,10 +17,41 @@
             android:textSize="180sp"
             android:textColor="@color/black"/>
 
-        <gamescreens.GameLoop
-            android:id="@+id/surfaceView"
+        <FrameLayout
+            android:id="@+id/game_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent">
+
+            <gamescreens.GameLoop
+                android:id="@+id/surfaceView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+            <TextView
+                android:id="@+id/feedback_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginTop="80dp"
+                android:textSize="75sp"
+                android:text="Great!"
+                android:visibility="gone"
+                android:textColor="@color/black"/>
+
+            <TextView
+                android:id="@+id/round_text"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:gravity="center_horizontal"
+                android:textSize="40sp"
+                android:paddingTop="100dp"
+                android:layout_alignParentBottom="true"
+                android:text="Round 1"
+                android:textColor="@color/black"
+                android:visibility="gone"/>
+
+        </FrameLayout>
+
 
         <gamescreens.ViewingBoard
             android:id="@+id/view"
