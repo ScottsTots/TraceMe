@@ -391,10 +391,6 @@ public class GameActivity extends Activity {
                 feedback_text.setText("GREAT!");
             } else if (msg.what == 2) {
                 feedback_text.setText("NICE!");
-            } else if (msg.what == 3) {
-                feedback_text.setText("GOOD TRY");
-            } else if (msg.what == 4) {
-                feedback_text.setText("Well...");
             }
 
             feedback_text.setVisibility(View.VISIBLE);
