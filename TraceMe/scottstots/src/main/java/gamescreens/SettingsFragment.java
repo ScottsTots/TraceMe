@@ -76,17 +76,19 @@ public class SettingsFragment extends Fragment {// implements View.OnClickListen
         profilePictureButton = (ImageButton) view.findViewById(R.id.changeImageButton);
 
         picture_changed = false;
-        notifications_on = true;
         notificationButton.setOnClickListener(notificationListener);
         saveSettingsButton.setOnClickListener(saveListener);
         profilePictureButton.setOnClickListener(changePictureListener);
 
         // Load up the user's current picture
         byte[] imgBytes = ParseUser.getCurrentUser().getBytes("profile_picture");
-        if (imgBytes != null) {     
+        if (imgBytes != null) {
             Bitmap bitmap = UsefulMethods.getParseUserPicture(ParseUser.getCurrentUser(), getActivity().getApplicationContext());
             profilePictureButton.setImageBitmap(bitmap);
         }
+
+        notifications_on = ParseUser.getCurrentUser().getBoolean("notification");
+        setNotificationButton();
     }
 
     int RESULT_LOAD_IMAGE = 10;
@@ -102,16 +104,19 @@ public class SettingsFragment extends Fragment {// implements View.OnClickListen
     View.OnClickListener notificationListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if (notifications_on) {
-                notificationButton.setText("Off");
-            } else {
-                notificationButton.setText("On");
-            }
-
-            notifications_on = !notifications_on;
+            setNotificationButton();
         }
     };
 
+    private void setNotificationButton() {
+        if (notifications_on) {
+            notificationButton.setText("Off");
+        } else {
+            notificationButton.setText("On");
+        }
+
+        notifications_on = !notifications_on;
+    }
     View.OnClickListener saveListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -119,7 +124,6 @@ public class SettingsFragment extends Fragment {// implements View.OnClickListen
 
             if (picture_changed) {
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                newImage = newImage.createScaledBitmap(newImage, newImage.getWidth() / 2, newImage.getHeight() / 2, false);
                 newImage.compress(Bitmap.CompressFormat.PNG, 90, stream);
                 byte[] data = stream.toByteArray();
                 currentUser.put("profile_picture", data);
@@ -147,6 +151,7 @@ public class SettingsFragment extends Fragment {// implements View.OnClickListen
             Uri imageUri = data.getData();
             try {
                 newImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
+                newImage = Bitmap.createScaledBitmap(newImage, 150, 150, false);
                 profilePictureButton.setImageBitmap(newImage);
 
                 picture_changed = true;

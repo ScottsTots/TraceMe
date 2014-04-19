@@ -17,23 +17,17 @@
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Select A Level"
-        android:textSize="30sp"
-        android:textColor="@color/black"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        />
-
     <GridView
         android:id="@+id/gridview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="20dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:verticalSpacing="10dp"
         android:horizontalSpacing="10dp"
         android:stretchMode="columnWidth"
-        android:numColumns="4"/>
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:numColumns="3"/>
 </LinearLayout>

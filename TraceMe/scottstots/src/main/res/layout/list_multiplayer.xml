@@ -10,16 +10,44 @@
         android:layout_height="wrap_content"
         android:background="@color/white">
 
-        <TextView
-            android:id="@+id/username_item"
+        <ImageView
+            android:id="@+id/username_img"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="20dp"
-            android:textSize="20sp"
-            android:layout_centerVertical="true"
-            android:text="Matthew Ebeweber"
-            android:textColor="@color/black"
+            android:maxWidth="150px"
+            android:maxHeight="150px"
+            android:paddingTop="20dp"
+            android:paddingBottom="2dp"
+            android:paddingLeft="5dp"
             />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="10dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/username_img">
+
+            <TextView
+                android:id="@+id/username_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:layout_centerVertical="true"
+                android:text="Matthew Ebeweber"
+                android:textColor="@color/black"
+                />
+            <TextView
+                android:id="@+id/game_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="More info more info.."
+                android:textSize="15sp"
+                android:paddingTop="3dp"/>
+
+            </LinearLayout>
+
         <TextView
             android:id="@+id/time_item"
             android:layout_width="wrap_content"

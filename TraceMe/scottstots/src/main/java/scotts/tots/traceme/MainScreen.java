@@ -574,20 +574,18 @@ public class MainScreen extends Activity {
             }
             switch(position){
                 case 0: // User
-                    ImageView a = (ImageView) convertView.findViewById(R.id.drawer_right_image);
-                    a.setVisibility(View.VISIBLE);
                     break;
-                case 1: //Messages
+                case 1: // About
                     ImageView b = (ImageView) convertView.findViewById(R.id.drawer_image);
-                    b.setImageResource(R.drawable.icon_messages);
+                    b.setImageResource(R.drawable.icon_rankings);
                     break;
-                case 2: //Friends
+                case 2: // Rankings
                     ImageView c = (ImageView) convertView.findViewById(R.id.drawer_image);
                     c.setImageResource(R.drawable.icon_friends);
                     break;
                 case 3: //Rankings
                     ImageView d = (ImageView) convertView.findViewById(R.id.drawer_image);
-                    d.setImageResource(R.drawable.icon_rankings);
+                    d.setImageResource(R.drawable.icon_settings);
                     break;
                 case 4: //Logout
                     ImageView e = (ImageView) convertView.findViewById(R.id.drawer_image);
