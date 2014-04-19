@@ -9,6 +9,7 @@
     <style name="MyTheme" parent="@android:style/Theme.Holo.Light">
         <item name="android:actionBarStyle">@style/MyTheme.MyActionBar</item>
         <item name="android:windowContentOverlay">@drawable/actionbar_shadow</item>
+        <item name="android:windowBackground">@android:color/black</item>
     </style>
 
     <style name="MyTheme.MyActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">

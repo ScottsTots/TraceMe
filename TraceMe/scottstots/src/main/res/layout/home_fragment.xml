@@ -1,143 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:scrollbars="none">
-<LinearLayout
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/grey">
+    android:background="#ffd2d3d6">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:minHeight="300dp"
-        >
-
-        <!--<Button-->
-            <!--android:id="@+id/newGameButton"-->
-            <!--android:layout_width="fill_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_margin="10dp"-->
-            <!--android:text="New Game!"-->
-            <!--android:textSize="25sp"-->
-            <!--android:background="@drawable/sign_up_selector"-->
-            <!--android:textColor="@color/white"/>-->
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Challenges"
-            android:textSize="25sp"
-            android:textColor="@color/black"
-            android:layout_margin="10dp"
-            android:layout_gravity="center"
-            android:id="@+id/challengesText"
-            />
-
-        <ListView
-            android:id="@+id/challengesListView"
-            android:layout_gravity="center"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_width="fill_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:scrollbars="none"
-            android:divider="@null"
-            android:dividerHeight="0dp"
-            android:layout_marginBottom="10dp"/>
-
-        </LinearLayout>
-    <View
+    <ExpandableListView
+        android:id="@+id/lvExp"
+        android:layout_height="match_parent"
         android:layout_width="fill_parent"
-        android:layout_height="11dip"
-        android:layerType="software"
-        android:layout_gravity="center"
-        android:background="@drawable/divider_line_dotted" />
-
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="240dp"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/currentGamesText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Current Games"
-            android:textSize="25sp"
-            android:textColor="@color/black"
-            android:layout_margin="10dp"
-            android:layout_gravity="center"
-            />
-
-        <ListView
-            android:id="@+id/currentGamesListView"
-            android:layout_gravity="center"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_width="fill_parent"
-            android:layout_height="0dp"
-            android:scrollbars="none"
-            android:divider="@null"
-            android:dividerHeight="0dp"
-            android:layout_weight="1"
-            android:layout_marginBottom="10dp"
-            />
-
-    </LinearLayout>
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="11dip"
-        android:layerType="software"
-        android:layout_gravity="center"
-        android:background="@drawable/divider_line_dotted" />
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="240dp"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/pastGamesText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Past Games"
-            android:textSize="25sp"
-            android:textColor="@color/black"
-            android:layout_margin="10dp"
-            android:layout_gravity="center"
-            />
-
-        <ListView
-            android:id="@+id/pastGamesListView"
-            android:layout_gravity="center"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:scrollbars="none"
-            android:divider="@null"
-            android:dividerHeight="0dp"
-            android:layout_weight="1"
-            android:layout_marginBottom="10dp"
-            />
-
-    </LinearLayout>
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:childDivider="#ffc4c5c8"
+        android:divider="@color/transparent"
+        android:groupIndicator="@null"
+        />
 
 </LinearLayout>
-</ScrollView>

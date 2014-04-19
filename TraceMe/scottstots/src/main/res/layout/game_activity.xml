@@ -4,6 +4,29 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
+    <TextView
+        android:id="@+id/feedback_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="80dp"
+        android:textSize="75sp"
+        android:text="Great!"
+        android:visibility="gone"
+        android:textColor="@color/black"/>
+
+    <TextView
+        android:id="@+id/round_text"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:gravity="center_horizontal"
+        android:textSize="40sp"
+        android:paddingTop="100dp"
+        android:layout_alignParentBottom="true"
+        android:text="Round 1"
+        android:textColor="@color/black"
+        android:visibility="gone"/>
+
     <ViewFlipper
         android:id="@+id/viewFlipper"
         android:layout_width="match_parent"
@@ -39,19 +62,19 @@
 
 
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Done"
-        android:padding="10dp"
-        android:background="@drawable/login_selector"
-        android:id="@+id/playButton"
-        android:textColor="@color/white"
-        android:layout_marginBottom="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+    <!--<Button-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Done"-->
+        <!--android:padding="10dp"-->
+        <!--android:background="@drawable/login_selector"-->
+        <!--android:id="@+id/playButton"-->
+        <!--android:textColor="@color/white"-->
+        <!--android:layout_marginBottom="10dp"-->
+        <!--android:layout_marginRight="10dp"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_alignParentEnd="true" />-->
 
    <!-- <Button
         android:layout_width="wrap_content"

@@ -5,58 +5,26 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.media.MediaScannerConnection;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.os.Environment;
-import android.os.Handler;
 import android.util.Log;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ViewFlipper;
 
-import com.facebook.FacebookRequestError;
-import com.facebook.Request;
-import com.facebook.Response;
-import com.facebook.model.GraphUser;
-import com.google.gson.Gson;
 import com.parse.ParseException;
-import com.parse.ParseFacebookUtils;
-import com.parse.ParseObject;
-import com.parse.ParseTwitterUtils;
-import com.parse.ParseUser;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import helperClasses.CustomPath;
-import helperClasses.DataPoint;
 import helperClasses.Game;
-import helperClasses.GameStatus;
 import helperClasses.Level;
-import helperClasses.ScoreManager;
-import helperClasses.TraceFile;
 import scotts.tots.traceme.MainScreen;
 import scotts.tots.traceme.R;
 import scotts.tots.traceme.TraceMeApplication;
@@ -91,6 +59,8 @@ public class GameActivity extends Activity {
     private final int COUNTDOWN_TIME = 2;
     private int time_left;
     private TextView countdownTimerView;
+    private TextView feedback_text;
+    private TextView round_text;
 
     private Timer myTimer;
     private long mStartTime;
@@ -113,6 +83,8 @@ public class GameActivity extends Activity {
 
         multiViewingBoard = (MultiViewingBoard) findViewById(R.id.view2);
         viewingBoard = (ViewingBoard) findViewById(R.id.view);
+        feedback_text = (TextView)findViewById(R.id.feedback_text);
+        round_text = (TextView) findViewById(R.id.round_text);
 
         endGameDlog = new android.app.Dialog(this,
                 android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth);
@@ -141,8 +113,8 @@ public class GameActivity extends Activity {
         countdownTimerView = (TextView) findViewById(R.id.countdown_timer);
         flipper = (ViewFlipper) findViewById(R.id.viewFlipper);
         // Switch into the viewingBoard using the viewFlipper if we press "play"
-        playButton = (Button) findViewById(R.id.playButton);
-        playButton.setVisibility(View.INVISIBLE);
+//        playButton = (Button) findViewById(R.id.playButton);
+//        playButton.setVisibility(View.INVISIBLE);
    /*     playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -345,11 +317,6 @@ public class GameActivity extends Activity {
             }
         }
     };
-
-
-
-
-
 
 
 }

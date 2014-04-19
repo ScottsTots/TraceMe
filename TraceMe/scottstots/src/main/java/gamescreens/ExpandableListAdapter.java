@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
-import android.media.Image;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,8 +26,6 @@ import com.parse.ParseObject;
 import com.parse.ParsePush;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
-
-import org.w3c.dom.Text;
 
 import java.util.HashMap;
 import java.util.List;
@@ -95,7 +92,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         txtListUsername.setText(child.getUsernameString());
         txtListTime.setText(child.getLastUpdatedString());
         txtListSubtext.setText(child.getStatusString());
-        userImg.setImageBitmap(child.getGameImage(_context ));
+        userImg.setImageBitmap(child.getGameImage(_context));
 
         convertView.setOnClickListener(getGameItemsListener(child));
 
@@ -143,7 +140,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             if(convertView == null){
                 LayoutInflater infalInflater = (LayoutInflater) this._context
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = infalInflater.inflate(R.layout.group_view, null);
+                convertView = infalInflater.inflate(R.layout.list_group_view, null);
             }
             TextView lblListHeader = (TextView) convertView
                     .findViewById(R.id.lblListHeader);

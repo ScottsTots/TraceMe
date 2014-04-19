@@ -2,11 +2,11 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Bottom 2dp Shadow -->
-    <item>
-        <shape>
-            <solid android:color="#000000"/>
-        </shape>
-    </item>
+    <!--<item>-->
+        <!--<shape>-->
+            <!--<solid android:color="#000000"/>-->
+        <!--</shape>-->
+    <!--</item>-->
     <item>
         <shape>
             <solid android:color="@color/darker_blue"/>

@@ -45,7 +45,7 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.home_fragment_2, container, false);
+        View rootView = inflater.inflate(R.layout.home_fragment, container, false);
         return rootView;
     }
 
