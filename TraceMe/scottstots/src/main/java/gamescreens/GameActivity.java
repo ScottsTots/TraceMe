@@ -92,7 +92,7 @@ public class GameActivity extends Activity {
         viewingBoard = (ViewingBoard) findViewById(R.id.view);
         feedback_text = (TextView)findViewById(R.id.feedback_text);
         round_text = (TextView) findViewById(R.id.round_text);
-       
+
 
         endGameDlog = new android.app.Dialog(this,
                 android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth);
