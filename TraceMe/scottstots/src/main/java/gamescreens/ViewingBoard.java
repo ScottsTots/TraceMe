@@ -40,6 +40,7 @@ public class ViewingBoard extends View {
     private Paint mPaint;
 
     private static final int secondsPerFrame = (int) (1.0 / 60.0f * 1000); // 60fps
+    private final float SPEED = .5f;
     int currPathNumber;
     int currPointNumber;
     private long previous;
@@ -140,7 +141,7 @@ public class ViewingBoard extends View {
                 drawPath(canvas);
                 // See if enough time has passed to move on to the next point:
                 timeNow = System.currentTimeMillis();
-                if(timeNow - previous > point.time) {
+                if(timeNow - previous > (point.time * SPEED)) {
                     previous = System.currentTimeMillis();
                     currPointNumber++;
                 }
@@ -158,7 +159,7 @@ public class ViewingBoard extends View {
             // that have been drawn so far).
             currPathNumber = 0;
             currPointNumber = 0;
-            // TODO every time we reset the canvas there's an empty frame and it flashes all white.
+
 
             // Clear/Reset our actual Bitmap buffer, which had our saved paths
             // mBitmap.eraseColor(Color.WHITE); // doesn't work, we need to create a new bitmap to clear it well...(not sure why)
@@ -225,7 +226,7 @@ public class ViewingBoard extends View {
 
     public void startDrawing() {
         previous = System.currentTimeMillis();
-        paths = GameActivity.pathsArray; // TODO this line should be uncommented for singleplayer... separate singleplayer / multiplayer on viewingBoard
+        paths = GameActivity.pathsArray;
         postInvalidate();
     }
 }
