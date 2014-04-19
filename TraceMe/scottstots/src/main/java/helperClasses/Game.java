@@ -140,12 +140,11 @@ public class Game extends ParseObject {
         // Check game over
         if(!isComplete()) {
             put("game_status", GameStatus.IN_PROGRESS.id);
-            setBlocked(false);
         } else {
             put("game_status", GameStatus.GAME_OVER.id);
         }
 
-        // Check whose turn it is
+        // Check whose turn it is -----------------------
         if(playerOneData.size() > 0 && playerTwoData.size() == 0) {
            //player two's turn.
             Log.d("parseNetwork", "Logging player two's turn now");
@@ -155,6 +154,15 @@ public class Game extends ParseObject {
         else if(playerTwoData.size() > 0 && playerOneData.size() == 0) {
             Log.d("parseNetwork", "Logging player one's turn now");
             setPlayerTurn(getPlayerOne());
+        }
+
+        // In case player who joined random game (getBlocked is true) decides to cancel it.. We can remove this player
+        // and let other players try to grab the game.
+        else if(playerOneData.size() == 0 && playerTwoData.size() == 0 && getBlocked()) {
+            setBlocked(false);
+            put("game_status", GameStatus.WAITING_FOR_OPPONENT.id);
+            remove("player_two");
+
         }
 
     }
