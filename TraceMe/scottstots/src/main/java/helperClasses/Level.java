@@ -125,12 +125,6 @@ public class Level{
         } else if (correct> 70) {
             handler.sendEmptyMessage(2);
 //            message = "NICE JOB!";
-        } else if (correct > 50) {
-            handler.sendEmptyMessage(3);
-//            message = "Booooo";
-        } else {
-            handler.sendEmptyMessage(4);
-//            message = "wow..";
         }
     }
 
@@ -181,12 +175,6 @@ public class Level{
     public void paint() {
         mCanvas.drawColor(Color.WHITE);
 
-
-        // If the user "touched up", draw congratulatory text for 2 seconds
-        if(timer.getTime() < 2) {
-//            mCanvas.drawText(message, 20, 200, textPaint);
-        }
-
         traceBitmap = traceBitmaps.get(currentTrace);
         // Draw the current trace image
         if(traceBitmap != null) {
@@ -212,7 +200,8 @@ public class Level{
             pathLength = maxPathLength;
         int x = 20;
         int y = frameBufferHeight - 50;
-        int w = 420 - (int)((pathLength / maxPathLength) * 420); //400 is width in pixels of the ink bar on the screen
+        int w = 420 - (int) ((pathLength / maxPathLength) * 420) - (timer.getTime() * 10); //400 is width in pixels of the ink bar on the screen
+
         int h = 15;
         mCanvas.drawText("Ink Level", frameBufferWidth/2 - 55, y - 20, textPaint);
         mCanvas.drawRect(x, y, x + w, y + h, mPaint); // left top right bottom

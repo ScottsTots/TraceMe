@@ -387,30 +387,19 @@ public class GameActivity extends Activity {
                     //Nothing
                 }
             });
-            // handle feedback
-            if(msg.what >= 0 && msg.what <= 4) {
-                if (msg.what == 0) {
-                    feedback_text.setText("PERFECT!");
-                } else if (msg.what == 1) {
-                    feedback_text.setText("GREAT!");
-                } else if (msg.what == 2) {
-                    feedback_text.setText("NICE!");
-                } else if (msg.what == 3) {
-                    feedback_text.setText("GOOD TRY");
-                } else if (msg.what == 4) {
-                    feedback_text.setText("Well...");
-                }
-
+            if (msg.what == 0) {
+                feedback_text.setText("PERFECT!");
+            } else if (msg.what == 1) {
+                feedback_text.setText("GREAT!");
+            } else if (msg.what == 2) {
+                feedback_text.setText("NICE!");
+            }
                 feedback_text.setVisibility(View.VISIBLE);
                 assert fade_slide_in != null;
                 feedback_text.startAnimation(fade_slide_in);
+
             }
-            // if msg.what = 1000, it means we just started the game.
 
-
-
-            // handle other things ... like endgame..
-        }
     };
 
 }
