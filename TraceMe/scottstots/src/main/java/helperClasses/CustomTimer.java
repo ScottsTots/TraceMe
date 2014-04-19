@@ -10,12 +10,14 @@ public class CustomTimer {
 
     int seconds;
     Timer timer;
+    long start = 0;
     public CustomTimer() {
         timer = new Timer();
         seconds = 100;
     }
 
     public void start() {
+
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
@@ -25,10 +27,16 @@ public class CustomTimer {
     }
 
     public void resetTime() {
+        start = System.currentTimeMillis();
         seconds = 0;
     }
 
     public int getTime() {
         return seconds;
+    }
+
+    // Returns time in seconds
+    public long getTime2() {
+        return (System.currentTimeMillis() - start);
     }
 }
