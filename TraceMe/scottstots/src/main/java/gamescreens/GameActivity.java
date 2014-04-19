@@ -201,6 +201,7 @@ public class GameActivity extends Activity {
             game.saveUserDrawings(pathsArray);
             if(!game.isComplete()) {
                 game.put("game_status", GameStatus.IN_PROGRESS.id);
+                game.setBlocked(false);
             } else {
                 game.put("game_status", GameStatus.GAME_OVER.id);
             }

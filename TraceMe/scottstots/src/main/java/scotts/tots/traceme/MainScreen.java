@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import gamescreens.AboutFrag;
+import gamescreens.GameActivity;
 import gamescreens.HighScoreFragment;
 import gamescreens.HomeScreenFragment;
 import gamescreens.LevelSelectFragment;
@@ -66,6 +67,7 @@ public class MainScreen extends Activity {
     private android.app.Dialog dlog;
     private android.app.Dialog randDlog;
     private Dialog chooseFriendDlog;
+    private Context ctx;
     ProgressDialog loadingDialog;
     Typeface roboto_light;
     Typeface roboto_regular;
@@ -78,7 +80,7 @@ public class MainScreen extends Activity {
 
         // This layout contains a navigation drawable and a fragment (defined as "content_frame"), which contains the game lobby etc..
         setContentView(R.layout.activity_main_screen);
-
+        ctx = this;
         final int actionBarTitle = Resources.getSystem().getIdentifier("action_bar_title", "id", "android");
         final TextView title = (TextView) getWindow().findViewById(actionBarTitle);
         Typeface face = Typeface.createFromAsset(getAssets(), "GrandHotel-Regular.otf");
@@ -369,40 +371,43 @@ public class MainScreen extends Activity {
 
         TextView dlogText = (TextView) randDlog.findViewById(R.id.dlogText);
         Button dismissButton = (Button) randDlog.findViewById(R.id.dlogDismissButton);
-        dismissButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                randDlog.dismiss();
-            }
-        });
 
         // Search for games that need another player if possible
         // Criteria:
         //      Game is Searching for an opponent
         //      player_one of the game is not the current user
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("Game");
+        ParseQuery<Game> query = ParseQuery.getQuery("Game");
         query.whereEqualTo("game_status", GameStatus.WAITING_FOR_OPPONENT.id);
         query.whereNotEqualTo("player_one", ParseUser.getCurrentUser());
         query.whereNotEqualTo("blocked", true);
+        query.include("player_one");
 
-        try {
-            List<ParseObject> gameList = query.find();
-
+        try { //TODO loading dialog here?
+            List<Game> gameList = query.find();
             if (gameList.size() == 0) {         // No games, create a new one awaiting an opponent
                 ParseObject game = ParseObject.create("Game");
                 game.put("player_one", ParseUser.getCurrentUser());
                 game.put("game_status", GameStatus.WAITING_FOR_OPPONENT.id);
+                game.put("multiplayer", true);
                 game.put("blocked", false);
                 game.saveInBackground();
+                dismissButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        randDlog.dismiss();
+                    }
+                });
+
 
                 dlogText.setText("Unable to match you with opponent. You will be notified when an opponent is found.");
             } else {                                    // Retrived games, pair with one of the games
-                ParseObject game = gameList.get(0);     // Just grab the first item
-                game.put("player_two", ParseUser.getCurrentUser());
+                Game game = gameList.get(0);     // Just grab the first item
+
+
                 //game.put("game_status", GameStatus.IN_PROGRESS.id); ---- not putting in progress just yet..
                 game.put("blocked", true); // when this player grabs the game, we lock it to keep it from pairing with other people looking for games.
                 game.saveInBackground(); // TODO is this really atomic? what if two people successfully block/play 1 game?
-
+                game.put("player_two", ParseUser.getCurrentUser());
                 // From Aaron: Will instead send a notification after the player is done playing this game.
                 // And just say "player accepted your challenge", with the results already there.
         /*        // Send the user a push notification
@@ -414,9 +419,19 @@ public class MainScreen extends Activity {
                 push.setQuery(pushQuery);
                 push.setMessage("Found an opponent");
                 push.sendInBackground();
-
-                dlogText.setText("Found an opponent!");
                 */
+                // Set the game.
+
+                ((TraceMeApplication) this.getApplicationContext()).setGame((Game)game);
+                dlogText.setText("Found an opponent!"); //TODO maybe insert stats about opponent and profile pic here.
+                dismissButton.setText("Start Game!");
+                dismissButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        startActivity(new Intent(ctx, GameActivity.class));
+                        randDlog.dismiss();
+                    }
+                });
             }
         } catch (ParseException e) {
             e.printStackTrace();
@@ -585,7 +600,6 @@ public class MainScreen extends Activity {
             levelView.setTypeface(roboto_regular);
             return convertView;
         }
-
     }
 
 
@@ -605,7 +619,7 @@ public class MainScreen extends Activity {
         super.onResume();
         game = ((TraceMeApplication) this.getApplicationContext()).getNewGame();
         // No notifications received while user is using the app. Uncomment to see notifications at all times.
-        PushService.unsubscribe(this, ParseUser.getCurrentUser().getUsername());
+      //  PushService.unsubscribe(this, ParseUser.getCurrentUser().getUsername());
     }
 
 }

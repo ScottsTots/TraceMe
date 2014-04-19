@@ -132,22 +132,32 @@ public class Game extends ParseObject {
     }
 
     public void notifyOpponent() {
-        // TODO change this to just look at game statuses and decide what to send..
+        // TODO we change this to just look at game statuses and decide what to send..
         ParseUser opponent = getOpponent();
         // If both players are known: -------------
         if(opponent != null) {
             ParsePush push = new ParsePush();
             push.setChannel(opponent.getUsername());
             // Both arrays of data are in the cloud, game is over
-            if (playerOneData.size() > 0 && playerTwoData.size() > 0) {
+            if (isComplete()) {
+                // TODO change message to "player [] made a move, Results are in" if this was a "random game"
                 push.setMessage("Player " + ParseUser.getCurrentUser().getUsername() + " accepted your challenge. Results are in!");
                 Log.d("notifications", " sent game over notification");
             }
-            // TODO send this notification if current users data is there, but not opponents'.
+
             // player two is known but hasn't played yet... means we must send him challenge notification.
             if (playerTwoData.size() == 0 || playerTwoData == null) {
                 Log.d("notifications", " sent challenge notification");
                 push.setMessage("Player " + ParseUser.getCurrentUser().getUsername() + " has challenged you!");
+            }
+
+            // send this notification if we filled a random game and now we notify original user we played his/her random game.
+            // We check if opponent's game data is empty and ours isnt.
+            if(getParseUser("player_one").getUsername().equals(ParseUser.getCurrentUser().getUsername()) && playerTwoData.size() == 0) {
+                    push.setMessage("Player " + ParseUser.getCurrentUser().getUsername() + " joined your game. Your turn!");
+            }
+            else if(getParseUser("player_two").getUsername().equals(ParseUser.getCurrentUser().getUsername()) && playerOneData.size() == 0) {
+                push.setMessage("Player " + ParseUser.getCurrentUser().getUsername() + " joined your game. Your turn!");
             }
             try {
                 push.send();
@@ -163,7 +173,7 @@ public class Game extends ParseObject {
 
     /** Converts the current user's path data to json to be stored in parse **/
     public void saveUserDrawings(ArrayList<CustomPath> userPaths) {
-        if(getParseUser("player_one").getUsername().equals(ParseUser.getCurrentUser().getUsername()))
+        if(getParseUser("player_one") != null && getParseUser("player_one").getUsername().equals(ParseUser.getCurrentUser().getUsername()))
             playerOneData = userPaths;
         else {
             playerTwoData = userPaths;

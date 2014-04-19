@@ -27,7 +27,6 @@
         android:hint="Enter friend's username"
         android:singleLine="true"
         android:layout_gravity="center_horizontal" />
-
     <Button
         android:id="@+id/startButton"
         android:layout_width="wrap_content"
