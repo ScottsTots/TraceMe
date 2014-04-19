@@ -5,10 +5,10 @@
         android:fromYDelta="-100"
         android:toYDelta="0"
         android:fillAfter="true"
-        android:duration="300" />
+        android:duration="800" />
     <alpha
         android:fromAlpha="1"
         android:toAlpha="0"
-        android:duration="300"
+        android:duration="800"
         android:fillAfter="true"/>
 </set>

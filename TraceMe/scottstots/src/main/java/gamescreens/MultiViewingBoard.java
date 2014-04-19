@@ -30,7 +30,7 @@ import helperClasses.Game;
 
         private Paint mBitmapPaint;
         private Paint mPaint;
-
+        private final float SPEED = .5f;
         private static final int secondsPerFrame = (int) (1.0 / 60.0f * 1000); // 60fps
         float scaleX;
         float scaleY;
@@ -200,7 +200,7 @@ import helperClasses.Game;
                     // See if enough time has passed to move on to the next point:
                     //TODO need to also take into account time passed between two paths...
                     timeNow = System.currentTimeMillis();
-                    if(timeNow - previous > point.time) {
+                    if(timeNow - previous > (point.time * SPEED)) {
                         previous = System.currentTimeMillis();
                         currPointNumber++;
                     }

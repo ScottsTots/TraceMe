@@ -167,6 +167,7 @@ public class Level{
             startTime = System.currentTimeMillis();
             timer.start();
             startTimer = false;
+            handler.sendEmptyMessage(1000); // tell handler we just started
         }
     }
 
