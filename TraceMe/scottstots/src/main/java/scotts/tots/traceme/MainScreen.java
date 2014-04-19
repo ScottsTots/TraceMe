@@ -617,7 +617,7 @@ public class MainScreen extends Activity {
         super.onResume();
         game = ((TraceMeApplication) this.getApplicationContext()).getNewGame();
         // No notifications received while user is using the app. Uncomment to see notifications at all times.
-      //  PushService.unsubscribe(this, ParseUser.getCurrentUser().getUsername());
+        PushService.unsubscribe(this, ParseUser.getCurrentUser().getUsername());
     }
 
 }
