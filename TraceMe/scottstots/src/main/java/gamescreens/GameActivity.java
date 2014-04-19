@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
@@ -74,7 +76,6 @@ public class GameActivity extends Activity {
 
     public static Level level;
     static Context ctx;
-    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,27 +148,7 @@ public class GameActivity extends Activity {
             }
         });*/
 
-       handler = new Handler() {
-            public void handleMessage(Message msg) {
-                Log.d("HandleMessage", "Messaged Handled!");
-                if (msg.what == 0) {
-                    feedback_text.setText("PERFECT!");
-                    feedback_text.setVisibility(View.VISIBLE);
-                } else if (msg.what == 1) {
-                    feedback_text.setText("GREAT!");
-                    feedback_text.setVisibility(View.VISIBLE);
-                } else if (msg.what == 2) {
-                    feedback_text.setText("NICE!");
-                    feedback_text.setVisibility(View.VISIBLE);
-                } else if (msg.what == 3) {
-                    feedback_text.setText("GOOD TRY");
-                    feedback_text.setVisibility(View.VISIBLE);
-                } else if (msg.what == 4) {
-                    feedback_text.setText("Well...");
-                    feedback_text.setVisibility(View.VISIBLE);
-                }
-            }
-        };
+
 
     }
 
@@ -383,7 +364,44 @@ public class GameActivity extends Activity {
         }
     }
 
+    private Handler handler = new Handler() {
+        public void handleMessage(Message msg) {
+            Log.d("HandleMessage", "Messaged Handled!");
+            Animation fade_slide_in = AnimationUtils.loadAnimation(GameActivity.this, R.anim.fade_slide_in);
+            assert fade_slide_in != null;
+            fade_slide_in.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    //Nothing
+                }
 
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    feedback_text.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                    //Nothing
+                }
+            });
+            if (msg.what == 0) {
+                feedback_text.setText("PERFECT!");
+            } else if (msg.what == 1) {
+                feedback_text.setText("GREAT!");
+            } else if (msg.what == 2) {
+                feedback_text.setText("NICE!");
+            } else if (msg.what == 3) {
+                feedback_text.setText("GOOD TRY");
+            } else if (msg.what == 4) {
+                feedback_text.setText("Well...");
+            }
+
+            feedback_text.setVisibility(View.VISIBLE);
+            assert fade_slide_in != null;
+            feedback_text.startAnimation(fade_slide_in);
+        }
+    };
 
 }
 

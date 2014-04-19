@@ -36,7 +36,7 @@
                 android:textSize="75sp"
                 android:text="Great!"
                 android:visibility="gone"
-                android:textColor="@color/black"/>
+                android:textColor="#000"/>
 
             <TextView
                 android:id="@+id/round_text"
@@ -47,7 +47,7 @@
                 android:paddingTop="100dp"
                 android:layout_alignParentBottom="true"
                 android:text="Round 1"
-                android:textColor="@color/black"
+                android:textColor="#000"
                 android:visibility="gone"/>
 
         </FrameLayout>

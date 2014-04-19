@@ -116,27 +116,25 @@ public class Level{
         double correct = (lastScore / possibleMaxPoints) * 100;
         Log.d("gameloop", "scoring:  max points " + possibleMaxPoints + "current " + lastScore + " correct: " + correct);
         // 0 sucks, 100 perfect
+//        handler.sendEmptyMessage(0);
         if (correct > 100){
-            handler.sendMessage(handler.obtainMessage(0));
+            handler.sendEmptyMessage(0);
         } else if(correct > 90) {
-            handler.sendMessage(handler.obtainMessage(1));
+            handler.sendEmptyMessage(1);
 //            message = "GREAT";
         } else if (correct> 70) {
-            handler.sendMessage(handler.obtainMessage(2));
+            handler.sendEmptyMessage(2);
 //            message = "NICE JOB!";
         } else if (correct > 50) {
-            handler.sendMessage(handler.obtainMessage(3));
+            handler.sendEmptyMessage(3);
 //            message = "Booooo";
         } else {
-            handler.sendMessage(handler.obtainMessage(4));
+            handler.sendEmptyMessage(4);
 //            message = "wow..";
         }
     }
 
     public void getNextTrace() {
-
-
-
 
         updateMessage(scoreManager.traceData.size());
         if(currentTrace + 1 < TOTAL_TRACES) {

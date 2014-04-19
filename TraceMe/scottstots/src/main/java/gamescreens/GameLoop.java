@@ -1,30 +1,15 @@
 package gamescreens;
 
 import android.content.Context;
-import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.DashPathEffect;
 import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.PathMeasure;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.MotionEvent;
-import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.WindowManager;
 
-import java.util.ArrayList;
-
-import helperClasses.CustomPath;
-import helperClasses.DataPoint;
-import helperClasses.Game;
 import helperClasses.Level;
 
 /**
@@ -124,7 +109,7 @@ public class GameLoop extends SurfaceView implements Runnable {
                 //thepaint.setColor(Color.WHITE);
                 // canvas.scale((float) width / 480.0f, (float) height / 800.0f);
                 canvas.drawBitmap(level.getFrameBuffer(), null, dest, null);
-                canvas.drawText("updates: " + Integer.toString(updates2) + " frames " + Integer.toString(frames2), 20, 320, thepaint);
+//                canvas.drawText("updates: " + Integer.toString(updates2) + " frames " + Integer.toString(frames2), 20, 320, thepaint);
                 holder.unlockCanvasAndPost(canvas);
             }
         }
