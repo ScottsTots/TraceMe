@@ -4,7 +4,9 @@ package gamescreens;
  * Created by Matthew on 4/16/14.
  */
 
+import android.app.Dialog;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -12,6 +14,7 @@ import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +24,7 @@ import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.Parse;
@@ -41,6 +45,7 @@ import helperClasses.Game;
 import helperClasses.GameMenuListItem;
 import helperClasses.GameStatus;
 import helperClasses.UsefulMethods;
+import scotts.tots.traceme.MainScreen;
 import scotts.tots.traceme.R;
 
 /**
@@ -88,6 +93,7 @@ public class SettingsFragment extends Fragment {// implements View.OnClickListen
             }
 
         notifications_on = ParseUser.getCurrentUser().getBoolean("notification");
+        Log.d("USER", "user's notifications is " + notifications_on);
         setNotificationButton();
     }
 
@@ -110,9 +116,9 @@ public class SettingsFragment extends Fragment {// implements View.OnClickListen
 
     private void setNotificationButton() {
         if (notifications_on) {
-            notificationButton.setText("Off");
-        } else {
             notificationButton.setText("On");
+        } else {
+            notificationButton.setText("Off");
         }
 
         notifications_on = !notifications_on;
@@ -121,6 +127,10 @@ public class SettingsFragment extends Fragment {// implements View.OnClickListen
         @Override
         public void onClick(View view) {
             ParseUser currentUser = ParseUser.getCurrentUser();
+
+            final ProgressDialog pd = new ProgressDialog(getActivity());
+            pd.setMessage("Saving..");
+            pd.show();
 
             if (picture_changed) {
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -132,11 +142,19 @@ public class SettingsFragment extends Fragment {// implements View.OnClickListen
             currentUser.saveInBackground(new SaveCallback() {
                 @Override
                 public void done(ParseException e) {
-                    if (e == null)
+                    if (e == null) {
                         Log.d("Save", "Save successful");
-                    else {
+                        pd.dismiss();
+                        Toast.makeText(getActivity(),
+                                "Saved!",
+                                Toast.LENGTH_LONG).show();
+                    } else {
                         Log.d("Save", "Save unsuccessful");
                         Log.d("Error", e.getMessage());
+                        pd.dismiss();
+                        Toast.makeText(getActivity(),
+                                "Error. Try again.",
+                                Toast.LENGTH_LONG).show();
                     }
                 }
             });
