@@ -21,6 +21,7 @@ android {
 dependencies {
     compile 'com.android.support:support-v4:+'
     compile 'org.ocpsoft.prettytime:prettytime:3.2.4.Final'
+    compile 'com.github.chrisbanes.actionbarpulltorefresh:library:+'
     compile files('libs/Parse-1.4.1/Parse-1.4.1.jar')
     compile project(':libraries:facebook')
     compile files('libs/gson-2.2.4.jar')

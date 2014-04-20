@@ -5,12 +5,15 @@ package gamescreens;
  */
 
 import android.app.Fragment;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
+import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -20,11 +23,17 @@ import com.parse.ParseUser;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import helperClasses.Game;
 import helperClasses.GameMenuListItem;
 import helperClasses.GameStatus;
 import scotts.tots.traceme.R;
+
+import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
+import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
+import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
 
 /**
  * Fragment that appears in the "content_frame". This fragment shows the game lobbies, and
@@ -37,6 +46,8 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
     private ExpandableListView expListView;
     private List<String> listDataHeader;
     private HashMap<String, List<GameMenuListItem>> listDataChild;
+
+    private PullToRefreshLayout mPullToRefreshLayout;
 
     public HomeScreenFragment() {
         // Empty constructor required for fragment subclasses
@@ -75,7 +86,41 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
                 return parent.isGroupExpanded(groupPosition);
             }
         });
+
+
+        mPullToRefreshLayout = (PullToRefreshLayout) view.findViewById(R.id.ptr_layout);
+        ActionBarPullToRefresh.from(getActivity()).allChildrenArePullable()
+                .listener(refreshListener).setup(mPullToRefreshLayout);
     }
+
+    private OnRefreshListener refreshListener = new OnRefreshListener() {
+        @Override
+        public void onRefreshStarted(View view) {
+            Log.d("Refresh", "Refresh initiated.");
+
+            new AsyncTask<Void, Void, Void>() {
+                @Override
+                protected Void doInBackground(Void... params) {
+                    try {
+                        // TODO: Instead of sleeping actually load the data
+                        Thread.sleep(3000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(Void result) {
+                    super.onPostExecute(result);
+                    mPullToRefreshLayout.setRefreshComplete();
+                    Toast.makeText(getActivity(),
+                            "Done refreshing.",
+                            Toast.LENGTH_LONG).show();
+                }
+            }.execute();
+        }
+    };
 
     private void prepareListData() {
         listDataHeader = new ArrayList<String>();
