@@ -24,7 +24,9 @@ public class GameMenuListItem {
     private Game game;
     public GameMenuListItem(Game game) {
         this.game = game;
+        this.isDisabled = false;
     }
+    public boolean isDisabled;
 
     public String getStatusString() {
         if (game.getInt("game_status") == GameStatus.WAITING_FOR_OPPONENT.id) {
@@ -36,13 +38,24 @@ public class GameMenuListItem {
             else
                 return "Challenged: Needs response";
         } else if (game.getInt("game_status") == GameStatus.IN_PROGRESS.id) {
-            return "Game in progress";
+            // If the game is in progress it is either player one's turn or player two's
+            try {
+                if (game.getParseUser("player_turn").fetchIfNeeded().getUsername()
+                        .equals(ParseUser.getCurrentUser().getUsername())) {
+                    return "Your move!";
+                } else {
+                    isDisabled = true;
+                    return "Waiting for their move.";
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         } else if (game.getInt("game_status") == GameStatus.GAME_OVER.id) {
             // TODO: Add some Game Over magic
             return "Game Over";
-        } else {
-            return "";
         }
+
+        return "";
     }
 
     public String getUsernameString() {

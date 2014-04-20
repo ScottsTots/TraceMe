@@ -81,11 +81,11 @@ public class SettingsFragment extends Fragment {// implements View.OnClickListen
         profilePictureButton.setOnClickListener(changePictureListener);
 
         // Load up the user's current picture
-        byte[] imgBytes = ParseUser.getCurrentUser().getBytes("profile_picture");
-        if (imgBytes != null) {
-            Bitmap bitmap = UsefulMethods.getParseUserPicture(ParseUser.getCurrentUser(), getActivity().getApplicationContext());
-            profilePictureButton.setImageBitmap(bitmap);
-        }
+            byte[] imgBytes = ParseUser.getCurrentUser().getBytes("profile_picture");
+            if (imgBytes != null) {
+                Bitmap bitmap = UsefulMethods.getParseUserPicture(ParseUser.getCurrentUser(), getActivity().getApplicationContext());
+                profilePictureButton.setImageBitmap(bitmap);
+            }
 
         notifications_on = ParseUser.getCurrentUser().getBoolean("notification");
         setNotificationButton();
