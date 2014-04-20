@@ -91,6 +91,7 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
         mPullToRefreshLayout = (PullToRefreshLayout) view.findViewById(R.id.ptr_layout);
         ActionBarPullToRefresh.from(getActivity()).allChildrenArePullable()
                 .listener(refreshListener).setup(mPullToRefreshLayout);
+        mPullToRefreshLayout.setRefreshing(true);
     }
 
     private OnRefreshListener refreshListener = new OnRefreshListener() {
@@ -173,6 +174,7 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
                         }
                     }
                     listAdapter.notifyDataSetChanged();
+                    mPullToRefreshLayout.setRefreshing(false);
                 } else {
                     Log.d("prepareListData", "Error: " + e.getMessage());
                 }
