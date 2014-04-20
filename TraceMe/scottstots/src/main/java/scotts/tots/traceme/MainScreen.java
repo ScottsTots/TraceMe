@@ -3,7 +3,6 @@ package scotts.tots.traceme;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -34,9 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.ParseException;
-import com.parse.ParseInstallation;
 import com.parse.ParseObject;
-import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.PushService;
@@ -148,7 +145,15 @@ public class MainScreen extends Activity {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
         if (savedInstanceState == null) {
-            selectItem(0);
+            Fragment fragment = new HomeScreenFragment();
+            String mTag = fragment.getTag(); // instance method of a to get a tag
+
+            FragmentTransaction mFragmentTransaction = getFragmentManager().beginTransaction();
+
+            mFragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left,R.anim.slide_in_left,R.anim.slide_out_right);
+            mFragmentTransaction.replace(R.id.content_frame, fragment);
+            mFragmentTransaction.addToBackStack(mTag);
+            mFragmentTransaction.commit();
         }
     }
 
@@ -245,49 +250,48 @@ public class MainScreen extends Activity {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             switch(position){
                 case 0: // User
-                    // If we're not trying to logout, we might try to change our content_view fragment based
-                    // on the item we clicked, so we do the following steps:
-
-                    // update the main content by replacing fragments
                     Fragment fragment = new HomeScreenFragment();
-                    Bundle args = new Bundle();
+                    String mTag = fragment.getTag(); // instance method of a to get a tag
 
-                    // We send an int containing which item on the list was pressed.
-                    // The "planet_number" stuff is from the tutorial.
-                    args.putInt(HomeScreenFragment.ARG_PLANET_NUMBER, position);
-                    fragment.setArguments(args);
+                    FragmentTransaction mFragmentTransaction = getFragmentManager().beginTransaction();
 
-                    // We replace the fragment
-                    FragmentManager fragmentManager = getFragmentManager();
-                    fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+//                    mFragmentTransaction.setCustomAnimations( R.anim.slide_in_right, R.anim.slide_out_left,R.anim.slide_in_left,R.anim.slide_out_right);
+                    mFragmentTransaction.replace(R.id.content_frame, fragment);
+                    mFragmentTransaction.addToBackStack(mTag);
+                    mFragmentTransaction.commit();
                     break;
                 case 1: // About
                     Fragment frag1 = new AboutFrag();
-                    Bundle args1 = new Bundle();
-                    args1.putInt("Foo", 0);
-                    frag1.setArguments(args1);
-                    FragmentManager fragManager1 = getFragmentManager();
-                    fragManager1.beginTransaction().replace(R.id.content_frame, frag1).commit();
+                    String nTag = frag1.getTag(); // instance method of a to get a tag
+
+                    FragmentTransaction nFragmentTransaction = getFragmentManager().beginTransaction();
+
+//                    nFragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
+                    nFragmentTransaction.replace(R.id.content_frame, frag1);
+                    nFragmentTransaction.addToBackStack(nTag);
+                    nFragmentTransaction.commit();
                     break;
                 case 2: //Rankings
-                    Fragment fragment2 = new HighScoreFragment();
-                    Bundle args2 = new Bundle();
+                    Fragment frag2 = new HighScoreFragment();
+                    String pTag = frag2.getTag(); // instance method of a to get a tag
 
-                    args2.putInt("Foo", 0);
-                    fragment2.setArguments(args2);
+                    FragmentTransaction pFragmentTransaction = getFragmentManager().beginTransaction();
 
-                    FragmentManager fragmentManager2 = getFragmentManager();
-                    fragmentManager2.beginTransaction().replace(R.id.content_frame, fragment2).commit();
+//                    pFragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
+                    pFragmentTransaction.replace(R.id.content_frame, frag2);
+                    pFragmentTransaction.addToBackStack(pTag);
+                    pFragmentTransaction.commit();
                     break;
                 case 3: // Settings
-                    Fragment fragment3 = new SettingsFragment();
-                    Bundle args3 = new Bundle();
+                    Fragment frag3 = new SettingsFragment();
+                    String qTag = frag3.getTag(); // instance method of a to get a tag
 
-                    args3.putInt("Foo", 0);
-                    fragment3.setArguments(args3);
+                    FragmentTransaction qFragmentTransaction = getFragmentManager().beginTransaction();
 
-                    FragmentManager fragmentManager3 = getFragmentManager();
-                    fragmentManager3.beginTransaction().replace(R.id.content_frame, fragment3).commit();
+//                    qFragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
+                    qFragmentTransaction.replace(R.id.content_frame, frag3);
+                    qFragmentTransaction.addToBackStack(qTag);
+                    qFragmentTransaction.commit();
                     break;
                 case 4: //Logout
                     ParseUser.logOut();
@@ -303,60 +307,6 @@ public class MainScreen extends Activity {
         }
     }
 
-    /**
-     * This handles the items that we click on the left menu (the opened drawer) *
-     */
-    private void selectItem(int position) {
-        String choiceStr = getResources().getStringArray(R.array.nav_drawer_array)[position];
-
-
-        // If selected the Logout option, simply log them out
-        if (choiceStr.equals("Logout")) {
-            ParseUser.logOut();
-            Intent intent = new Intent(this, LoginScreen.class);
-            startActivity(intent);
-            finish();
-        }
-
-        if (position == 0) {
-            // If we're not trying to logout, we might try to change our content_view fragment based
-            // on the item we clicked, so we do the following steps:
-
-            // update the main content by replacing fragments
-            Fragment fragment = new HomeScreenFragment();
-            Bundle args = new Bundle();
-
-            // We send an int containing which item on the list was pressed.
-            // The "planet_number" stuff is from the tutorial.
-            args.putInt(HomeScreenFragment.ARG_PLANET_NUMBER, position);
-            fragment.setArguments(args);
-
-            // We replace the fragment
-            FragmentManager fragmentManager = getFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-        } else if (position == 1) {            // Highscore
-            Fragment fragment = new HighScoreFragment();
-            Bundle args = new Bundle();
-
-            args.putInt("Foo", 0);
-            fragment.setArguments(args);
-
-            FragmentManager fragmentManager = getFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-        } else if (position == 2) {     // About
-            Fragment fragment = new AboutFrag();
-            Bundle args = new Bundle();
-            args.putInt("Foo", 0);
-            fragment.setArguments(args);
-
-            FragmentManager fragmentManager = getFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-        }
-        setTitle(navMenuTitles[position]);
-        mDrawerList.setItemChecked(position, true);     // update selected item and title so it doesn't
-        // show up in the menu if we reopen it, then close the drawer
-        mDrawerLayout.closeDrawer(mDrawerList);         // now the actionbar will have the same title as the item name.
-    }
 
     @Override
     public void setTitle(CharSequence title) {
