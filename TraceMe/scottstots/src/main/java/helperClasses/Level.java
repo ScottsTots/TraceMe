@@ -185,7 +185,6 @@ public class Level{
             Log.d("gameloop", "trace is null!");
         }
 
-        //TODO try drawing pixels but set alpha to false
         //TODO create traces using rgb 565 format or compress them
         // draw previous paths
         mCanvas.drawBitmap(pathsBitmap, 0, 0, mPaint);
@@ -193,6 +192,7 @@ public class Level{
         mCanvas.drawPath(mPath, mPaint);
         mCanvas.drawText("Score: " + Integer.toString(getScore()), 20, 120, textPaint);
 
+        // Ink bar
         PathMeasure pm = new PathMeasure(mPath, false);
         pathLength = pm.getLength();
         maxPathLength = traceArray.get(currentTrace).getLength() * .75f;
@@ -200,7 +200,8 @@ public class Level{
             pathLength = maxPathLength;
         int x = 20;
         int y = frameBufferHeight - 50;
-        int w = 420 - (int) ((pathLength / maxPathLength) * 420) - (timer.getTime() * 10); //400 is width in pixels of the ink bar on the screen
+        Log.d("timer", "time " + timer.getTime2());
+        int w = (int)(420 - ((pathLength / maxPathLength) * 420) - (timer.getTime2() / 100)); //400 is width in pixels of the ink bar on the screen
 
         int h = 15;
         mCanvas.drawText("Ink Level", frameBufferWidth/2 - 55, y - 20, textPaint);

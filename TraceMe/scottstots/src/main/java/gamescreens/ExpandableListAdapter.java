@@ -94,7 +94,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         txtListSubtext.setText(child.getStatusString());
         userImg.setImageBitmap(child.getGameImage(_context));
 
-        convertView.setOnClickListener(getGameItemsListener(child));
+        if (!child.isDisabled)
+            convertView.setOnClickListener(getGameItemsListener(child));
 
         // Super duper cool animation
         Animation animation = AnimationUtils.loadAnimation(_context, R.anim.fadein);
