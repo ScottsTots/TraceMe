@@ -43,6 +43,10 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     // child data in format of header title, child title
     private HashMap<String, List<GameMenuListItem>> _listDataChild;
     Game game;
+    Typeface roboto_light;
+    Typeface roboto_regular;
+    Typeface roboto_medium;
+    Typeface roboto_lightitalic;
 
     public ExpandableListAdapter(Context context, List<String> listDataHeader,
                                  HashMap<String, List<GameMenuListItem>> listChildData) {
@@ -50,6 +54,10 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         this._listDataHeader = listDataHeader;
         this._listDataChild = listChildData;
         game = ((TraceMeApplication)context.getApplicationContext()).getGame();
+        roboto_light = Typeface.createFromAsset(context.getAssets(),"Roboto/Roboto-Light.ttf");
+        roboto_regular = Typeface.createFromAsset(context.getAssets(),"Roboto/Roboto-Regular.ttf");
+        roboto_medium = Typeface.createFromAsset(context.getAssets(),"Roboto/Roboto-Medium.ttf");
+        roboto_lightitalic = Typeface.createFromAsset(context.getAssets(),"Roboto/Roboto-LightItalic.ttf");
     }
 
     @Override
@@ -97,6 +105,10 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         txtListUsername.setText(child.getUsernameString());
         txtListTime.setText(child.getLastUpdatedString());
         txtListSubtext.setText(child.getStatusString());
+
+        txtListUsername.setTypeface(roboto_regular);
+        txtListSubtext.setTypeface(roboto_lightitalic);
+        txtListTime.setTypeface(roboto_lightitalic);
         userImg.setImageBitmap(child.getGameImage(_context));
 
         if (!child.isDisabled)
@@ -150,7 +162,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             }
             TextView lblListHeader = (TextView) convertView
                     .findViewById(R.id.lblListHeader);
-            lblListHeader.setTypeface(null, Typeface.BOLD);
+            lblListHeader.setTypeface(roboto_medium);
             lblListHeader.setText(headerTitle);
 
         }

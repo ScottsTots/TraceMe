@@ -128,9 +128,9 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
 
         // Adding child data
         listDataHeader.add("New Game");
-        listDataHeader.add("Challenges");
-        listDataHeader.add("Current Games");
-        listDataHeader.add("Past Games");
+        listDataHeader.add("CHALLENGES");
+        listDataHeader.add("CURRENT GAMES");
+        listDataHeader.add("PAST GAMES");
 
         // Adding child data
         final List<GameMenuListItem> challenges = new ArrayList<GameMenuListItem>();
