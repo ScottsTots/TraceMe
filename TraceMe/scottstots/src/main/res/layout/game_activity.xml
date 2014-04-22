@@ -54,11 +54,41 @@
         </FrameLayout>
 
 
-        <gamescreens.ViewingBoard
-            android:id="@+id/view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
+        <FrameLayout
+            android:id="@+id/view_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <gamescreens.ViewingBoard
+                android:id="@+id/view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+
+            <TextView
+                android:id="@+id/replay_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginTop="60dp"
+                android:textSize="40sp"
+                android:text="Replay"
+                android:textColor="#999"/>
+
+
+            <TextView
+                android:id="@+id/prompt_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:textSize="25sp"
+                android:paddingTop="100dp"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="60dp"
+                android:text="Press Anywhere To Skip"
+                android:textColor="#999"/>
+
+        </FrameLayout>
 
 
         <gamescreens.MultiViewingBoard

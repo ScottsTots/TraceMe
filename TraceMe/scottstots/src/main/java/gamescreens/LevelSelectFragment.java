@@ -10,13 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import helperClasses.Game;
 import scotts.tots.traceme.R;
@@ -25,7 +23,7 @@ import scotts.tots.traceme.TraceMeApplication;
 
 public class LevelSelectFragment extends Fragment {// implements View.OnClickListener {
     private TextView level1;
-    private final int NUM_LEVELS = 11;
+    private final int NUM_LEVELS = 9;
 
     private Game game;
     private GridView gridview;
@@ -112,7 +110,16 @@ public class LevelSelectFragment extends Fragment {// implements View.OnClickLis
             Log.d("LevelSelectAdapter", "Updating View");
             TextView levelView = (TextView) convertView.findViewById(R.id.level_number);
             levelView.setText(data.get(position));
+            ImageView medal = (ImageView) convertView.findViewById(R.id.level_medal);
+            TextView score = (TextView) convertView.findViewById(R.id.level_score);
 
+            //TODO: Hook up with actual items
+            if (position > 0){
+                levelView.setBackgroundResource(R.drawable.locked_level);
+                levelView.setTextColor(R.color.black);
+                medal.setVisibility(View.INVISIBLE);
+                score.setVisibility(View.INVISIBLE);
+            }
             return convertView;
         }
 

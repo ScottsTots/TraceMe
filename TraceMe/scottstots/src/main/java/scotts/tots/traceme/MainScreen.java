@@ -50,6 +50,7 @@ import gamescreens.SettingsFragment;
 import helperClasses.Game;
 import helperClasses.GameStatus;
 import helperClasses.UsefulMethods;
+import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
 
 public class MainScreen extends Activity {
     Game game;
@@ -70,6 +71,7 @@ public class MainScreen extends Activity {
     Typeface roboto_regular;
 
     DrawerListAdapter adapter;
+    private PullToRefreshAttacher mPullToRefreshAttacher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,9 +152,8 @@ public class MainScreen extends Activity {
 
             FragmentTransaction mFragmentTransaction = getFragmentManager().beginTransaction();
 
-            mFragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left,R.anim.slide_in_left,R.anim.slide_out_right);
+            mFragmentTransaction.setCustomAnimations(R.anim.slide_in_left,R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left);
             mFragmentTransaction.replace(R.id.content_frame, fragment);
-            mFragmentTransaction.addToBackStack(mTag);
             mFragmentTransaction.commit();
         }
     }
@@ -191,7 +192,7 @@ public class MainScreen extends Activity {
                     FragmentTransaction nFrag = getFragmentManager().beginTransaction();
 
                     nFrag.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left);
-                    nFrag.replace(R.id.content_frame, frag);
+                    nFrag.add(R.id.content_frame, frag);
                     nFrag.addToBackStack(nTag);
                     nFrag.commit();
                     break;
@@ -256,8 +257,8 @@ public class MainScreen extends Activity {
                     FragmentTransaction mFragmentTransaction = getFragmentManager().beginTransaction();
 
 //                    mFragmentTransaction.setCustomAnimations( R.anim.slide_in_right, R.anim.slide_out_left,R.anim.slide_in_left,R.anim.slide_out_right);
-                    mFragmentTransaction.replace(R.id.content_frame, fragment);
-                    mFragmentTransaction.addToBackStack(mTag);
+                    mFragmentTransaction.add(R.id.content_frame, fragment);
+//                    mFragmentTransaction.addToBackStack(mTag);
                     mFragmentTransaction.commit();
                     break;
                 case 1: // About
@@ -267,8 +268,8 @@ public class MainScreen extends Activity {
                     FragmentTransaction nFragmentTransaction = getFragmentManager().beginTransaction();
 
 //                    nFragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
-                    nFragmentTransaction.replace(R.id.content_frame, frag1);
-                    nFragmentTransaction.addToBackStack(nTag);
+                    nFragmentTransaction.add(R.id.content_frame, frag1);
+//                    nFragmentTransaction.addToBackStack(nTag);
                     nFragmentTransaction.commit();
                     break;
                 case 2: //Rankings
@@ -278,8 +279,8 @@ public class MainScreen extends Activity {
                     FragmentTransaction pFragmentTransaction = getFragmentManager().beginTransaction();
 
 //                    pFragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
-                    pFragmentTransaction.replace(R.id.content_frame, frag2);
-                    pFragmentTransaction.addToBackStack(pTag);
+                    pFragmentTransaction.add(R.id.content_frame, frag2);
+//                    pFragmentTransaction.addToBackStack(pTag);
                     pFragmentTransaction.commit();
                     break;
                 case 3: // Settings
@@ -289,8 +290,8 @@ public class MainScreen extends Activity {
                     FragmentTransaction qFragmentTransaction = getFragmentManager().beginTransaction();
 
 //                    qFragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
-                    qFragmentTransaction.replace(R.id.content_frame, frag3);
-                    qFragmentTransaction.addToBackStack(qTag);
+                    qFragmentTransaction.add(R.id.content_frame, frag3);
+//                    qFragmentTransaction.addToBackStack(qTag);
                     qFragmentTransaction.commit();
                     break;
                 case 4: //Logout

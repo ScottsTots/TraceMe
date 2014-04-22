@@ -7,7 +7,6 @@ package gamescreens;
 import android.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,15 +22,13 @@ import com.parse.ParseUser;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import helperClasses.Game;
 import helperClasses.GameMenuListItem;
 import helperClasses.GameStatus;
 import scotts.tots.traceme.R;
-
 import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
+import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
 import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
 
@@ -48,6 +45,7 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
     private HashMap<String, List<GameMenuListItem>> listDataChild;
 
     private PullToRefreshLayout mPullToRefreshLayout;
+    private PullToRefreshAttacher mPullToRefreshAttacher;
 
     public HomeScreenFragment() {
         // Empty constructor required for fragment subclasses
@@ -67,7 +65,7 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
 
         // preparing list data
         prepareListData();
-
+        ViewGroup viewGroup = (ViewGroup) view;
         listAdapter = new ExpandableListAdapter(getActivity(), listDataHeader, listDataChild);
 
         // setting list adapter
@@ -87,9 +85,10 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
             }
         });
 
-
-        mPullToRefreshLayout = (PullToRefreshLayout) view.findViewById(R.id.ptr_layout);
-        ActionBarPullToRefresh.from(getActivity()).allChildrenArePullable()
+        mPullToRefreshLayout = new PullToRefreshLayout(viewGroup.getContext());
+        ActionBarPullToRefresh.from(getActivity())
+                .insertLayoutInto(viewGroup)
+                .theseChildrenArePullable(expListView, expListView.getEmptyView())
                 .listener(refreshListener).setup(mPullToRefreshLayout);
         mPullToRefreshLayout.setRefreshing(true);
     }
