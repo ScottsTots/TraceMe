@@ -3,16 +3,11 @@ package helperClasses;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 
-import com.parse.Parse;
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 import org.ocpsoft.prettytime.PrettyTime;
-
-import java.util.Date;
 
 import scotts.tots.traceme.R;
 
@@ -30,13 +25,13 @@ public class GameMenuListItem {
 
     public String getStatusString() {
         if (game.getInt("game_status") == GameStatus.WAITING_FOR_OPPONENT.id) {
-            return "Opponent will be found soon";
+            return "Opponent will be found soon...";
         } else if (game.getInt("game_status") == GameStatus.CHALLENGED.id) {
             // This user is the one being challenged
             if (game.getParseUser("player_one").getUsername().equals(ParseUser.getCurrentUser().getUsername()))
-                return "Waiting for challenge response";
+                return "Waiting for challenge response...";
             else
-                return "Challenged: Needs response";
+                return "Challenged: Needs response!";
         } else if (game.getInt("game_status") == GameStatus.IN_PROGRESS.id) {
             // If the game is in progress it is either player one's turn or player two's
             try {
@@ -45,7 +40,7 @@ public class GameMenuListItem {
                     return "Your move!";
                 } else {
                     isDisabled = true;
-                    return "Waiting for their move.";
+                    return "Waiting for their move...";
                 }
             } catch (ParseException e) {
                 e.printStackTrace();
