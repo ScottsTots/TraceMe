@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     >
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/white">
+        >
 
         <ImageView
             android:id="@+id/username_img"
@@ -16,8 +16,8 @@
             android:layout_height="wrap_content"
             android:maxWidth="150px"
             android:maxHeight="150px"
-            android:paddingTop="20dp"
-            android:paddingBottom="2dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
             android:paddingLeft="5dp"
             />
 
@@ -43,8 +43,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="More info more info.."
-                android:textSize="15sp"
-                android:paddingTop="3dp"/>
+                android:textSize="15sp"/>
 
             </LinearLayout>
 
@@ -53,7 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="a moment ago"
-            android:padding="10dp"
+            android:padding="5dp"
             android:textColor="@color/dark_grey"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"

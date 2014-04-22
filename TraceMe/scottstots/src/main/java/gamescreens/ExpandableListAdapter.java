@@ -76,10 +76,15 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         }
 
         if (childPosition == this.getChildrenCount(groupPosition) - 1) {
-            convertView.setPadding(0, 0, 0, 20);
-        } else
+            convertView.setBackgroundResource(R.drawable.main_screen_card_bottom);
+            int padding_in_dp = 20;  // 6 dps
+            final float scale = _context.getResources().getDisplayMetrics().density;
+            int padding_in_px = (int) (padding_in_dp * scale + 0.5f);
+            convertView.setPadding(0, 0, 0, padding_in_px);
+        } else {
             convertView.setPadding(0, 0, 0, 0);
-
+            convertView.setBackgroundResource(R.drawable.main_screen_card_middle);
+        }
         TextView txtListUsername = (TextView) convertView
                 .findViewById(R.id.username_item);
         TextView txtListTime = (TextView) convertView

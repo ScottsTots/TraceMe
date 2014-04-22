@@ -17,7 +17,8 @@
             android:layout_width="fill_parent"
             android:layout_marginRight="10dp"
             android:layout_marginLeft="10dp"
-            android:childDivider="#ffc4c5c8"
+            android:childDivider="@color/dark_grey"
+            android:dividerHeight="0dp"
             android:divider="@color/transparent"
             android:groupIndicator="@null"
             />
