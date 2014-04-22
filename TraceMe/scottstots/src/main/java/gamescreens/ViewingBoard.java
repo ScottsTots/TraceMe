@@ -1,5 +1,6 @@
 package gamescreens;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -18,7 +19,6 @@ import java.util.ArrayList;
 
 import helperClasses.CustomPath;
 import helperClasses.DataPoint;
-import helperClasses.Game;
 
 /**
  * Created by Aaron on 3/9/14.
@@ -44,6 +44,7 @@ public class ViewingBoard extends View {
     int currPathNumber;
     int currPointNumber;
     private long previous;
+    private Context context;
 
     float scaleX;
     float scaleY;
@@ -59,6 +60,7 @@ public class ViewingBoard extends View {
     public ViewingBoard(Context c, AttributeSet attrs) {
         super(c, attrs);
         if(!isInEditMode()) {
+            context = c;
             paths = GameActivity.pathsArray;
             currentPath = new CustomPath(0, 0);
             Log.d("view", "ViewingBoard start");
@@ -221,6 +223,8 @@ public class ViewingBoard extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+
+        ((Activity)getContext()).finish();
         return true;
     }
 

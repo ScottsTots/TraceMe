@@ -30,7 +30,7 @@
         <ImageView
             android:layout_width="50dp"
             android:layout_height="fill_parent"
-            android:src="@drawable/icon"
+            android:src="@drawable/single_player_mode_guy2"
             android:layout_weight="1"/>
 
         <LinearLayout
@@ -69,7 +69,7 @@
         <ImageView
             android:layout_width="50dp"
             android:layout_height="fill_parent"
-            android:src="@drawable/icon"
+            android:src="@drawable/random_opponent_1"
             android:layout_weight="1"/>
 
         <LinearLayout
@@ -107,7 +107,7 @@
         <ImageView
             android:layout_width="50dp"
             android:layout_height="fill_parent"
-            android:src="@drawable/icon"
+            android:src="@drawable/multiplayer_mode"
             android:layout_weight="1"/>
 
         <LinearLayout
