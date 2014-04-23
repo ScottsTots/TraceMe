@@ -166,7 +166,7 @@ public class Level{
             startTime = System.currentTimeMillis(); // TODO all timekeeping into one thing?.. one of them keeps track of time after every point drawn. The other keeps track of time after every trace drawn.
             timer.resetTime();
             startTimer = false;
-           // handler.sendEmptyMessage(1000); // tell handler we just started
+           // handler.sendEmptyMessage(1000); // we could tell handler we just started
         }
         // Ink bar
         // Measure the current path.
@@ -177,7 +177,7 @@ public class Level{
         pathLength += (timer.getTimeMillis() * DEPLETION_RATE);
 
         maxPathLength = traceArray.get(currentTrace).getLength() * .80f; // make max path length 75% of total.
-        Log.d("pathlength", "max " + maxPathLength + "  current " + pathLength);
+       // Log.d("pathlength", "max " + maxPathLength + "  current " + pathLength);
         if(pathLength > maxPathLength)
             pathLength = maxPathLength;
     }
