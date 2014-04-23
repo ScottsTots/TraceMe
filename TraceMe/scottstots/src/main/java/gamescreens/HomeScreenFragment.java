@@ -137,6 +137,12 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
         final List<GameMenuListItem> currentgames = new ArrayList<GameMenuListItem>();
         final List<GameMenuListItem> pastgames = new ArrayList<GameMenuListItem>();
 
+        final GameMenuListItem loading = new GameMenuListItem();
+
+        challenges.add(loading);
+        currentgames.add(loading);
+        pastgames.add(loading);
+
         // TODO: Find challenges involving this current user.
         // TODO: Awaiting opponent should have click and hold to cancel
 
@@ -160,6 +166,10 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
             @Override
             public void done(List<Game> parseObjects, ParseException e) {
                 if (e == null) {    // Successful query
+                    challenges.remove(loading);
+                    currentgames.remove(loading);
+                    pastgames.remove(loading);
+
                     for (Game game : parseObjects) {
                         // TODO: Make this a switch statement instead. Tried, but got error so come back.
 

@@ -111,6 +111,7 @@ public class LevelSelectFragment extends Fragment {// implements View.OnClickLis
             TextView levelView = (TextView) convertView.findViewById(R.id.level_number);
             levelView.setText(data.get(position));
             ImageView medal = (ImageView) convertView.findViewById(R.id.level_medal);
+            ImageView lock = (ImageView) convertView.findViewById(R.id.level_lock);
             TextView score = (TextView) convertView.findViewById(R.id.level_score);
 //            ImageView lock = (ImageView) convertView.findViewById(R.id.level_lock);
 
@@ -118,11 +119,9 @@ public class LevelSelectFragment extends Fragment {// implements View.OnClickLis
             if (position > 0){
                 levelView.setBackgroundResource(R.drawable.locked_level);
                 levelView.setTextColor(getResources().getColor(R.color.black));
-//                lock.setVisibility(View.VISIBLE);
-//                medal.setVisibility(View.INVISIBLE);
-                score.setVisibility(View.GONE);
-                medal.setImageResource(R.drawable.lock);
-
+                lock.setVisibility(View.VISIBLE);
+                medal.setVisibility(View.INVISIBLE);
+                score.setVisibility(View.INVISIBLE);
             }
             return convertView;
         }

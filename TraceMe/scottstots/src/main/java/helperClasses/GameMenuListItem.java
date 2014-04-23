@@ -17,13 +17,21 @@ import scotts.tots.traceme.R;
 
 public class GameMenuListItem {
     private Game game;
+    public boolean isDisabled;
+
+    public GameMenuListItem(){
+        //Empty Constructor
+        this.isDisabled = true;
+    }
     public GameMenuListItem(Game game) {
         this.game = game;
         this.isDisabled = false;
     }
-    public boolean isDisabled;
 
     public String getStatusString() {
+        if(game == null){
+            return "Preparing your data";
+        }
         if (game.getInt("game_status") == GameStatus.WAITING_FOR_OPPONENT.id) {
             return "Opponent will be found soon...";
         } else if (game.getInt("game_status") == GameStatus.CHALLENGED.id) {
@@ -54,6 +62,9 @@ public class GameMenuListItem {
     }
 
     public String getUsernameString() {
+        if( game == null){
+            return "Loading...";
+        }
         if (game.getInt("game_status") == GameStatus.WAITING_FOR_OPPONENT.id) {
             return "Awaiting Opponent";
         } else if (game.getInt("game_status") == GameStatus.CHALLENGED.id ||
@@ -70,6 +81,11 @@ public class GameMenuListItem {
     }
 
     public Bitmap getGameImage(Context context) {
+        if (game == null){
+            Bitmap img = BitmapFactory.decodeResource(context.getResources(),
+                    R.drawable.logo_2_loading);
+            return Bitmap.createScaledBitmap(img, 150, 150, false);
+        }
         if (game.getInt("game_status") == GameStatus.CHALLENGED.id ||
                 game.getInt("game_status") == GameStatus.IN_PROGRESS.id ||
                 game.getInt("game_status") == GameStatus.GAME_OVER.id) {
@@ -86,6 +102,8 @@ public class GameMenuListItem {
     }
 
     public String getLastUpdatedString() {
+        if(game == null){ return ""; }
+
         PrettyTime p = new PrettyTime();
         return p.format(game.getUpdatedAt());
     }
