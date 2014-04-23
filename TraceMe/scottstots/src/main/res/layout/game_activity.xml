@@ -34,7 +34,7 @@
                 android:gravity="center"
                 android:layout_marginTop="80dp"
                 android:textSize="75sp"
-                android:text="Great!"
+                android:text=""
                 android:visibility="gone"
                 android:textColor="#000"/>
 

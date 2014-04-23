@@ -13,8 +13,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -114,9 +112,16 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         if (!child.isDisabled)
             convertView.setOnClickListener(getGameItemsListener(child));
 
+        if(child.getUsernameString().equals("Loading...")){
+            txtListUsername.setTextColor(_context.getResources().getColor(R.color.dark_grey));
+            txtListSubtext.setTextColor(_context.getResources().getColor(R.color.dark_grey));
+        } else {
+            txtListUsername.setTextColor(_context.getResources().getColor(R.color.black));
+            txtListSubtext.setTextColor(_context.getResources().getColor(R.color.black));
+        }
         // Super duper cool animation
-        Animation animation = AnimationUtils.loadAnimation(_context, R.anim.fadein);
-        convertView.startAnimation(animation);
+//        Animation animation = AnimationUtils.loadAnimation(_context, R.anim.fadein);
+//        convertView.startAnimation(animation);
 
         return convertView;
     }
