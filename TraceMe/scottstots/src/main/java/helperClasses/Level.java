@@ -69,10 +69,12 @@ public class Level{
     ScoreManager scoreManager;
     Bitmap traceBitmap;
     public static int TOTAL_TRACES = 8;
+
     private int currentTrace = 0;
     private float pathLength;
     private float maxPathLength;
-    public int timeLeft = 15;
+
+    private final double DEPLETION_RATE = .10;
 
     Context ctx;
     Paint paint;
@@ -96,23 +98,21 @@ public class Level{
         // trace2.txt 10 seconds   disappearing
         // trace3.txt 6 seconds    blinking
 
-
         this.view = v;
         this.ctx = ctx;
         this.handler = handler;
         setUpDrawing();
         traceArray = new ArrayList<TraceFile>();
         traceBitmaps = new ArrayList<Bitmap>();
+        maxPathLength = 0;
+        pathLength = 0;
     }
 
     String message;
     double lastScore;
     public void updateMessage(int possibleMaxPoints) {
-
-
         // Actual points gotten.
         lastScore = scoreManager.getScore() - lastScore;
-
         double correct = (lastScore / possibleMaxPoints) * 100;
         Log.d("gameloop", "scoring:  max points " + possibleMaxPoints + "current " + lastScore + " correct: " + correct);
         // 0 sucks, 100 perfect
@@ -129,7 +129,6 @@ public class Level{
     }
 
     public void getNextTrace() {
-
         updateMessage(scoreManager.traceData.size());
         if(currentTrace + 1 < TOTAL_TRACES) {
             currentTrace++;
@@ -142,7 +141,7 @@ public class Level{
         // Game over
         else {
             saveHighScore();
-            GameActivity.endGame();
+            handler.sendEmptyMessage(5000);
         }
     }
 
@@ -164,11 +163,23 @@ public class Level{
     public void update(float deltaTime) {
         // Start the game timer if it's the first update.
         if(startTimer) {
-            startTime = System.currentTimeMillis();
-            timer.start();
+            startTime = System.currentTimeMillis(); // TODO all timekeeping into one thing?.. one of them keeps track of time after every point drawn. The other keeps track of time after every trace drawn.
+            timer.resetTime();
             startTimer = false;
-            handler.sendEmptyMessage(1000); // tell handler we just started
+           // handler.sendEmptyMessage(1000); // tell handler we just started
         }
+        // Ink bar
+        // Measure the current path.
+        PathMeasure pm = new PathMeasure(mPath, false);
+        pathLength = pm.getLength();
+
+        // Subtract a time factor from the current path length we have.
+        pathLength += (timer.getTimeMillis() * DEPLETION_RATE);
+
+        maxPathLength = traceArray.get(currentTrace).getLength() * .80f; // make max path length 75% of total.
+        Log.d("pathlength", "max " + maxPathLength + "  current " + pathLength);
+        if(pathLength > maxPathLength)
+            pathLength = maxPathLength;
     }
 
     // Then we paint stuff on the framebuffer
@@ -192,64 +203,21 @@ public class Level{
         mCanvas.drawPath(mPath, mPaint);
         mCanvas.drawText("Score: " + Integer.toString(getScore()), 20, 120, textPaint);
 
-        // Ink bar
-        PathMeasure pm = new PathMeasure(mPath, false);
-        pathLength = pm.getLength();
-        maxPathLength = traceArray.get(currentTrace).getLength() * .75f;
-        if(pathLength > maxPathLength)
-            pathLength = maxPathLength;
+
+
         int x = 20;
         int y = frameBufferHeight - 50;
-        Log.d("timer", "time " + timer.getTime2());
-        int w = (int)(420 - ((pathLength / maxPathLength) * 420) - (timer.getTime2() / 100)); //400 is width in pixels of the ink bar on the screen
+        int w = (int)(420 - ((pathLength / maxPathLength) * 420));
 
         int h = 15;
         mCanvas.drawText("Ink Level", frameBufferWidth/2 - 55, y - 20, textPaint);
         mCanvas.drawRect(x, y, x + w, y + h, mPaint); // left top right bottom
-        //Log.d("gameloop", "path length " + pm.getLength());
     }
 
     public void drawGameOver() {
     }
 
-    /***************************** LOADING *****************************************/
-    int numTracesLoaded = 1; //starts at 1
-    // Loads level from internal storage
-    public void loadTrace() {
-        Log.d("gameloop", "loading files");
-            TraceFile trace = getTraceFile(ctx, "trace" + numTracesLoaded + ".txt");
-            if (trace != null) {
-                traceArray.add(trace);
-                traceBitmaps.add(trace.getBitmap());
-                Log.d("gameloop", "loading files " + numTracesLoaded);
-            }
-            else {
-                // UH OH.
-            }
-        if(numTracesLoaded == 1)
-            scoreManager = new ScoreManager(traceArray.get(0));
-        numTracesLoaded++;
-    }
 
-    Gson gson = new Gson();
-    private TraceFile getTraceFile(Context ctx, String filename) {
-        TraceFile trace;
-        StringBuilder total = new StringBuilder();
-        try {
-            InputStream inputStream = ctx.getAssets().open("tracedata/" + filename);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                total.append(line);
-            }
-            reader.close();
-            inputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        trace = gson.fromJson(total.toString(), TraceFile.class);
-        return trace;
-    }
 
     /******************************** INPUT DRAWING  ********************************************/
     // Used for drawing past paths into a buffer/pathsBitmap
@@ -346,7 +314,7 @@ public class Level{
         // This is an array of CustomPaths, which contains points for drawing animation later..
 
         GameActivity.pathsArray.add(new CustomPath(x, y, System.currentTimeMillis() - startTime));
-        startTime = System.currentTimeMillis();
+        startTime = System.currentTimeMillis(); // everytime we add a path we are counting how much time passed.
         Log.d("view",  "size" + GameActivity.pathsArray.size());
     }
 
@@ -553,6 +521,7 @@ public class Level{
     }
 
     ParseObject retrievedLevel;
+    /** Loading from online **/
     public void loadLevelFromParse() {
         ParseQuery<ParseObject> levelQuery = ParseQuery.getQuery("Level");
         levelQuery.whereEqualTo("level_number", 1);
@@ -617,6 +586,63 @@ public class Level{
         // Finally initialize the score manager
         scoreManager = new ScoreManager(traceArray.get(0));
     }
+
+
+
+
+
+
+    /***************************** LOADING locally *****************************************/
+    int numTracesLoaded = 1; //starts at 1
+    /** Loads a level from internal storage **/
+    public void loadTrace() {
+        TraceFile trace = getTraceFile(ctx, "trace" + numTracesLoaded + ".txt");
+        if (trace != null) {
+            traceArray.add(trace);
+            traceBitmaps.add(trace.getBitmap());
+        }
+        else {
+            // UH OH.
+        }
+        if(numTracesLoaded == 1)
+            scoreManager = new ScoreManager(traceArray.get(0));
+        numTracesLoaded++;
+    }
+
+    Gson gson = new Gson();
+    /** Used to get a local trace file **/
+    private TraceFile getTraceFile(Context ctx, String filename) {
+        TraceFile trace;
+        StringBuilder total = new StringBuilder();
+        try {
+            InputStream inputStream = ctx.getAssets().open("tracedata/" + filename);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                total.append(line);
+            }
+            reader.close();
+            inputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        trace = gson.fromJson(total.toString(), TraceFile.class);
+        return trace;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 }

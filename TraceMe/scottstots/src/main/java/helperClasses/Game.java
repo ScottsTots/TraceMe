@@ -162,14 +162,11 @@ public class Game extends ParseObject {
             setBlocked(false);
             put("game_status", GameStatus.WAITING_FOR_OPPONENT.id);
             remove("player_two");
-
         }
-
     }
 
 
     public void notifyOpponent() {
-        // TODO we change this to just look at game statuses and decide what to send..
         ParseUser opponent = getOpponent();
         // If both players are known: -------------
         if(opponent != null) {
@@ -189,7 +186,7 @@ public class Game extends ParseObject {
             }
 
             // send this notification if we filled a random game and now we notify original user we played his/her random game.
-            // We check if opponent's game data is empty and ours isnt.
+            // We check if opponent's game data is empty and ours isnt. //TODO coalesce into one statement..
             else if(getParseUser("player_one").getUsername().equals(ParseUser.getCurrentUser().getUsername()) && playerTwoData.size() == 0) {
                     push.setMessage("Player " + ParseUser.getCurrentUser().getUsername() + " joined your game. Your turn!");
             }
@@ -203,7 +200,6 @@ public class Game extends ParseObject {
             }
         }
         // Other notification conditions...
-
 
 
     }

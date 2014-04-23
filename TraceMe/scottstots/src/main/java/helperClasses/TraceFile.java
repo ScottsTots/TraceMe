@@ -41,7 +41,9 @@ public class TraceFile {
             if( i == 0) {
                 mPath.lineTo(points.get(i).x, points.get(i).y);
             }
-            mPath.lineTo(points.get(i).x, points.get(i).y);
+            else {
+                mPath.lineTo(points.get(i).x, points.get(i).y);
+            }
         }
         PathMeasure pm = new PathMeasure(mPath, false);
         length = pm.getLength();

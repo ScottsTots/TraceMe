@@ -18,7 +18,6 @@ import helperClasses.Level;
  * This class is the heartbeat of the game.
  */
 
-// This class will also implement touch
 public class GameLoop extends SurfaceView implements Runnable {
     SurfaceHolder holder;
     boolean running = false;
@@ -57,6 +56,7 @@ public class GameLoop extends SurfaceView implements Runnable {
         }
     }
 
+    /** Do not touch **/
     @Override
     public void run() {
         Log.d("gameloop", "runninggame");
@@ -73,10 +73,10 @@ public class GameLoop extends SurfaceView implements Runnable {
         long now;
         Rect dest = new Rect();
         while(running) {
-            // Log.d("gameloop", " checking valid..");
+          //   Log.d("gameloop", " checking valid..");
             if (!holder.getSurface().isValid() || level == null)
                 continue;
-            //   Log.d("gameloop", " valid!..");
+          //     Log.d("gameloop", " valid!..");
 
             now = System.nanoTime();
             delta += (now - lastTime) / ns;

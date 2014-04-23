@@ -17,7 +17,8 @@ public class CustomTimer {
     }
 
     public void start() {
-
+        start = System.currentTimeMillis();
+        seconds = 0;
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
@@ -36,7 +37,7 @@ public class CustomTimer {
     }
 
     // Returns time in seconds
-    public long getTime2() {
+    public long getTimeMillis() {
         return (System.currentTimeMillis() - start);
     }
 }

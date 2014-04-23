@@ -40,7 +40,9 @@ public class ViewingBoard extends View {
     private Paint mPaint;
 
     private static final int secondsPerFrame = (int) (1.0 / 60.0f * 1000); // 60fps
-    private final float SPEED = .5f;
+    private final float DRAWING_SPEED = .3f; // the less, the faster the replay.
+    private final boolean REPEAT_ANIM = false;
+
     int currPathNumber;
     int currPointNumber;
     private long previous;
@@ -100,9 +102,7 @@ public class ViewingBoard extends View {
             previous = System.currentTimeMillis();
             mBitmap = Bitmap.createBitmap(frameBufferWidth, frameBufferHeight, Bitmap.Config.ARGB_8888);
             mCanvas = new Canvas(mBitmap);
-
         }
-
     }
 
 
@@ -143,7 +143,7 @@ public class ViewingBoard extends View {
                 drawPath(canvas);
                 // See if enough time has passed to move on to the next point:
                 timeNow = System.currentTimeMillis();
-                if(timeNow - previous > (point.time * SPEED)) {
+                if(timeNow - previous > (point.time * DRAWING_SPEED)) {
                     previous = System.currentTimeMillis();
                     currPointNumber++;
                 }
@@ -165,9 +165,12 @@ public class ViewingBoard extends View {
 
             // Clear/Reset our actual Bitmap buffer, which had our saved paths
             // mBitmap.eraseColor(Color.WHITE); // doesn't work, we need to create a new bitmap to clear it well...(not sure why)
-           // mBitmap = Bitmap.createBitmap(frameBufferWidth, frameBufferHeight, Bitmap.Config.ARGB_8888);
+            // mBitmap = Bitmap.createBitmap(frameBufferWidth, frameBufferHeight, Bitmap.Config.ARGB_8888);
             // Now we set this new, clear buffer to the mCanvas, which is used to draw into our bitmap.
             mBitmap.eraseColor(Color.TRANSPARENT);
+            if(!REPEAT_ANIM) {
+                endReplay();
+            }
         }
         // Draw the actual framebuffer.
         canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
@@ -178,7 +181,7 @@ public class ViewingBoard extends View {
      * This method is based off of the DrawingBoard's three stages:
      * touch_start, touch_move, and touch_up. We simulate these stages by figuring out which point
      * we're drawing.
-    **/
+     **/
     float mX;
     float mY;
     private static final float TOUCH_TOLERANCE = 4;
@@ -224,9 +227,17 @@ public class ViewingBoard extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        ((Activity)getContext()).finish();
+        endReplay();
         return true;
     }
+
+    public void endReplay() {
+        // TODO call the end game dialog here. Maybe set up a handler so we can call back UI or use a static method..
+        // There is no need to save any game state or anything at this point.. just show the end game results, etc etc.
+
+         ((Activity)getContext()).finish();
+    }
+
 
     public void startDrawing() {
         previous = System.currentTimeMillis();

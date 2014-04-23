@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -47,19 +48,19 @@ import scotts.tots.traceme.TraceMeApplication;
  * See DrawingBoard.convertToPoints for the details.
  */
 public class GameActivity extends Activity {
-    static String TAG = "GameActivity";
-    static Game game;
+    private String TAG = "GameActivity";
+    private Game game;
     // Contains all points for the trace separated by the path they were at.
     // This array is used to do the drawing animation in ViewingBoard
     public static ArrayList<CustomPath> pathsArray;
 
-    static ViewingBoard viewingBoard;
-    static MultiViewingBoard multiViewingBoard;
+    private ViewingBoard viewingBoard;
+    private MultiViewingBoard multiViewingBoard;
 
-    public static GameLoop gameLoop;
-    static Button playButton;
-    static Button endTurnButton;
-    static ViewFlipper flipper;
+    private GameLoop gameLoop;
+    private Button playButton;
+    private Button endTurnButton;
+    private ViewFlipper flipper;
     private final int COUNTDOWN_TIME = 2;
     private int time_left;
     private TextView countdownTimerView;
@@ -71,12 +72,12 @@ public class GameActivity extends Activity {
     private long mStartTime;
 
     private Dialog warningDialog;
-    static ProgressDialog loadingDialog;
-    static Dialog endGameDlog;
-    static TextView scoreText;
+    private ProgressDialog loadingDialog;
+    private Dialog endGameDlog;
+    private TextView scoreText;
 
-    public static Level level;
-    static Context ctx;
+    private Level level;
+    private Context ctx;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +104,7 @@ public class GameActivity extends Activity {
         scoreText = (TextView) endGameDlog.findViewById(R.id.scoreTextView);
         endTurnButton = (Button) endGameDlog.findViewById(R.id.endTurnButton);
 
-        // Load the game
+
         game = ((TraceMeApplication)this.getApplicationContext()).getGame();
         loadingDialog = new ProgressDialog(GameActivity.this);
         loadingDialog.setMessage("Loading...");
@@ -111,9 +112,6 @@ public class GameActivity extends Activity {
 //      loadingDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 //      loadingDialog.setProgress(0);
 //      loadingDialog.setMax(100);
-
-//      if(game.isMultiplayer())
-        new LoadTask().execute("loadOnline");
 
 
         // Warning dialog to be played onBackPressed()
@@ -126,108 +124,14 @@ public class GameActivity extends Activity {
         // UI views
         countdownTimerView = (TextView) findViewById(R.id.countdown_timer);
         flipper = (ViewFlipper) findViewById(R.id.viewFlipper);
-        // Switch into the viewingBoard using the viewFlipper if we press "play"
-//        playButton = (Button) findViewById(R.id.playButton);
-//        playButton.setVisibility(View.INVISIBLE);
-   /*     playButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                viewingBoard = (ViewingBoard) findViewById(R.id.view);
-                if(game.isMultiplayer()) {
-                    flipper.setDisplayedChild(3); //gameloop is 0, viewingBoard is 1
-                    playButton.setVisibility(View.INVISIBLE);
 
-                    multiViewingBoard.setGameData(game);
-                    multiViewingBoard.startDrawing();
-                }
-                else {
-
-                    flipper.setDisplayedChild(2); //gameloop is 0, viewingBoard is 1
-                    playButton.setVisibility(View.INVISIBLE);
-                    viewingBoard.setGameData(game); // passes player's drawing data they just did. TODO reorganize this method and one below into 1
-                    viewingBoard.startDrawing(); // this updates our viewingBoard to the current data.
-                }
-            }
-        });*/
-
-
-
-    }
-
-    // Called by the level object when there's no more traces.
-    /**
-     * When we finish a multiplayer game, save stuff online, move on to the endGame Activity, which handles all drawing
-     * and score showing.
-     */
-    public static void endGame() {
-        gameLoop.running = false;
-        // Saves the game, then checks game status to see what to do next.
-        if(game.isMultiplayer()) {
-            Log.d("parseNetwork", "game is multiplayer. saving data");
-            new endGameTask().execute(game);
-        }
-        else {
-            // TODO show the viewingBoard for single player, repeat animation once.
-            // TODO after animation is done, show dialog that shows medals/score/level/repeat animation button.
-            flipper.setDisplayedChild(2); //gameloop is 0, viewingBoard is 1
-//            playButton.setVisibility(View.INVISIBLE);
-            viewingBoard.startDrawing(); // this updates our viewingBoard to the current
-        }
+//      if(game.isMultiplayer())
+        new LoadTask().execute("loadOnline");
     }
 
 
-    public static class endGameTask extends AsyncTask<Game, Integer, Void> {
-        @Override
-        protected void onPreExecute() {
-            loadingDialog.show();
-        }
-        @Override
-        protected Void doInBackground(Game... params) {
-            Game game = params[0];
-            game.saveUserDrawings(pathsArray);
 
-            game.updateState();
-            try {
-                game.save();
-                // send push notification to opponent about game status:
-                game.notifyOpponent();
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-
-            return null;
-        }
-        @Override
-        protected void onPostExecute(Void param) {
-            loadingDialog.dismiss();
-            // Both players done, show final end game stuff.
-            if(game.isComplete()) {
-                flipper.setDisplayedChild(3); //gameloop is 0, viewingBoard is 1
-                multiViewingBoard.setGameData(game);
-                multiViewingBoard.startDrawing();
-            }
-            // Only player A has moved. Show him/her a dialog that says "We will notify you when B finishes!"
-            // And his/her current score maybe?
-            else {
-                scoreText.setText(Integer.toString(level.getScore()));
-                endTurnButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        ((Activity)ctx).startActivity(new Intent((Activity)ctx, MainScreen.class));
-                        endGameDlog.dismiss();
-                        ((Activity)ctx).finish();
-                    }
-                });
-                endGameDlog.show();
-            }
-        }
-        @Override
-        protected void onProgressUpdate(Integer... progress) {
-        }
-    }
-
-    public class LoadTask extends AsyncTask<String, Integer, Void> {
+    private class LoadTask extends AsyncTask<String, Integer, Void> {
         @Override
         protected void onPreExecute() {
             loadingDialog.show();
@@ -293,47 +197,9 @@ public class GameActivity extends Activity {
                 public void run() {
                     TimerMethod();
                 }
-
             }, 0, 1000);
         }
     }
-
-    private void TimerMethod() {
-        //This method is called directly by the timer
-        //and runs in the same thread as the timer.
-        long millis = System.currentTimeMillis() - mStartTime;
-        int seconds = (int) (millis / 1000);
-
-        time_left = COUNTDOWN_TIME - seconds;
-        if (time_left < 0){
-            gameLoop.startLoop();
-        }
-
-        //We call the method that will work with the UI
-        //through the runOnUiThread method.
-        this.runOnUiThread(Timer_Tick);
-
-    }
-
-    private Runnable Timer_Tick = new Runnable() {
-        public void run() {
-            //This method runs in the same thread as the UI.
-            //Do something to the UI thread here
-            if (time_left < 0){
-                flipper.setDisplayedChild(1);
-                myTimer.cancel();
-            }
-            else if (time_left == 0){
-                countdownTimerView.setText("GO!");
-            }
-            else{
-                countdownTimerView.setText("" + time_left);
-            }
-        }
-    };
-
-
-
 
     // When user goes onPause, we should set any games we held to not blocked, and dismiss the
     // game... They will have to resume it from main menu again.
@@ -344,6 +210,7 @@ public class GameActivity extends Activity {
             game.updateState();
             game.saveInBackground();
         }
+        gameLoop.stopThread();
         finish();
     }
 
@@ -387,20 +254,137 @@ public class GameActivity extends Activity {
                     //Nothing
                 }
             });
-            if (msg.what == 0) {
-                feedback_text.setText("PERFECT!");
-            } else if (msg.what == 1) {
-                feedback_text.setText("GREAT!");
-            } else if (msg.what == 2) {
-                feedback_text.setText("NICE!");
-            }
+            if(msg.what >= 0 && msg.what <= 2) {
+                if (msg.what == 0) {
+                    feedback_text.setText("PERFECT!");
+                } else if (msg.what == 1) {
+                    feedback_text.setText("GREAT!");
+                } else if (msg.what == 2) {
+                    feedback_text.setText("NICE!");
+                }
                 feedback_text.setVisibility(View.VISIBLE);
                 assert fade_slide_in != null;
                 feedback_text.startAnimation(fade_slide_in);
-
             }
 
+            // Handle end game message
+            if(msg.what == 5000) {
+                endGame();
+            }
+        }
     };
+
+    /**
+     * When we finish a multiplayer game, save stuff online, move on to the endGame Activity, which handles all drawing
+     * and score showing. Called when there are no more traces
+     */
+    public void endGame() {
+        gameLoop.running = false;
+        // Saves the game to parse asynchronously and displays the MultiViewingboard afterwards.
+        if(game.isMultiplayer()) {
+            new endGameTask().execute(game);
+        }
+        else { // If singleplayer, just display regular viewing board
+            flipper.setDisplayedChild(2); //gameloop is 0, viewingBoard is 2
+            viewingBoard.startDrawing(); // this starts the animation
+        }
+    }
+
+
+    private class endGameTask extends AsyncTask<Game, Integer, Void> {
+        @Override
+        protected void onPreExecute() {
+            loadingDialog.show();
+        }
+        @Override
+        protected Void doInBackground(Game... params) {
+            Game game = params[0];
+            game.saveUserDrawings(pathsArray); //TODO save this pathsArray somewhere else..
+            game.updateState();
+            try {
+                game.save();
+                // send push notification to opponent about game status:
+                game.notifyOpponent();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void param) {
+            loadingDialog.dismiss();
+            // Both players done, show final end game stuff.
+            if(game.isComplete()) {
+                flipper.setDisplayedChild(3); //gameloop is 0, viewingBoard is 1
+                multiViewingBoard.setGameData(game);
+                multiViewingBoard.startDrawing();
+            }
+            // Only player A has moved. Show him/her a dialog that says "We will notify you when B finishes!"
+            // And his/her current score maybe?
+            else {
+                scoreText.setText(Integer.toString(level.getScore()));
+                endTurnButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ((Activity)ctx).startActivity(new Intent((Activity)ctx, MainScreen.class));
+                        endGameDlog.dismiss();
+                        ((Activity)ctx).finish();
+                    }
+                });
+                endGameDlog.show();
+            }
+        }
+        @Override
+        protected void onProgressUpdate(Integer... progress) {
+        }
+    }
+
+
+
+
+
+
+
+
+
+    private void TimerMethod() {
+        //This method is called directly by the timer
+        //and runs in the same thread as the timer.
+        long millis = System.currentTimeMillis() - mStartTime;
+        int seconds = (int) (millis / 1000);
+
+        time_left = COUNTDOWN_TIME - seconds;
+        if (time_left < 0){
+            gameLoop.startLoop();
+        }
+
+        //We call the method that will work with the UI
+        //through the runOnUiThread method.
+        this.runOnUiThread(Timer_Tick);
+    }
+
+    private Runnable Timer_Tick = new Runnable() {
+        public void run() {
+            //This method runs in the same thread as the UI.
+            //Do something to the UI thread here
+            if (time_left < 0){
+                flipper.setDisplayedChild(1);
+                myTimer.cancel();
+            }
+            else if (time_left == 0){
+                countdownTimerView.setText("GO!");
+            }
+            else{
+                countdownTimerView.setText("" + time_left);
+            }
+        }
+    };
+
+
+
+
+
+
 
 }
 

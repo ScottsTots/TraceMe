@@ -1,5 +1,6 @@
 package gamescreens;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -30,7 +31,8 @@ import helperClasses.Game;
 
         private Paint mBitmapPaint;
         private Paint mPaint;
-        private final float SPEED = .5f;
+        private final float DRAWING_SPEED = .5f;
+        private final boolean REPEAT_ANIM = false;
         private static final int secondsPerFrame = (int) (1.0 / 60.0f * 1000); // 60fps
         float scaleX;
         float scaleY;
@@ -125,18 +127,26 @@ import helperClasses.Game;
             pointCounter++;
         }
         */
-        playerOne.updatePlayerData(canvas);
-        playerTwo.updatePlayerData(canvas);
+
+        // If animation for both players is done.
+        if(playerOne.isFinished() && playerTwo.isFinished()) {
+            endReplay();
+        }
+
+        // keep updating the ones that haven't finished.
+        if(!playerOne.isFinished())
+            playerOne.updatePlayerData(canvas);
+        if(!playerOne.isFinished())
+            playerTwo.updatePlayerData(canvas);
         postInvalidate(); //force a redraw
     }
 
-    /**
-     * This method is based off of the DrawingBoard's three stages:
-     * touch_start, touch_move, and touch_up. We simulate these stages by figuring out which point
-     * we're drawing.
-     **/
-//    float mX;
-//    float mY;
+
+    public void endReplay() {
+        // TODO show endGame dialog / results here.. no need to mess with any gamestate or save anything at this point.
+
+        ((Activity)getContext()).finish();
+    }
     private static final float TOUCH_TOLERANCE = 4;
 
     @Override
@@ -155,20 +165,22 @@ import helperClasses.Game;
      */
     private class Player {
         private long timeNow;
-        int currPathNumber;
-        int currPointNumber;
+        private int currPathNumber;
+        private int currPointNumber;
         private long previous;
-        CustomPath currentPath;
+        private CustomPath currentPath;
 
         // the current point
-        DataPoint point;
-        float mX;
-        float mY;
+        private DataPoint point;
+        private float mX;
+        private float mY;
 
         ArrayList<CustomPath> paths;
         Bitmap mBitmap2;
         Canvas mCanvas2;
         private Path mPath;
+
+        private boolean animFinished;
 
         float scaleX, scaleY, translateX, translateY;
         public Player(ArrayList<CustomPath> p, float scaleX, float scaleY, float translateX, float translateY) {
@@ -184,6 +196,7 @@ import helperClasses.Game;
             this.scaleY = scaleY;
             this.translateX = translateX;
             this.translateY = translateY;
+            animFinished = false;
         }
 
         public void updatePlayerData(Canvas canvas) {
@@ -200,7 +213,7 @@ import helperClasses.Game;
                     // See if enough time has passed to move on to the next point:
                     //TODO need to also take into account time passed between two paths...
                     timeNow = System.currentTimeMillis();
-                    if(timeNow - previous > (point.time * SPEED)) {
+                    if(timeNow - previous > (point.time * DRAWING_SPEED)) {
                         previous = System.currentTimeMillis();
                         currPointNumber++;
                     }
@@ -222,6 +235,7 @@ import helperClasses.Game;
 
                 // Clear/Reset our actual Bitmap buffer, which had our saved paths
                 mBitmap2.eraseColor(Color.TRANSPARENT);
+                animFinished = true;
             }
             canvas.drawBitmap(mBitmap2, 0, 0, mBitmapPaint);
             canvas.drawPath(mPath, mPaint);
@@ -266,6 +280,11 @@ import helperClasses.Game;
                 mCanvas2.drawPath(mPath, mPaint);
                 mPath.reset();
             }
+        }
+
+
+        public boolean isFinished() {
+            return animFinished;
         }
 
 
