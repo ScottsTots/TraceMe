@@ -62,7 +62,6 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
     private android.app.Dialog dlog;
     private android.app.Dialog randDlog;
     private Dialog chooseFriendDlog;
-    private Context ctx;
     ProgressDialog loadingDialog;
     Typeface roboto_light;
     Typeface roboto_regular;
@@ -296,7 +295,7 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
 
                 ((TraceMeApplication) getActivity().getApplicationContext()).setGame(game);
                 Toast.makeText(getActivity(), "Found a game!", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(ctx, GameActivity.class));
+                startActivity(new Intent(getActivity(), GameActivity.class));
             }
         } catch (ParseException e) {
             e.printStackTrace();
