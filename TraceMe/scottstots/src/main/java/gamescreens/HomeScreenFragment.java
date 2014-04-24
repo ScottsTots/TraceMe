@@ -7,9 +7,11 @@ package gamescreens;
 import android.app.Dialog;
 import android.app.ExpandableListActivity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Trace;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +35,7 @@ import helperClasses.Game;
 import helperClasses.GameMenuListItem;
 import helperClasses.GameStatus;
 import scotts.tots.traceme.R;
+import scotts.tots.traceme.TraceMeApplication;
 import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
@@ -101,9 +104,29 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
             @Override
             public boolean onChildClick(ExpandableListView parent,
                                         View v, int groupPosition, int childPosition, long id) {
-                if (groupPosition == 1)
-                    promptUserToCancel(groupPosition, childPosition);
+                Log.d("EVENT", "List Item Pressed");
 
+                GameMenuListItem listItem = listDataChild
+                        .get(listDataHeader.get(groupPosition)).get(childPosition);
+                Game gameObj = listItem.getGameParseObject();
+
+
+                // Listener for a Game that is awaiting an opponent.
+                if (gameObj.getInt("game_status") == GameStatus.WAITING_FOR_OPPONENT.id) {
+                    promptUserToCancel(groupPosition, childPosition);
+                } else if (gameObj.getInt("game_status") == GameStatus.CHALLENGED.id) {
+                    // TODO: Aaron is the Challenged gameflow are games ever going to have
+                    // a status of challenge? From what I have observed they do not so this
+                    // may not matter.
+                } else if (gameObj.getInt("game_status") == GameStatus.IN_PROGRESS.id) {
+                    Log.d("EVENT", "Hit In Progress Game");
+                    Toast.makeText(getActivity(),
+                            "Starting game",
+                            Toast.LENGTH_SHORT).show();
+                    ((TraceMeApplication) getActivity().getApplicationContext()).setGame(gameObj);
+                    startActivity(new Intent(getActivity(), GameActivity.class));
+
+                }
 
                 return true;
             }
@@ -162,12 +185,8 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
             new AsyncTask<Void, Void, Void>() {
                 @Override
                 protected Void doInBackground(Void... params) {
-                    try {
-                        // TODO: Instead of sleeping actually load the data
-                        Thread.sleep(3000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    prepareListData();
+                    listAdapter.notifyDataSetChanged();
                     return null;
                 }
 
