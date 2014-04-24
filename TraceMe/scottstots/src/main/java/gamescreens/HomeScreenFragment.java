@@ -205,7 +205,7 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
                     Log.d("Mainscreen.java", "Challenge Button Clicked.");
                     dlog.dismiss();
                     game.setMultiplayer(true);
-//                    findFriendOpponent();
+                    findFriendOpponent();
                     break;
             }
         }
@@ -283,6 +283,10 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
                     }
                 });
             } else {                // Retrieved games, pair with one of the games
+                // TODO: Double check, but because if you find a game you jump directly into
+                // the game it doesn't need to be added in real-time to the list because
+                // currently the user will have reload the entire list before doing anything.
+
                 Game game = gameList.get(0);
                 game.put("blocked", true);          // when this player grabs the game, we lock it
                                                     // to keep it from pairing with other people looking for games.
@@ -302,9 +306,8 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
         }
     }
 
-    // Saves the name from the editText the user inputs
-    String playerTwoName;
 
+    String playerTwoName;       // Saves the name from the editText the user inputs
     public void findFriendOpponent() {
 
         // Set up the dialog
@@ -312,19 +315,18 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
         chooseFriendDlog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         chooseFriendDlog.setContentView(R.layout.dialog_choose_friend);
 
-
-        // Set up the edit text
+        // Grab the dialog elements
         final EditText editText = (EditText) chooseFriendDlog.findViewById(R.id.friendName);
-
         Button startGameButton = (Button) chooseFriendDlog.findViewById(R.id.startButton);
+
+
         startGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 playerTwoName = editText.getText().toString().trim();
 
-                // PlayerTwo validation
-                if (playerTwoName != null) {
-                    new startGameTask().execute(playerTwoName); // initiates game if name is valid
+                if (playerTwoName != null) {        // Player two must be valid
+                    new startGameTask().execute(playerTwoName);     // Initiate game
                 } else { // empty field
                     Toast.makeText(getActivity(), "Player Two's username required to play!",
                             Toast.LENGTH_SHORT).show();
