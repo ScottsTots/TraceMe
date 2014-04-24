@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -25,24 +24,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.PushService;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import gamescreens.AboutFrag;
-import gamescreens.GameActivity;
 import gamescreens.HighScoreFragment;
 import gamescreens.HomeScreenFragment;
 import gamescreens.LevelSelectFragment;
@@ -90,10 +84,10 @@ public class MainScreen extends Activity {
         title.setTextSize(30);
 
 
-        game = ((TraceMeApplication) this.getApplicationContext()).getGame();
-        loadingDialog = new ProgressDialog(this);
-        loadingDialog.setMessage("Loading...");
-        loadingDialog.setCanceledOnTouchOutside(false);
+//        game = ((TraceMeApplication) this.getApplicationContext()).getGame();
+//        loadingDialog = new ProgressDialog(this);
+//        loadingDialog.setMessage("Loading...");
+//        loadingDialog.setCanceledOnTouchOutside(false);
 
         //mTitle is the action bar's title when drawer is closed.
         // mDrawer title is the title that appears when the drawer opens.
@@ -158,59 +152,59 @@ public class MainScreen extends Activity {
         }
     }
 
-    public void showDialog(View v) {
-        Log.d("Group Click", "New Button Pressed");
-        dlog = new android.app.Dialog(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth);
-        dlog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        dlog.setContentView(R.layout.home_fragment_new_game_dialog);
+//    public void showDialog(View v) {
+//        Log.d("Group Click", "New Button Pressed");
+//        dlog = new android.app.Dialog(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth);
+//        dlog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+//        dlog.setContentView(R.layout.home_fragment_new_game_dialog);
+//
+//        // Hook up single player button
+//        View singlePlayerButton = dlog.findViewById(R.id.singlePlayer);
+//        singlePlayerButton.setOnClickListener(viewListener);
+//
+//        View randomOpponentButton = dlog.findViewById(R.id.randomOpponentButton);
+//        randomOpponentButton.setOnClickListener(viewListener);
+//
+//        View challengeFriendButton = dlog.findViewById(R.id.challengeButton);
+//        challengeFriendButton.setOnClickListener(viewListener);
+//
+//        dlog.show();
+//    }
 
-        // Hook up single player button
-        View singlePlayerButton = dlog.findViewById(R.id.singlePlayer);
-        singlePlayerButton.setOnClickListener(viewListener);
-
-        View randomOpponentButton = dlog.findViewById(R.id.randomOpponentButton);
-        randomOpponentButton.setOnClickListener(viewListener);
-
-        View challengeFriendButton = dlog.findViewById(R.id.challengeButton);
-        challengeFriendButton.setOnClickListener(viewListener);
-
-        dlog.show();
-    }
-
-    View.OnClickListener viewListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.singlePlayer:
-                    Log.d("Mainscreen.java", "SinglePlayer Button Clicked.");
-                    dlog.dismiss();
-                    game.setMultiplayer(false);
-
-                    Fragment frag = new LevelSelectFragment();
-                    String nTag = frag.getTag(); // instance method of a to get a tag
-
-                    FragmentTransaction nFrag = getFragmentManager().beginTransaction();
-
-                    nFrag.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left);
-                    nFrag.add(R.id.content_frame, frag);
-                    nFrag.addToBackStack(nTag);
-                    nFrag.commit();
-                    break;
-                case R.id.randomOpponentButton:
-                    Log.d("Mainscreen.java", "RandomOpponent Button Clicked.");
-                    dlog.dismiss();
-                    game.setMultiplayer(true);
-                    findRandomOpponent();
-                    break;
-                case R.id.challengeButton:
-                    Log.d("Mainscreen.java", "Challenge Button Clicked.");
-                    dlog.dismiss();
-                    game.setMultiplayer(true);
-                    findFriendOpponent();
-                    break;
-            }
-        }
-    };
+//    View.OnClickListener viewListener = new View.OnClickListener() {
+//        @Override
+//        public void onClick(View v) {
+//            switch (v.getId()) {
+//                case R.id.singlePlayer:
+//                    Log.d("Mainscreen.java", "SinglePlayer Button Clicked.");
+//                    dlog.dismiss();
+//                    game.setMultiplayer(false);
+//
+//                    Fragment frag = new LevelSelectFragment();
+//                    String nTag = frag.getTag(); // instance method of a to get a tag
+//
+//                    FragmentTransaction nFrag = getFragmentManager().beginTransaction();
+//
+//                    nFrag.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left);
+//                    nFrag.add(R.id.content_frame, frag);
+//                    nFrag.addToBackStack(nTag);
+//                    nFrag.commit();
+//                    break;
+//                case R.id.randomOpponentButton:
+//                    Log.d("Mainscreen.java", "RandomOpponent Button Clicked.");
+//                    dlog.dismiss();
+//                    game.setMultiplayer(true);
+//                    findRandomOpponent();
+//                    break;
+//                case R.id.challengeButton:
+//                    Log.d("Mainscreen.java", "Challenge Button Clicked.");
+//                    dlog.dismiss();
+//                    game.setMultiplayer(true);
+//                    findFriendOpponent();
+//                    break;
+//            }
+//        }
+//    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -315,110 +309,110 @@ public class MainScreen extends Activity {
         getActionBar().setTitle(mTitle);
     }
 
-    public void findRandomOpponent() {
-        randDlog = new android.app.Dialog(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth);
-        randDlog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        randDlog.setContentView(R.layout.message);
-
-        TextView dlogText = (TextView) randDlog.findViewById(R.id.dlogText);
-        Button dismissButton = (Button) randDlog.findViewById(R.id.dlogDismissButton);
-
-        // Search for games that need another player if possible
-        // Criteria:
-        //      Game is Searching for an opponent
-        //      player_one of the game is not the current user
-        ParseQuery<Game> query = ParseQuery.getQuery("Game");
-        query.whereEqualTo("game_status", GameStatus.WAITING_FOR_OPPONENT.id);
-        query.whereNotEqualTo("player_one", ParseUser.getCurrentUser());
-        query.whereNotEqualTo("blocked", true);
-        query.include("player_one");
-
-        try { //TODO loading dialog here?
-            List<Game> gameList = query.find();
-            if (gameList.size() == 0) {         // No games, create a new one awaiting an opponent
-                ParseObject game = ParseObject.create("Game");
-                game.put("player_one", ParseUser.getCurrentUser());
-                game.put("game_status", GameStatus.WAITING_FOR_OPPONENT.id);
-                game.put("multiplayer", true);
-                game.put("blocked", false);
-                game.saveInBackground();
-                dismissButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        randDlog.dismiss();
-                }
-                });
-
-
-                dlogText.setText("Unable to match you with opponent. You will be notified when an opponent is found.");
-                randDlog.show();
-            } else {                                    // Retrived games, pair with one of the games
-                Game game = gameList.get(0);     // Just grab the first item
-                //game.put("game_status", GameStatus.IN_PROGRESS.id); ---- not putting in progress just yet..
-                game.put("blocked", true); // when this player grabs the game, we lock it to keep it from pairing with other people looking for games.
-                game.saveInBackground(); // TODO is this really atomic? what if two people successfully block/play 1 game?
-                game.put("player_two", ParseUser.getCurrentUser());
-                // From Aaron: Will instead send a notification after the player is done playing this game.
-                // And just say "player accepted your challenge", with the results already there.
-
-
-                ((TraceMeApplication) this.getApplicationContext()).setGame((Game)game);
-                Toast.makeText(this, "Found a game!", Toast.LENGTH_SHORT).show();
-                // We start the game now because if we have a dialog we need to clear out the
-                // "blocked" var back to false if they exit the dialog instead of playing and it's kind of chaotic...
-                startActivity(new Intent(ctx, GameActivity.class));
-//                dlogText.setText("Found an opponent!"); //TODO maybe insert stats about opponent and profile pic here.
-//                dismissButton.setText("Start Game!");
+//    public void findRandomOpponent() {
+//        randDlog = new android.app.Dialog(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth);
+//        randDlog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+//        randDlog.setContentView(R.layout.message);
+//
+//        TextView dlogText = (TextView) randDlog.findViewById(R.id.dlogText);
+//        Button dismissButton = (Button) randDlog.findViewById(R.id.dlogDismissButton);
+//
+//        // Search for games that need another player if possible
+//        // Criteria:
+//        //      Game is Searching for an opponent
+//        //      player_one of the game is not the current user
+//        ParseQuery<Game> query = ParseQuery.getQuery("Game");
+//        query.whereEqualTo("game_status", GameStatus.WAITING_FOR_OPPONENT.id);
+//        query.whereNotEqualTo("player_one", ParseUser.getCurrentUser());
+//        query.whereNotEqualTo("blocked", true);
+//        query.include("player_one");
+//
+//        try { //TODO loading dialog here?
+//            List<Game> gameList = query.find();
+//            if (gameList.size() == 0) {         // No games, create a new one awaiting an opponent
+//                ParseObject game = ParseObject.create("Game");
+//                game.put("player_one", ParseUser.getCurrentUser());
+//                game.put("game_status", GameStatus.WAITING_FOR_OPPONENT.id);
+//                game.put("multiplayer", true);
+//                game.put("blocked", false);
+//                game.saveInBackground();
 //                dismissButton.setOnClickListener(new View.OnClickListener() {
 //                    @Override
 //                    public void onClick(View view) {
-//
-//                        startActivity(new Intent(ctx, GameActivity.class));
 //                        randDlog.dismiss();
-//                    }
+//                }
 //                });
-
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-
-            dlogText.setText("Error. Please try again.");
-        }
-    }
+//
+//
+//                dlogText.setText("Unable to match you with opponent. You will be notified when an opponent is found.");
+//                randDlog.show();
+//            } else {                                    // Retrived games, pair with one of the games
+//                Game game = gameList.get(0);     // Just grab the first item
+//                //game.put("game_status", GameStatus.IN_PROGRESS.id); ---- not putting in progress just yet..
+//                game.put("blocked", true); // when this player grabs the game, we lock it to keep it from pairing with other people looking for games.
+//                game.saveInBackground(); // TODO is this really atomic? what if two people successfully block/play 1 game?
+//                game.put("player_two", ParseUser.getCurrentUser());
+//                // From Aaron: Will instead send a notification after the player is done playing this game.
+//                // And just say "player accepted your challenge", with the results already there.
+//
+//
+//                ((TraceMeApplication) this.getApplicationContext()).setGame((Game)game);
+//                Toast.makeText(this, "Found a game!", Toast.LENGTH_SHORT).show();
+//                // We start the game now because if we have a dialog we need to clear out the
+//                // "blocked" var back to false if they exit the dialog instead of playing and it's kind of chaotic...
+//                startActivity(new Intent(ctx, GameActivity.class));
+////                dlogText.setText("Found an opponent!"); //TODO maybe insert stats about opponent and profile pic here.
+////                dismissButton.setText("Start Game!");
+////                dismissButton.setOnClickListener(new View.OnClickListener() {
+////                    @Override
+////                    public void onClick(View view) {
+////
+////                        startActivity(new Intent(ctx, GameActivity.class));
+////                        randDlog.dismiss();
+////                    }
+////                });
+//
+//            }
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//
+//            dlogText.setText("Error. Please try again.");
+//        }
+//    }
 
     // Saves the name from the editText the user inputs
     String playerTwoName;
 
-    public void findFriendOpponent() {
-
-        // Set up the dialog
-        chooseFriendDlog = new android.app.Dialog(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth);
-        chooseFriendDlog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        chooseFriendDlog.setContentView(R.layout.dialog_choose_friend);
-
-
-        // Set up the edit text
-        final EditText editText = (EditText) chooseFriendDlog.findViewById(R.id.friendName);
-
-        Button startGameButton = (Button) chooseFriendDlog.findViewById(R.id.startButton);
-        startGameButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                playerTwoName = editText.getText().toString().trim();
-
-                // PlayerTwo validation
-                if (playerTwoName != null) {
-                    new startGameTask().execute(playerTwoName); // initiates game if name is valid
-                } else { // empty field
-                    Toast.makeText(MainScreen.this, "Player Two's username required to play!",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-            }
-        });
-        chooseFriendDlog.show();
-
-    }
+//    public void findFriendOpponent() {
+//
+//        // Set up the dialog
+//        chooseFriendDlog = new android.app.Dialog(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth);
+//        chooseFriendDlog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+//        chooseFriendDlog.setContentView(R.layout.dialog_choose_friend);
+//
+//
+//        // Set up the edit text
+//        final EditText editText = (EditText) chooseFriendDlog.findViewById(R.id.friendName);
+//
+//        Button startGameButton = (Button) chooseFriendDlog.findViewById(R.id.startButton);
+//        startGameButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                playerTwoName = editText.getText().toString().trim();
+//
+//                // PlayerTwo validation
+//                if (playerTwoName != null) {
+//                    new startGameTask().execute(playerTwoName); // initiates game if name is valid
+//                } else { // empty field
+//                    Toast.makeText(MainScreen.this, "Player Two's username required to play!",
+//                            Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//            }
+//        });
+//        chooseFriendDlog.show();
+//
+//    }
 
     /** Checks if a user name exists and starts the game if it is valid **/
     public class startGameTask extends AsyncTask<String, Integer, ParseUser> {
