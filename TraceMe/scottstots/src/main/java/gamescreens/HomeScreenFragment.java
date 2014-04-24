@@ -101,8 +101,6 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
             @Override
             public boolean onChildClick(ExpandableListView parent,
                                         View v, int groupPosition, int childPosition, long id) {
-                Log.d("SHIT CLICKED", "YO SHIT WAS CLICKED");
-                Log.d("SHIT CLICKED", Integer.toString(groupPosition));
                 if (groupPosition == 1)
                     promptUserToCancel(groupPosition, childPosition);
 
@@ -132,27 +130,16 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
             public void onClick(View view) {
 
                 obj.put("game_status", GameStatus.INVALID.id);
-                obj.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if (e == null) {
-                            Log.d("REMOVING..", "Attempting to remove the object from the list.");
-                            listAdapter.delete(groupPosition, childPosition);
+                try {
+                    obj.delete();
 
-                            Log.d("getWaitingOpponentListener", "game cancelled successfully");
-                            Toast.makeText(getActivity(),
-                                    "Challenge Cancelled Successfully",
-                                    Toast.LENGTH_LONG).show();
+                    // For consistency delete from both
+                    listDataChild.get(listDataHeader.get(groupPosition)).remove(childPosition);
+                    listAdapter.delete(groupPosition, childPosition);
 
-                            // TODO: Send the user a push notification for cancelled game.
-                            // From Aaron: Instead of sending a notification to player B that the game was cancelled,
-                            // We can instead verify the game is still valid when we get it from the listview,
-                            // If it is NOT valid, then player A cancelled the game, so we locally notify player B
-                            // that A cancelled the game with a "toast" or a simple message instead of notification from A, and refresh the listview?
-                        } else
-                            e.printStackTrace();
-                    }
-                });
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
                 dlog.dismiss();
             }
         });

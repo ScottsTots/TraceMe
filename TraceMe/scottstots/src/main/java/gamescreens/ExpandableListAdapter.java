@@ -111,16 +111,13 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         txtListTime.setTypeface(roboto_lightitalic);
         userImg.setImageBitmap(child.getGameImage(_context));
 
-//        if (!child.isDisabled)
-//            convertView.setOnClickListener(getGameItemsListener(child));
-//
-//        if(child.getUsernameString().equals("Loading...")){
-//            txtListUsername.setTextColor(_context.getResources().getColor(R.color.dark_grey));
-//            txtListSubtext.setTextColor(_context.getResources().getColor(R.color.dark_grey));
-//        } else {
-//            txtListUsername.setTextColor(_context.getResources().getColor(R.color.black));
-//            txtListSubtext.setTextColor(_context.getResources().getColor(R.color.black));
-//        }
+        if(child.getUsernameString().equals("Loading...")){
+            txtListUsername.setTextColor(_context.getResources().getColor(R.color.dark_grey));
+            txtListSubtext.setTextColor(_context.getResources().getColor(R.color.dark_grey));
+        } else {
+            txtListUsername.setTextColor(_context.getResources().getColor(R.color.black));
+            txtListSubtext.setTextColor(_context.getResources().getColor(R.color.black));
+        }
         // Super duper cool animation
 //        Animation animation = AnimationUtils.loadAnimation(_context, R.anim.fadein);
 //        convertView.startAnimation(animation);
@@ -418,8 +415,15 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         };
     }
 
+    // Matt: This may be a workaround, but to get things to happen on the spot and
+    // update without refreshing everything I had to do this.
     public void delete(int group, int child) {
         _listDataChild.get(_listDataHeader.get(group)).remove(child);
+        notifyDataSetChanged();
+    }
+
+    public void addGameListItem(int group, GameMenuListItem item) {
+        _listDataChild.get(_listDataHeader.get(group)).add(0, item);
         notifyDataSetChanged();
     }
 }
