@@ -74,6 +74,7 @@ public class GameActivity extends Activity implements View.OnClickListener {
     Button playButton;
     ViewFlipper flipper;
     TextView scoreText;
+    TextView numTraceText;
 
     Button saveTraceButton;
     TraceFile trace;
@@ -102,16 +103,16 @@ public class GameActivity extends Activity implements View.OnClickListener {
         viewingBoard = (ViewingBoard) findViewById(R.id.view);
         scoreText = (TextView) findViewById(R.id.scoreText);
         flipper = (ViewFlipper) findViewById(R.id.viewFlipper);
-
+        numTraceText = (TextView) findViewById(R.id.numTraces);
 
         // Buttons
-        Button b1 = (Button) findViewById(R.id.previousFrameButton);
+        Button b1 = (Button) findViewById(R.id.saveTraceButton);
         b1.setOnClickListener(this);
         Button b2 = (Button) findViewById(R.id.clearFrameButton);
         b2.setOnClickListener(this);
         Button b3 = (Button) findViewById(R.id.loadLevelButton);
         b3.setOnClickListener(this);
-        Button b4 = (Button) findViewById(R.id.nextFrameButton);
+        Button b4 = (Button) findViewById(R.id.viewButton);
         b4.setOnClickListener(this);
         Button b5 = (Button) findViewById(R.id.saveLevelButton);
         b5.setOnClickListener(this);
@@ -119,6 +120,7 @@ public class GameActivity extends Activity implements View.OnClickListener {
         b6.setOnClickListener(this);
         Button b7 = (Button) findViewById(R.id.clearAllButton);
         b7.setOnClickListener(this);
+        Button b8 = (Button) findViewById(R.id.removeTraceButton);
 
 
         loadingDialog = new ProgressDialog(GameActivity.this);
@@ -132,16 +134,41 @@ public class GameActivity extends Activity implements View.OnClickListener {
       //  mPrefs = getSharedPreferences("gameprefs", MODE_PRIVATE);
       //  new LoadOrSaveTask().execute("load");
 
-
-
         // Switch into the viewingBoard using the viewFlipper if we press "play"
     }
 
     @Override
     public void onClick(View v) {
         switch(v.getId()) {
-            case R.id.saveLevelButton: //TODO need inddividual save trace button..and how many traces we have saved so far.
+            case R.id.saveTraceButton: //TODO need individual save trace button..and how many traces we have saved so far.
+                TraceFile file = new TraceFile(drawingBoard.getCanvasBitmap(), pointsArray);
+                traceArray.add(file);  //add new trace
+                traceBitmaps.add(drawingBoard.getCanvasBitmap());
 
+                pathsArray.clear(); // clear all trace data
+                pointsArray.clear();
+
+                drawingBoard.clear(); // clear view
+                break;
+            case R.id.clearFrameButton: //clears the view and point datas, but doesnt remove previous trace.
+                pathsArray.clear(); //clear all trace data
+                pointsArray.clear();
+                drawingBoard.clear();
+                break;
+
+            case R.id.loadLevelButton:
+                // show dialog to choose which level.
+                new LoadOrSaveTask().execute("load");
+                break;
+            case R.id.viewButton:
+                flipper.setDisplayedChild(1); // show view
+                break;
+            case R.id.saveLevelButton:
+
+                break;
+            case R.id.toggleButton:
+                Log.d("toggle", "pressed toggle");
+                drawingBoard.toggleDataPoints();
                 break;
             case R.id.clearAllButton:
                 // Clear current path and equidistant point data.
@@ -150,24 +177,17 @@ public class GameActivity extends Activity implements View.OnClickListener {
                 // Clear arrays of traces, both bitmap and data
                 traceBitmaps.clear();
                 traceArray.clear();
+                drawingBoard.clear();
                 break;
-            case R.id.clearFrameButton:
+            case R.id.removeTraceButton:
+                if(traceArray.size() > 0) {
+                    traceBitmaps.remove(traceBitmaps.size() - 1);
+                    traceArray.remove(traceArray.size() - 1);
+                }
 
-                break;
-            case R.id.loadLevelButton:
-                new LoadOrSaveTask().execute("load");
-                break;
-            case R.id.previousFrameButton:
-
-                break;
-            case R.id.nextFrameButton:
-
-                break;
-            case R.id.toggleButton:
-                Log.d("toggle", "pressed toggle");
-                drawingBoard.toggleDataPoints();
-                break;
         }
+        numTraceText.setText("Num traces " + Integer.toString(traceArray.size()));
+
     }
 
     private class LoadOrSaveTask extends AsyncTask<String, Void, Void> {
@@ -189,22 +209,11 @@ public class GameActivity extends Activity implements View.OnClickListener {
 
         @Override
         protected void onPostExecute(Void param) {
-
            // Log.d("score", "siiiize" + trace.getPointArray().size());
             score = new ScoreManager(trace);
             loadingDialog.dismiss();
         }
     }
-
-
-
-
-
-
-
-
-
-
 
     /** Saves this level to parse. To be used only when trying to create new levels **/
     int filesUploaded = 0;

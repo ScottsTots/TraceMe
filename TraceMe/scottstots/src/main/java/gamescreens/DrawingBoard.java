@@ -88,14 +88,16 @@ public class DrawingBoard extends View {
           mPaint.setStrokeCap(Paint.Cap.ROUND);
         mPaint.setStrokeWidth(16);
 
+        setDashEffect();
+
         textPaint = new Paint();
         textPaint.setColor(Color.BLACK);
         textPaint.setTextSize(30);
 
 
-        mBitmapPaint.setAntiAlias(true);
-        mBitmapPaint = new Paint(Paint.DITHER_FLAG);
 
+        mBitmapPaint = new Paint(Paint.DITHER_FLAG);
+        mBitmapPaint.setAntiAlias(true);
         // For scaling to different screen sizes
         WindowManager wm = (WindowManager) c.getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics metrics = new DisplayMetrics();
@@ -155,7 +157,6 @@ public class DrawingBoard extends View {
             textPaint.setTextSize(GameActivity.score.getCombo());
             canvas.drawText("Score: " + Integer.toString(GameActivity.score.getScore()), 20, 120, textPaint);
         }
-
     }
     private float mX, mY;
     private static final float TOUCH_TOLERANCE = 4;
@@ -184,6 +185,15 @@ public class DrawingBoard extends View {
             mY = y;
 
         }
+    }
+
+
+    public void clear() {
+
+        mBitmap2.eraseColor(Color.TRANSPARENT);
+        mBitmap.eraseColor(Color.TRANSPARENT);
+        mPath.reset();
+        postInvalidate();
     }
 
     private void touch_up() {
