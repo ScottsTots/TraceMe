@@ -29,7 +29,6 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -127,11 +126,29 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
             @Override
             public boolean onChildClick(ExpandableListView parent,
                                         View v, int groupPosition, int childPosition, long id) {
-                Log.d("SHIT CLICKED", "YO SHIT WAS CLICKED");
-                Log.d("SHIT CLICKED", Integer.toString(groupPosition));
-                if (groupPosition == 1)
-                    promptUserToCancel(groupPosition, childPosition);
+                Log.d("EVENT", "List Item Pressed");
 
+                GameMenuListItem listItem = listDataChild
+                        .get(listDataHeader.get(groupPosition)).get(childPosition);
+                Game gameObj = listItem.getGameParseObject();
+
+
+                // Listener for a Game that is awaiting an opponent.
+                if (gameObj.getInt("game_status") == GameStatus.WAITING_FOR_OPPONENT.id) {
+                    promptUserToCancel(groupPosition, childPosition);
+                } else if (gameObj.getInt("game_status") == GameStatus.CHALLENGED.id) {
+                    // TODO: Aaron is the Challenged gameflow are games ever going to have
+                    // a status of challenge? From what I have observed they do not so this
+                    // may not matter.
+                } else if (gameObj.getInt("game_status") == GameStatus.IN_PROGRESS.id) {
+                    Log.d("EVENT", "Hit In Progress Game");
+                    Toast.makeText(getActivity(),
+                            "Starting game",
+                            Toast.LENGTH_SHORT).show();
+                    ((TraceMeApplication) getActivity().getApplicationContext()).setGame(gameObj);
+                    startActivity(new Intent(getActivity(), GameActivity.class));
+
+                }
 
                 return true;
             }
@@ -377,27 +394,16 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
             public void onClick(View view) {
 
                 obj.put("game_status", GameStatus.INVALID.id);
-                obj.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if (e == null) {
-                            Log.d("REMOVING..", "Attempting to remove the object from the list.");
-                            listAdapter.delete(groupPosition, childPosition);
+                try {
+                    obj.delete();
 
-                            Log.d("getWaitingOpponentListener", "game cancelled successfully");
-                            Toast.makeText(getActivity(),
-                                    "Challenge Cancelled Successfully",
-                                    Toast.LENGTH_LONG).show();
+                    // For consistency delete from both
+                    listDataChild.get(listDataHeader.get(groupPosition)).remove(childPosition);
+                    listAdapter.delete(groupPosition, childPosition);
 
-                            // TODO: Send the user a push notification for cancelled game.
-                            // From Aaron: Instead of sending a notification to player B that the game was cancelled,
-                            // We can instead verify the game is still valid when we get it from the listview,
-                            // If it is NOT valid, then player A cancelled the game, so we locally notify player B
-                            // that A cancelled the game with a "toast" or a simple message instead of notification from A, and refresh the listview?
-                        } else
-                            e.printStackTrace();
-                    }
-                });
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
                 dlog.dismiss();
             }
         });
@@ -420,12 +426,7 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
             new AsyncTask<Void, Void, Void>() {
                 @Override
                 protected Void doInBackground(Void... params) {
-                    try {
-                        // TODO: Instead of sleeping actually load the data
-                        Thread.sleep(3000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    // Whoops
                     return null;
                 }
 
