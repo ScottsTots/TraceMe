@@ -185,8 +185,7 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
             new AsyncTask<Void, Void, Void>() {
                 @Override
                 protected Void doInBackground(Void... params) {
-                    prepareListData();
-                    listAdapter.notifyDataSetChanged();
+                    // Whoops
                     return null;
                 }
 
