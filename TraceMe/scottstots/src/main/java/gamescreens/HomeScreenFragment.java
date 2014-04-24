@@ -29,6 +29,7 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -198,7 +199,7 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
                     Log.d("Mainscreen.java", "RandomOpponent Button Clicked.");
                     dlog.dismiss();
                     game.setMultiplayer(true);
-//                    findRandomOpponent();
+                    findRandomOpponent();
                     break;
                 case R.id.challengeButton:
                     Log.d("Mainscreen.java", "Challenge Button Clicked.");
@@ -215,8 +216,22 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
         randDlog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         randDlog.setContentView(R.layout.message);
 
-        TextView dlogText = (TextView) randDlog.findViewById(R.id.dlogText);
-        Button dismissButton = (Button) randDlog.findViewById(R.id.dlogDismissButton);
+        // Before doing anything check and see if the user is already looking for a random
+        // opponent, if so don't waste a ParseQuery the user cannot add games
+        if (listDataChild.get(listDataHeader.get(1)).size() > 1) {
+            TextView dlogText = (TextView) randDlog.findViewById(R.id.dlogText);
+            Button dismissButton = (Button) randDlog.findViewById(R.id.dlogDismissButton);
+            dismissButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    randDlog.dismiss();
+                }
+            });
+            dlogText.setText("You have maxed out the number of games you can be searching for." +
+                            " Please wait for one of your games to be matched.");
+            randDlog.show();
+            return;
+        }
 
         // Search for games that need another player if possible
         // Criteria:
@@ -228,56 +243,62 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
         query.whereNotEqualTo("blocked", true);
         query.include("player_one");
 
-        try { //TODO loading dialog here?
+        try {
             List<Game> gameList = query.find();
             if (gameList.size() == 0) {         // No games, create a new one awaiting an opponent
-                ParseObject game = ParseObject.create("Game");
-                game.put("player_one", ParseUser.getCurrentUser());
-                game.put("game_status", GameStatus.WAITING_FOR_OPPONENT.id);
-                game.put("multiplayer", true);
-                game.put("blocked", false);
-                game.saveInBackground();
+
+                // Dlg : No Opponent found. You will be notified when one is found.
+                TextView dlogText = (TextView) randDlog.findViewById(R.id.dlogText);
+                Button dismissButton = (Button) randDlog.findViewById(R.id.dlogDismissButton);
                 dismissButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         randDlog.dismiss();
                     }
                 });
-
-
                 dlogText.setText("Unable to match you with opponent. You will be notified when an opponent is found.");
                 randDlog.show();
-            } else {                                    // Retrived games, pair with one of the games
-                Game game = gameList.get(0);     // Just grab the first item
-                //game.put("game_status", GameStatus.IN_PROGRESS.id); ---- not putting in progress just yet..
-                game.put("blocked", true); // when this player grabs the game, we lock it to keep it from pairing with other people looking for games.
-                game.saveInBackground(); // TODO is this really atomic? what if two people successfully block/play 1 game?
+
+                // Create a new game object that is looking for an opponent
+                final Game game = new Game();
+                game.put("player_one", ParseUser.getCurrentUser());
+                game.put("game_status", GameStatus.WAITING_FOR_OPPONENT.id);
+                game.put("multiplayer", true);
+                game.put("blocked", false);
+                game.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e == null) {        // Saving the new game was successful
+
+                            // Add the new game item to the challenges list
+                            GameMenuListItem newGameListItem = new GameMenuListItem(game);
+                            listAdapter.addGameListItem(1, newGameListItem);
+                            listDataChild.get(listDataHeader.get(1)).add(0, newGameListItem);
+                        } else {
+                            e.printStackTrace();
+                            Toast.makeText(getActivity(),
+                                    "Error creating game. Please try again.",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+            } else {                // Retrieved games, pair with one of the games
+                Game game = gameList.get(0);
+                game.put("blocked", true);          // when this player grabs the game, we lock it
+                                                    // to keep it from pairing with other people looking for games.
+                // TODO: How atomic is this?
+                game.saveInBackground();
                 game.put("player_two", ParseUser.getCurrentUser());
-                // From Aaron: Will instead send a notification after the player is done playing this game.
-                // And just say "player accepted your challenge", with the results already there.
 
-
-                ((TraceMeApplication) getActivity().getApplicationContext()).setGame((Game)game);
+                ((TraceMeApplication) getActivity().getApplicationContext()).setGame(game);
                 Toast.makeText(getActivity(), "Found a game!", Toast.LENGTH_SHORT).show();
-                // We start the game now because if we have a dialog we need to clear out the
-                // "blocked" var back to false if they exit the dialog instead of playing and it's kind of chaotic...
                 startActivity(new Intent(ctx, GameActivity.class));
-//                dlogText.setText("Found an opponent!"); //TODO maybe insert stats about opponent and profile pic here.
-//                dismissButton.setText("Start Game!");
-//                dismissButton.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//
-//                        startActivity(new Intent(ctx, GameActivity.class));
-//                        randDlog.dismiss();
-//                    }
-//                });
-
             }
         } catch (ParseException e) {
             e.printStackTrace();
-
-            dlogText.setText("Error. Please try again.");
+            Toast.makeText(getActivity(),
+                    "Something went crazy. Please try again.",
+                    Toast.LENGTH_LONG).show();
         }
     }
 
@@ -531,3 +552,4 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
         super.onPause();
     }
 }
+
