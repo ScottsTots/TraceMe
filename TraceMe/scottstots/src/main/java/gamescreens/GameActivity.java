@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.MediaScannerConnection;
 import android.os.AsyncTask;
@@ -19,9 +20,18 @@ import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.google.gson.Gson;
+import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -50,7 +60,7 @@ import scotts.tots.traceme.R;
  * It is different from a regular DataPoint array in that all points we compute are equidistant
  * See DrawingBoard.convertToPoints for the details.
  */
-public class GameActivity extends Activity {
+public class GameActivity extends Activity implements View.OnClickListener {
     // Contains all points for the trace separated by the path they were at.
     // This array is used to do the drawing animation in ViewingBoard
     public static ArrayList<CustomPath> pathsArray;
@@ -72,6 +82,9 @@ public class GameActivity extends Activity {
     SharedPreferences mPrefs;
 
     public static ScoreManager score;
+    // Same thing as the traceArray, except it just has the traceFile bitmaps (used for optimization)
+    ArrayList<Bitmap> traceBitmaps;
+    ArrayList<TraceFile> traceArray;
 
     Handler handler;
 
@@ -90,40 +103,71 @@ public class GameActivity extends Activity {
         scoreText = (TextView) findViewById(R.id.scoreText);
         flipper = (ViewFlipper) findViewById(R.id.viewFlipper);
 
+
+        // Buttons
+        Button b1 = (Button) findViewById(R.id.previousFrameButton);
+        b1.setOnClickListener(this);
+        Button b2 = (Button) findViewById(R.id.clearFrameButton);
+        b2.setOnClickListener(this);
+        Button b3 = (Button) findViewById(R.id.loadLevelButton);
+        b3.setOnClickListener(this);
+        Button b4 = (Button) findViewById(R.id.nextFrameButton);
+        b4.setOnClickListener(this);
+        Button b5 = (Button) findViewById(R.id.saveLevelButton);
+        b5.setOnClickListener(this);
+        Button b6 = (Button) findViewById(R.id.toggleButton);
+        b6.setOnClickListener(this);
+        Button b7 = (Button) findViewById(R.id.clearAllButton);
+        b7.setOnClickListener(this);
+
+
         loadingDialog = new ProgressDialog(GameActivity.this);
         loadingDialog.setMessage("Loading...");
 
+        traceArray = new ArrayList<TraceFile>();
+        traceBitmaps = new ArrayList<Bitmap>();
 
         // Load level, if any
-        trace = new TraceFile(null, new ArrayList<DataPoint>());
-        mPrefs = getSharedPreferences("gameprefs", MODE_PRIVATE);
-        new LoadOrSaveTask().execute("load");
+      //  trace = new TraceFile(null, new ArrayList<DataPoint>());
+      //  mPrefs = getSharedPreferences("gameprefs", MODE_PRIVATE);
+      //  new LoadOrSaveTask().execute("load");
 
 
 
         // Switch into the viewingBoard using the viewFlipper if we press "play"
-        playButton = (Button) findViewById(R.id.playButton);
-        playButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                flipper.setDisplayedChild(1); //drawingBoard is 0, viewingBoard is 1
-                playButton.setVisibility(View.INVISIBLE);
-                viewingBoard.startDrawing(); // this updates our viewingBoard to the current data.
-            }
-        });
+    }
 
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()) {
+            case R.id.saveLevelButton: //TODO need inddividual save trace button..and how many traces we have saved so far.
 
-        // Save a trace to be used as the initial trace in the next game.
-        saveTraceButton = (Button) findViewById(R.id.saveTraceButton);
-        saveTraceButton.setOnClickListener(new View.OnClickListener() {
-            // When we click save, all the points in pointsArray, AND the bitmap we drew will get saved
-            // into a traceFile object.
-            @Override
-            public void onClick(View view) {
-                new LoadOrSaveTask().execute("save");
-                drawingBoard.setPaintColor(Color.BLACK);
-            }
-        });
+                break;
+            case R.id.clearAllButton:
+                // Clear current path and equidistant point data.
+                pathsArray.clear();
+                pointsArray.clear();
+                // Clear arrays of traces, both bitmap and data
+                traceBitmaps.clear();
+                traceArray.clear();
+                break;
+            case R.id.clearFrameButton:
+
+                break;
+            case R.id.loadLevelButton:
+                new LoadOrSaveTask().execute("load");
+                break;
+            case R.id.previousFrameButton:
+
+                break;
+            case R.id.nextFrameButton:
+
+                break;
+            case R.id.toggleButton:
+                Log.d("toggle", "pressed toggle");
+                drawingBoard.toggleDataPoints();
+                break;
+        }
     }
 
     private class LoadOrSaveTask extends AsyncTask<String, Void, Void> {
@@ -135,10 +179,10 @@ public class GameActivity extends Activity {
         @Override
         protected Void doInBackground(String... params) {
             if(params[0].equals("load")) {
-                loadFromResources();
+                loadLevelFromParse();
             }
             else if(params[0].equals("save")) {
-                saveToExternal();
+                createLevel();
             }
             return null;
         }
@@ -147,10 +191,179 @@ public class GameActivity extends Activity {
         protected void onPostExecute(Void param) {
 
            // Log.d("score", "siiiize" + trace.getPointArray().size());
-            score = new ScoreManager(trace, handler);
+            score = new ScoreManager(trace);
             loadingDialog.dismiss();
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+    /** Saves this level to parse. To be used only when trying to create new levels **/
+    int filesUploaded = 0;
+    ParseObject levelObject;
+    ArrayList<ParseFile> fileArray;
+    public void createLevel() {
+        levelObject = new ParseObject("Level");
+        // Step 1: build trace data.-----------------------
+        JSONArray levelTraces = new JSONArray();
+        // Iterate through all the traces
+        for(int i = 0; i < traceArray.size(); i++) {
+            // Get the scoring points of each trace
+            ArrayList<DataPoint> points = traceArray.get(i).points;
+            // points are saved into this array.
+            JSONArray jsonPoints = new JSONArray();
+            for(int j = 0; j < points.size(); j++) {
+                JSONObject point = new JSONObject();
+                try {
+                    point.put("x", (int)(points.get(j).x));
+                    point.put("y", (int)(points.get(j).y));
+                    point.put("time", 0);
+                    jsonPoints.put(j, point);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            // Add the trace data to the array that holds all traces
+            try {
+                levelTraces.put(i, jsonPoints);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Step 2, build image data into parseFiles and upload to cloud.-------------------------
+        // When this is done, associate the files to our levelObject.
+        fileArray = new ArrayList<ParseFile>();
+
+        // Now save bitmaps for this level.
+        for (int i = 0; i < traceBitmaps.size(); i++) {
+
+            // Compress into PNG
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            boolean compress = traceBitmaps.get(i).compress(Bitmap.CompressFormat.PNG, 80, stream);
+            if (compress)
+                Log.d("parseNetwork", "compression success");
+            else
+                Log.d("parseNetwork", "compression failed");
+
+            // Convert bytes into ParseFile
+            final ParseFile file = new ParseFile("img.png", stream.toByteArray());
+            // Save each file to the database
+            try {
+                file.save();
+                fileArray.add(file);
+            } catch (ParseException e) {
+                Log.d("parseNetwork", "couldn't save file!");
+                e.printStackTrace();
+            }
+        } // end for
+
+        // step 3: associate files to the parse object
+        for(int i = 0; i < fileArray.size(); i++) {
+            Log.d("parseNetwork", "associating file " + i);
+            levelObject.put("trace" + Integer.toString(i), fileArray.get(i));
+        }
+        // Add other level data
+        levelObject.put("trace_array", levelTraces); // this is a JSON array(traces) of JSONArrays(datapoints for each trace) that contain JSON objects with x and y keys(point coords for each datapoint)
+        levelObject.put("time_allowed", 20);
+        levelObject.put("level_number", 1);
+        levelObject.put("number_traces", traceBitmaps.size());
+        levelObject.saveInBackground();
+    }
+
+    ParseObject retrievedLevel;
+    /** Loading from online **/
+    public void loadLevelFromParse() {
+        ParseQuery<ParseObject> levelQuery = ParseQuery.getQuery("Level");
+        levelQuery.whereEqualTo("level_number", 1);
+        levelQuery.setLimit(1);
+        try {
+            retrievedLevel = levelQuery.getFirst();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        // STEP 1: Retrieve images ----------------------------
+        ArrayList<ParseFile> files = new ArrayList<ParseFile>();
+        int totalImages = retrievedLevel.getInt("number_traces");
+        for(int i = 0; i < totalImages; i++) {
+            files.add(retrievedLevel.getParseFile("trace" + Integer.toString(i)));
+        }
+
+        // Retrieve parsefile bytes and turn them into bitmaps.
+        traceBitmaps = new ArrayList<Bitmap>();
+        Bitmap bmp;
+        for (int j = 0; j < totalImages; j++) {
+            try {
+                byte[] data = files.get(j).getData();
+                bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
+                traceBitmaps.add(bmp);
+                Log.d("parseNetwork", "Downloaded image " + j);
+            } catch (ParseException e) {
+                Log.d("parseNetwork", "Download image failure");
+                e.printStackTrace();
+            }
+        } // end all image downloads
+
+        // Step 2: Retrieve trace data -------------------------------
+        // this is a JSON array(traces) of JSONArrays(datapoints for each trace) that contain JSON objects with x and y keys(point coords
+        JSONArray jsonTraces = retrievedLevel.getJSONArray("trace_array");
+        for(int i = 0; i < jsonTraces.length(); i++) {
+            JSONArray jsonPointData = null;
+            try {
+                // Get the array of jsonObjects
+                jsonPointData = jsonTraces.getJSONArray(i);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            ArrayList<DataPoint> tracePoints = new ArrayList<DataPoint>();
+            // Iterate through all the points and build a pointArray to add to our traceFile
+            for(int j = 0; j < jsonPointData.length(); j++) {
+                try {
+                    JSONObject jsonPoint = jsonPointData.getJSONObject(j);
+                    int x = jsonPoint.getInt("x");
+                    int y = jsonPoint.getInt("y");
+                    int time = jsonPoint.getInt("time");
+                    // Add this datapoint to our pointsarray for this trace
+                    tracePoints.add(new DataPoint(x, y, time));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            // Add it to our buffer of traceFiles.
+            TraceFile trace = new TraceFile(traceBitmaps.get(i), tracePoints);
+            traceArray.add(trace);
+        }
+        // Finally initialize the score manager
+        score = new ScoreManager(traceArray.get(0));
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     // loads from shared prefs

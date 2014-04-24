@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
 
 
-    <ViewFlipper
+   <ViewFlipper
         android:id="@+id/viewFlipper"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
@@ -12,52 +12,89 @@
         <gamescreens.DrawingBoard
             android:id="@+id/draw"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"></gamescreens.DrawingBoard>
+            android:layout_height="wrap_content"/>
 
         <gamescreens.ViewingBoard
             android:id="@+id/view"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"></gamescreens.ViewingBoard>
+            android:layout_height="wrap_content"/>
     </ViewFlipper>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="The Game"
-        android:id="@+id/textView"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="43dp" />
+
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Play"
-        android:id="@+id/playButton"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Save Trace"
-        android:id="@+id/saveTraceButton"
+        android:text="Save Level"
+        android:id="@+id/saveLevelButton"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
+
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Score: "
-        android:id="@+id/scoreText"
-        android:layout_alignTop="@+id/saveTraceButton"
-        android:layout_alignLeft="@+id/textView"
-        android:layout_alignStart="@+id/textView"
-        android:layout_toLeftOf="@+id/playButton" />
+        android:id="@+id/scoreText"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="loadLevel"
+        android:id="@+id/loadLevelButton"
+        android:layout_alignTop="@+id/nextFrameButton"
+        android:layout_toLeftOf="@+id/nextFrameButton" />
+
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="back"
+        android:id="@+id/previousFrameButton"
+        android:layout_above="@+id/saveLevelButton"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="next"
+        android:id="@+id/nextFrameButton"
+        android:layout_above="@+id/clearAllButton"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Clear frame"
+        android:id="@+id/clearFrameButton"
+        android:layout_above="@+id/saveLevelButton"
+        android:layout_toRightOf="@+id/previousFrameButton" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Clear All"
+        android:id="@+id/clearAllButton"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/nextFrameButton"
+        android:layout_alignEnd="@+id/nextFrameButton"
+ />
+
+    <ToggleButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Toggle DataPoints"
+        android:textOn="DataPoints on"
+        android:id="@+id/toggleButton"
+        android:checked="false"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 
 
 </RelativeLayout>

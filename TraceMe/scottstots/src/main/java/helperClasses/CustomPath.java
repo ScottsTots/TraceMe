@@ -10,6 +10,7 @@ import java.util.ArrayList;
  * This class manages one array of DataPoints
  * One android path = 1 Point Manager = an array of datapoints
  * **/
+
 public class CustomPath {
     DataPoint point;
     ArrayList<DataPoint> pointArray;
@@ -21,11 +22,30 @@ public class CustomPath {
         pointArray.add(new DataPoint(x, y, 0));
     }
 
+    public CustomPath(float x, float y, long timeElapsed) {
+        pointArray = new ArrayList<DataPoint>();
+        pointArray.add(new DataPoint(x, y, timeElapsed));
+        startTime = System.currentTimeMillis();
+    }
+
+    // Use this method if you want this class to count time elapsed between points, with
+    // no extra time added between paths.
     public void addPoint(float x, float y) {
         // We record the time difference between the last point and this one.
         pointArray.add(new DataPoint(x, y, System.currentTimeMillis() - startTime));
         startTime = System.currentTimeMillis();
     }
+
+    // When we load a user's customPath we don't do any time analysis so we use these two methods
+    // below
+    public CustomPath() {
+        pointArray = new ArrayList<DataPoint>();
+    }
+
+    public void addUserPoint(float x, float y, long timeElapsed, int score) {
+        pointArray.add(new DataPoint(x, y, timeElapsed, score));
+    }
+
 
     public DataPoint get(int index) {
         return pointArray.get(index);
