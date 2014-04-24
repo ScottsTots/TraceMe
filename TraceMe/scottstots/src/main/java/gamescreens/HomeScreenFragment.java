@@ -204,6 +204,7 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
                     Log.d("Mainscreen.java", "Challenge Button Clicked.");
                     dlog.dismiss();
                     game.setMultiplayer(true);
+
                     findFriendOpponent();
                     break;
             }
@@ -368,6 +369,8 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
             game.setPlayerOne(ParseUser.getCurrentUser());
             game.setPlayerTwo(user);
             game.setGameStatus(GameStatus.CHALLENGED);
+            game.setMultiplayer(true);
+            ((TraceMeApplication) getActivity().getApplicationContext()).setGame(game);
             //  game.saveInBackground(); // game isn't saved to parse until we end the game.
 
             // Initiate level select

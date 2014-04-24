@@ -106,6 +106,7 @@ public class GameActivity extends Activity {
 
 
         game = ((TraceMeApplication)this.getApplicationContext()).getGame();
+        Log.d("parseNetwork", " game is multiplayerrrrr " + game.isMultiplayer());
         loadingDialog = new ProgressDialog(GameActivity.this);
         loadingDialog.setMessage("Loading...");
         loadingDialog.setCanceledOnTouchOutside(false);
@@ -284,6 +285,7 @@ public class GameActivity extends Activity {
     public void endGame() {
         gameLoop.running = false;
         // Saves the game to parse asynchronously and displays the MultiViewingboard afterwards.
+        Log.d("parseNetwork", " game is multiplayer " + game.isMultiplayer());
         if(game.isMultiplayer()) {
             new endGameTask().execute(game);
         }

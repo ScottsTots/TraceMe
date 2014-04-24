@@ -48,7 +48,7 @@ public class LevelSelectFragment extends Fragment {// implements View.OnClickLis
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         game = ((TraceMeApplication)view.getContext().getApplicationContext()).getGame();
-
+        Log.d("parseNetwork", " level game is multiplayerrrrr " + game.isMultiplayer());
         level_list  = new ArrayList<String>();
         for(int i = 1; i <= NUM_LEVELS;++i ){
             level_list.add(""+i);

@@ -163,16 +163,23 @@ public class Game extends ParseObject {
             }
         }
 
+        // Set the score for current user
+        if(ParseUser.getCurrentUser().getUsername().equals(getPlayerOne().getUsername())) {
+            put("player_one_score", level.getScore());
+        } else {
+            put("player_two_score", level.getScore());
+        }
+
         // Check whose turn it is -----------------------
         if(playerOneData.size() > 0 && playerTwoData.size() == 0) {
            //player two's turn.
             Log.d("parseNetwork", "Logging player two's turn now");
             setPlayerTurn(getPlayerTwo());
-            put("player_two_score", level.getScore());
+
         }
         else if(playerTwoData.size() > 0 && playerOneData.size() == 0) {
+            Log.d("parseNetwork", "Logging player one's turn now");
             setPlayerTurn(getPlayerOne());
-            put("player_one_score", level.getScore());
         }
 
         // In case player who joined random game (getBlocked is true) decides to cancel it.. We can remove this player

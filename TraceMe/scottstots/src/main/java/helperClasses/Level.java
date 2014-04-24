@@ -283,14 +283,18 @@ public class Level{
                 float y = event.getY() * scaleY;
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        updateScore(new DataPoint(x, y));
-                        touch_start(x, y);
-                        isTouched = true;
+                        if(pathLength < maxPathLength) {
+                            updateScore(new DataPoint(x, y));
+                            touch_start(x, y);
+                            isTouched = true;
+                        }
                         break;
                     case MotionEvent.ACTION_MOVE:
-                        updateScore(new DataPoint(x, y));
-                        touch_move(x, y);
-                        isTouched = true;
+                        if(pathLength < maxPathLength) {
+                            updateScore(new DataPoint(x, y));
+                            touch_move(x, y);
+                            isTouched = true;
+                        }
                         break;
                     case MotionEvent.ACTION_UP:
                         touch_up();
@@ -319,7 +323,7 @@ public class Level{
     }
 
     private void touch_move(float x, float y) {
-        if(pathLength < maxPathLength) {
+
             // Insert the next point in our current CustomPath, which should be at the end of the stack.
             // This is an array of CustomPaths, which contains points USED FOR DRAWING ANIMATION
             GameActivity.pathsArray.get(GameActivity.pathsArray.size() - 1).addUserPoint(x, y, System.currentTimeMillis() - startTime, scoreManager.totalScore);
@@ -331,7 +335,7 @@ public class Level{
                 mX = x;
                 mY = y;
             }
-        }
+
     }
 
 
