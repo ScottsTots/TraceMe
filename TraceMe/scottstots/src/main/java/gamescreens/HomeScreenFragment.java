@@ -4,7 +4,10 @@ package gamescreens;
  * Created by Aaron on 3/9/14.
  */
 
+import android.app.Dialog;
+import android.app.ExpandableListActivity;
 import android.app.Fragment;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,12 +15,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -75,12 +81,10 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
         expListView.expandGroup(3);
         listAdapter.notifyDataSetChanged();
 
-        expListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener()
-        {
+        expListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent,
-                                        View v, int groupPosition, long id)
-            {
+                                        View v, int groupPosition, long id) {
                 return parent.isGroupExpanded(groupPosition);
             }
         });
@@ -91,6 +95,77 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
                 .theseChildrenArePullable(expListView, expListView.getEmptyView())
                 .listener(refreshListener).setup(mPullToRefreshLayout);
         mPullToRefreshLayout.setRefreshing(true);
+
+
+        expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent,
+                                        View v, int groupPosition, int childPosition, long id) {
+                Log.d("SHIT CLICKED", "YO SHIT WAS CLICKED");
+                Log.d("SHIT CLICKED", Integer.toString(groupPosition));
+                if (groupPosition == 1)
+                    promptUserToCancel(groupPosition, childPosition);
+
+
+                return true;
+            }
+        });
+    }
+
+    private void promptUserToCancel(final int groupPosition, final int childPosition) {
+        Log.d("getChallengerListener", "Challenger Listener Pressed");
+
+        final ParseObject obj = listDataChild.get(listDataHeader.get(groupPosition))
+                .get(childPosition).getGameParseObject();
+        final Dialog dlog = new Dialog(getActivity(),
+                android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth);
+        dlog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dlog.setContentView(R.layout.generic_dialog);
+
+        View yesDlogButton = dlog.findViewById(R.id.yes);
+        View noDlogButton = dlog.findViewById(R.id.no);
+
+        ((TextView) dlog.findViewById(R.id.prompt)).setText("Would you like to cancel your challenge?");
+
+        yesDlogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                obj.put("game_status", GameStatus.INVALID.id);
+                obj.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e == null) {
+                            Log.d("REMOVING..", "Attempting to remove the object from the list.");
+                            listDataChild.get(listDataHeader.get(groupPosition)).remove(childPosition);
+                            listAdapter.notifyDataSetChanged();
+
+                            Log.d("getWaitingOpponentListener", "game cancelled successfully");
+                            Toast.makeText(getActivity(),
+                                    "Challenge Cancelled Successfully",
+                                    Toast.LENGTH_LONG).show();
+
+                            // TODO: Send the user a push notification for cancelled game.
+                            // From Aaron: Instead of sending a notification to player B that the game was cancelled,
+                            // We can instead verify the game is still valid when we get it from the listview,
+                            // If it is NOT valid, then player A cancelled the game, so we locally notify player B
+                            // that A cancelled the game with a "toast" or a simple message instead of notification from A, and refresh the listview?
+                        } else
+                            e.printStackTrace();
+                    }
+                });
+                dlog.dismiss();
+            }
+        });
+
+
+        noDlogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dlog.dismiss();
+            }
+        });
+        dlog.show();
     }
 
     private OnRefreshListener refreshListener = new OnRefreshListener() {
@@ -208,6 +283,4 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
     public void onPause() {
         super.onPause();
     }
-
-
 }
