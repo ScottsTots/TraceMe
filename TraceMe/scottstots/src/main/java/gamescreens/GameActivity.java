@@ -164,6 +164,7 @@ public class GameActivity extends Activity {
                 }
                 game.loadUserData(); // load arrays of user drawings, playerOneData and playerTwoData
             }
+            game.setLevel(level);
             return null;
         }
 

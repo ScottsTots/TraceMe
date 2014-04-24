@@ -41,10 +41,14 @@ public class Game extends ParseObject {
     private int levelNum = 1;
     public Level level;
 
-    // For singlePlayer
+
     public Game() {
         playerOneData = new ArrayList<CustomPath>();
         playerTwoData = new ArrayList<CustomPath>();
+    }
+
+    public void setLevel(Level level) {
+        this.level = level;
     }
 
     // Called before starting the game. It basically loads the level,
@@ -70,14 +74,21 @@ public class Game extends ParseObject {
         return getParseUser("player_two");
     }
 
-    public GameStatus getGameStatus() {
-        return gameStatus;
-       // return getInt("game_status");
+    public int getGameStatus() {
+      //  return gameStatus;
+        return getInt("game_status");
     }
 
     public int getLevelNum() {
       //  return levelNum;
         return getInt("level");
+    }
+
+    public int getPlayerOneScore() {
+        return getInt("player_one_score");
+    }
+    public int getPlayerTwoScore() {
+        return getInt("player_two_score");
     }
 
     public boolean getBlocked() {
@@ -139,8 +150,17 @@ public class Game extends ParseObject {
         // Check game over
         if(!isComplete()) {
             put("game_status", GameStatus.IN_PROGRESS.id);
-        } else {
+        } else { //game is over
             put("game_status", GameStatus.GAME_OVER.id);
+            // Check who won
+            Log.d("final score", "p1" + getInt("player_one_score") + " " + getInt("player_two_score"));
+            if(getInt("player_one_score") == getInt("player_two_score")) {
+                put("winner", "tie");
+            } else if(getInt("player_one_score") > getInt("player_two_score")) {
+                put("winner", "player_one");
+            } else {
+                put("winner", "player_two");
+            }
         }
 
         // Check whose turn it is -----------------------
@@ -148,11 +168,11 @@ public class Game extends ParseObject {
            //player two's turn.
             Log.d("parseNetwork", "Logging player two's turn now");
             setPlayerTurn(getPlayerTwo());
-
+            put("player_two_score", level.getScore());
         }
         else if(playerTwoData.size() > 0 && playerOneData.size() == 0) {
-            Log.d("parseNetwork", "Logging player one's turn now");
             setPlayerTurn(getPlayerOne());
+            put("player_two_score", level.getScore());
         }
 
         // In case player who joined random game (getBlocked is true) decides to cancel it.. We can remove this player
