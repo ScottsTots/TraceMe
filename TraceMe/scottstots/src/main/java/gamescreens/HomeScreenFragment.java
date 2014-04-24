@@ -5,7 +5,6 @@ package gamescreens;
  */
 
 import android.app.Dialog;
-import android.app.ExpandableListActivity;
 import android.app.Fragment;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
@@ -138,6 +137,7 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
                         if (e == null) {
                             Log.d("REMOVING..", "Attempting to remove the object from the list.");
                             listDataChild.get(listDataHeader.get(groupPosition)).remove(childPosition);
+                            expListView.invalidateViews();
                             listAdapter.notifyDataSetChanged();
 
                             Log.d("getWaitingOpponentListener", "game cancelled successfully");
@@ -257,6 +257,7 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
                             pastgames.add(new GameMenuListItem(game));
                         }
                     }
+
                     listAdapter.notifyDataSetChanged();
                     mPullToRefreshLayout.setRefreshing(false);
                 } else {
