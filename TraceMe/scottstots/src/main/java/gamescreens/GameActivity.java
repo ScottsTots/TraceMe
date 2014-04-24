@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -66,6 +65,7 @@ public class GameActivity extends Activity {
     private TextView countdownTimerView;
     private TextView feedback_text;
     private TextView round_text;
+    private android.app.Dialog dlog;
 
 
     private Timer myTimer;
@@ -271,6 +271,8 @@ public class GameActivity extends Activity {
             // Handle end game message
             if(msg.what == 5000) {
                 endGame();
+            } else if ( msg.what == 6000){
+                showDialog();
             }
         }
     };
@@ -287,7 +289,7 @@ public class GameActivity extends Activity {
         }
         else { // If singleplayer, just display regular viewing board
             flipper.setDisplayedChild(2); //gameloop is 0, viewingBoard is 2
-            viewingBoard.startDrawing(); // this starts the animation
+            viewingBoard.startDrawing(handler); // this starts the animation
         }
     }
 
@@ -341,8 +343,24 @@ public class GameActivity extends Activity {
     }
 
 
+    public void showDialog() {
+        Log.d("Group Click", "New Button Pressed");
+        dlog = new android.app.Dialog(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth);
+        dlog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dlog.setContentView(R.layout.home_fragment_new_game_dialog);
 
+        // Hook up single player button
+        View singlePlayerButton = dlog.findViewById(R.id.singlePlayer);
+//        singlePlayerButton.setOnClickListener(viewListener);
 
+        View randomOpponentButton = dlog.findViewById(R.id.randomOpponentButton);
+//        randomOpponentButton.setOnClickListener(viewListener);
+
+        View challengeFriendButton = dlog.findViewById(R.id.challengeButton);
+//        challengeFriendButton.setOnClickListener(viewListener);
+
+        dlog.show();
+    }
 
 
 

@@ -136,25 +136,43 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     public View getGroupView(int groupPosition, boolean isExpanded,
                              View convertView, ViewGroup parent) {
         String headerTitle = (String) getGroup(groupPosition);
-        if (groupPosition == 0){ // NEW GAME BUTTON, Separate Actions
-            if(convertView == null){
-                LayoutInflater infalInflater = (LayoutInflater) this._context
-                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = infalInflater.inflate(R.layout.new_game_button, null);
-            }
+//        if (headerTitle.equals("New Game")){ // NEW GAME BUTTON, Separate Actions
+//            if(convertView == null){
+//                LayoutInflater infalInflater = (LayoutInflater) this._context
+//                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//                convertView = infalInflater.inflate(R.layout.new_game_button, null);
+//            }
+//
+//        }
+//        else{
+////            if(convertView == null){
+//                LayoutInflater infalInflater = (LayoutInflater) this._context
+//                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//                convertView = infalInflater.inflate(R.layout.list_group_view, null);
+////            }
+//            assert convertView != null;
+//            TextView lblListHeader = (TextView) convertView
+//                    .findViewById(R.id.lblListHeader);
+//            lblListHeader.setTypeface(roboto_medium);
+//            lblListHeader.setText(headerTitle);
+//
+//        }
 
-        }
-        else{
-            if(convertView == null){
+        if(convertView == null){
                 LayoutInflater infalInflater = (LayoutInflater) this._context
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = infalInflater.inflate(R.layout.list_group_view, null);
-            }
-            TextView lblListHeader = (TextView) convertView
-                    .findViewById(R.id.lblListHeader);
-            lblListHeader.setTypeface(roboto_medium);
-            lblListHeader.setText(headerTitle);
+        }
+        assert convertView != null;
 
+        TextView lblListHeader = (TextView) convertView.findViewById(R.id.lblListHeader);
+        lblListHeader.setTypeface(roboto_medium);
+        lblListHeader.setText(headerTitle);
+
+        if (headerTitle.equals("New Game!")){
+//            lblListHeader.setBackgroundResource(R.drawable.sign_up_selector);
+            convertView.setBackgroundResource(R.drawable.new_game_selector);
+            lblListHeader.setTextColor(_context.getResources().getColor(R.color.white));
         }
 
 
