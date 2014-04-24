@@ -172,7 +172,7 @@ public class Game extends ParseObject {
         }
         else if(playerTwoData.size() > 0 && playerOneData.size() == 0) {
             setPlayerTurn(getPlayerOne());
-            put("player_two_score", level.getScore());
+            put("player_one_score", level.getScore());
         }
 
         // In case player who joined random game (getBlocked is true) decides to cancel it.. We can remove this player
