@@ -10,11 +10,11 @@
 
 
     <TextView
+        android:id="@+id/single_player_dialog_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Results"
+        android:text="Level 1 Complete!"
         android:textSize="30sp"
-        android:id="@+id/textView"
         android:textColor="@color/darker_black"
         android:gravity="fill_vertical"
         android:layout_gravity="center" />
@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:src="@drawable/gold_star"
-            android:layout_margin="10dp"
+            android:layout_margin="0dp"
             android:layout_weight="1"
             />
         <LinearLayout
@@ -40,32 +40,132 @@
             android:layout_height="fill_parent"
             android:orientation="vertical"
             android:gravity="center"
-            android:paddingLeft="0dp"
+            android:layout_marginLeft="10dp"
             android:layout_weight="4">
-
-            <TextView
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="Score"
-                android:textAlignment="center"
-                android:textColor="@color/darker_black"
-                android:textSize="25sp"/>
+                android:orientation="horizontal"
+                >
 
-            <TextView
-                android:id="@+id/scoreTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:textColor="@color/darker_black"
-                android:textSize="18sp"/>
+                <TextView
+                    android:id="@+id/single_player_raw_score_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Score:"
+                    android:layout_gravity="left"
+                    android:textColor="@color/darker_black"
+                    android:layout_alignParentLeft="true"
+                    android:textSize="25sp"/>
 
-            <TextView
-                android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/single_player_raw_score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="250"
+                    android:layout_alignParentRight="true"
+                    android:gravity="right"
+                    android:textColor="@color/darker_black"
+                    android:textSize="25sp"/>
+                </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="points!"
-                android:textColor="@color/darker_black"
-                android:paddingTop="30sp"
-                android:textSize="25sp"/>
+                android:orientation="horizontal"
+                >
+
+                <TextView
+                    android:id="@+id/single_player_time_score_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Time Bonus: "
+                    android:layout_gravity="left"
+                    android:textColor="@color/darker_black"
+                    android:textSize="18sp"
+                    android:layout_alignParentLeft="true"/>
+
+                <TextView
+                    android:id="@+id/single_player_time_score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="50"
+                    android:layout_alignParentRight="true"
+                    android:gravity="right"
+                    android:textColor="@color/darker_black"
+                    android:textSize="18sp"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+
+                <TextView
+                    android:id="@+id/single_player_ink_score_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ink Bonus: "
+                    android:layout_gravity="left"
+                    android:textColor="@color/darker_black"
+                    android:textSize="18sp"
+                    android:layout_alignParentLeft="true"/>
+
+                <TextView
+                    android:id="@+id/single_player_ink_score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="50"
+                    android:layout_alignParentRight="true"
+                    android:gravity="right"
+                    android:textColor="@color/darker_black"
+                    android:textSize="18sp"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+
+                <TextView
+                    android:id="@+id/single_player_total_score_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total: "
+                    android:layout_gravity="left"
+                    android:textColor="@color/darker_black"
+                    android:textSize="24sp"
+                    android:layout_alignParentLeft="true"/>
+
+                <TextView
+                    android:id="@+id/single_player_total_score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="300"
+                    android:layout_alignParentRight="true"
+                    android:gravity="right"
+                    android:textColor="@color/darker_black"
+                    android:textSize="24sp"/>
+            </RelativeLayout>
+
+
+            <!--<TextView-->
+                <!--android:id="@+id/scoreTextView"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text=""-->
+                <!--android:textColor="@color/darker_black"-->
+                <!--android:textSize="18sp"/>-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="points!"-->
+                <!--android:textColor="@color/darker_black"-->
+                <!--android:paddingTop="30sp"-->
+                <!--android:textSize="25sp"/>-->
 
 
 
@@ -75,12 +175,10 @@
 
         </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="20dp"
-        android:gravity="center">
+        android:layout_height="85dp"
+        android:layout_margin="20dp">
 
         <ImageView
             android:id="@+id/dialogHomeButton"
@@ -88,6 +186,8 @@
             android:layout_height="60dp"
             android:src="@drawable/icon_level_select"
             android:padding="15dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
             android:textColor="@color/white"
             android:background="@drawable/dialog_selector"
             />
@@ -100,6 +200,8 @@
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:paddingBottom="5dp"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
             android:src="@drawable/icon_replay"
             android:textColor="@color/white"
             android:background="@drawable/dialog_selector"
@@ -111,10 +213,12 @@
             android:padding="15dp"
             android:src="@drawable/icon_next_level"
             android:textColor="@color/white"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
             android:background="@drawable/dialog_selector"
             />
 
-        </LinearLayout>
+        </RelativeLayout>
 
 
 </LinearLayout>
