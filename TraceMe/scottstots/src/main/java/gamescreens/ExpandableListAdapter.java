@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.HashMap;
@@ -166,13 +167,24 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         assert convertView != null;
 
         TextView lblListHeader = (TextView) convertView.findViewById(R.id.lblListHeader);
+        LinearLayout layout = (LinearLayout) convertView.findViewById(R.id.expListLayout);
         lblListHeader.setTypeface(roboto_medium);
         lblListHeader.setText(headerTitle);
 
+        int padding_in_dp = 20;  // 6 dps
+        final float scale = _context.getResources().getDisplayMetrics().density;
+        int padding_in_px = (int) (padding_in_dp * scale + 0.5f);
+
+        if(getChildrenCount(groupPosition) == 0){
+            convertView.setPadding(0, padding_in_px, 0, 0);
+        }
+
         if (headerTitle.equals("New Game!")){
 //            lblListHeader.setBackgroundResource(R.drawable.sign_up_selector);
-            convertView.setBackgroundResource(R.drawable.new_game_selector);
+            layout.setBackgroundResource(R.drawable.new_game_selector);
+            layout.setPadding(0, padding_in_px/2, 0, padding_in_px/2 );
             lblListHeader.setTextColor(_context.getResources().getColor(R.color.white));
+//            convertView.setPadding(0, padding_in_px, 0, padding_in_px);
         }
 
 

@@ -46,11 +46,11 @@
 </LinearLayout>
     <ImageView
         android:id="@+id/level_lock"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="34dp"
+        android:layout_height="34dp"
         android:src="@drawable/lock"
-        android:layout_marginTop="60dp"
-        android:layout_marginLeft="40dp"
+        android:layout_marginTop="58dp"
+        android:layout_marginLeft="42dp"
         android:visibility="gone"
         />
 </FrameLayout>
