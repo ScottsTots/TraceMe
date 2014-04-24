@@ -47,7 +47,7 @@ public class GameMenuListItem {
                         .equals(ParseUser.getCurrentUser().getUsername())) {
                     return "Your move!";
                 } else {
-                    isDisabled = true;
+                    this.isDisabled = true;
                     return "Waiting for their move...";
                 }
             } catch (ParseException e) {

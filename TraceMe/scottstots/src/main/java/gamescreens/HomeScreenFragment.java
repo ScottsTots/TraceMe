@@ -126,13 +126,13 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
             @Override
             public boolean onChildClick(ExpandableListView parent,
                                         View v, int groupPosition, int childPosition, long id) {
-                Log.d("EVENT", "List Item Pressed");
-
                 GameMenuListItem listItem = listDataChild
                         .get(listDataHeader.get(groupPosition)).get(childPosition);
+                GameMenuListItem _underTheHood = listAdapter.getGameMenuListItem(groupPosition, childPosition);
+                if (_underTheHood.isDisabled)
+                    return true;
+
                 Game gameObj = listItem.getGameParseObject();
-
-
                 // Listener for a Game that is awaiting an opponent.
                 if (gameObj.getInt("game_status") == GameStatus.WAITING_FOR_OPPONENT.id) {
                     promptUserToCancel(groupPosition, childPosition);
@@ -147,7 +147,8 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
                             Toast.LENGTH_SHORT).show();
                     ((TraceMeApplication) getActivity().getApplicationContext()).setGame(gameObj);
                     startActivity(new Intent(getActivity(), GameActivity.class));
-
+                } else if (gameObj.getInt("game_status") == GameStatus.GAME_OVER.id) {
+                    showGameOverDialog(gameObj);
                 }
 
                 return true;
@@ -170,6 +171,56 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
 
         View challengeFriendButton = dlog.findViewById(R.id.challengeButton);
         challengeFriendButton.setOnClickListener(viewListener);
+    }
+
+    private void showGameOverDialog(final Game gameObj) {
+        final Dialog dlog = new Dialog(getActivity(),
+                android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth);
+        dlog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dlog.setContentView(R.layout.generic_dialog);
+
+        Button rematchButton = (Button) dlog.findViewById(R.id.yes);
+        Button viewResultsButton = (Button) dlog.findViewById(R.id.no);
+
+        rematchButton.setText("Rematch");
+        viewResultsButton.setText("Results");
+
+        ((TextView) dlog.findViewById(R.id.prompt)).setText("Want to see your results? Feeling brave." +
+                " Challenge your opponent to a rematch!");
+
+        rematchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dlog.dismiss();
+                Toast.makeText(getActivity(),
+                        "Rematch Time!",
+                        Toast.LENGTH_LONG).show();
+
+                Game rematch = new Game();
+                rematch.setGameStatus(GameStatus.IN_PROGRESS);
+                rematch.setPlayerOne(gameObj.getPlayerOne());
+                rematch.setPlayerTwo(gameObj.getPlayerTwo());
+                rematch.setMultiplayer(true);
+
+                ((TraceMeApplication) getActivity().getApplicationContext()).setGame(rematch);
+                startActivity(new Intent(getActivity(), GameActivity.class));
+            }
+        });
+
+        viewResultsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dlog.dismiss();
+                Toast.makeText(getActivity(),
+                        "Show Results Time!",
+                        Toast.LENGTH_LONG).show();
+
+                ((TraceMeApplication) getActivity().getApplicationContext()).setGame(gameObj);
+                startActivity(new Intent(getActivity(), GameActivity.class));
+            }
+        });
+
+        dlog.show();
     }
 
     View.OnClickListener viewListener = new View.OnClickListener() {
@@ -239,6 +290,7 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
         query.whereNotEqualTo("player_one", ParseUser.getCurrentUser());
         query.whereNotEqualTo("blocked", true);
         query.include("player_one");
+        query.include("multiplayer");
 
         try {
             List<Game> gameList = query.find();

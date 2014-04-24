@@ -212,4 +212,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         _listDataChild.get(_listDataHeader.get(group)).add(0, item);
         notifyDataSetChanged();
     }
+
+    public GameMenuListItem getGameMenuListItem(int group, int childPosition) {
+        return _listDataChild.get(_listDataHeader.get(group)).get(childPosition);
+    }
 }
