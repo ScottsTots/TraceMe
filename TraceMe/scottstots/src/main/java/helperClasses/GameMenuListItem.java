@@ -54,7 +54,23 @@ public class GameMenuListItem {
                 e.printStackTrace();
             }
         } else if (game.getInt("game_status") == GameStatus.GAME_OVER.id) {
-            // TODO: Add some Game Over magic
+             if (game.getParseUser("player_one").getUsername()
+                     .equals(ParseUser.getCurrentUser().getUsername())) {
+                // Current user is player one
+                if (game.getString("winner").equals("player_one"))
+                    return "Aww yeah! You won!";
+                else if (game.getString("winner").equals("player_two"))
+                    return "You lost. Better luck next time..";
+
+             } else if (game.getParseUser("player_two").getUsername()
+                     .equals(ParseUser.getCurrentUser().getUsername())) {
+                // current user is player two
+                 if (game.getString("winner").equals("player_two"))
+                     return "Aww yeah! You won!";
+                 else if (game.getString("winner").equals("player_one"))
+                     return "You lost. Better luck next time..";
+             }
+
             return "Game Over";
         }
 

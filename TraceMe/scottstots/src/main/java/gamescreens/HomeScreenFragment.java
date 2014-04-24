@@ -106,7 +106,7 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
                                         View v, int groupPosition, long id) {
                 switch(groupPosition){
                     case 0:
-                        showDialog();
+                        dlog.show();
                         break;
                 }
 
@@ -153,11 +153,10 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
                 return true;
             }
         });
-    }
 
 
-    public void showDialog() {
-        Log.d("Group Click", "New Button Pressed");
+
+        // Load up all of the new game dialog stuff
         dlog = new android.app.Dialog(getActivity(), android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth);
         dlog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dlog.setContentView(R.layout.home_fragment_new_game_dialog);
@@ -171,8 +170,6 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
 
         View challengeFriendButton = dlog.findViewById(R.id.challengeButton);
         challengeFriendButton.setOnClickListener(viewListener);
-
-        dlog.show();
     }
 
     View.OnClickListener viewListener = new View.OnClickListener() {
