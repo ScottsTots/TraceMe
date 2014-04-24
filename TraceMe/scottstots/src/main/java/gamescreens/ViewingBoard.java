@@ -227,8 +227,11 @@ public class ViewingBoard extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
-        endReplay();
+        switch(event.getActionMasked()){
+            case MotionEvent.ACTION_UP:
+                endReplay();
+                break;
+        }
         return true;
     }
 

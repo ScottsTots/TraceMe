@@ -3,16 +3,23 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="10dp"
-    android:background="@drawable/main_screen_card_top">
+    android:padding="0dp">
 
-
-    <TextView
-        android:id="@+id/lblListHeader"
+    <LinearLayout
+        android:id="@+id/expListLayout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="25sp"
-        android:textColor="@color/black" />
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:background="@drawable/main_screen_card_top">
+
+            <TextView
+                android:id="@+id/lblListHeader"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="25sp"
+                android:textColor="@color/black" />
+        </LinearLayout>
 
 </LinearLayout>

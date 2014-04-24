@@ -347,17 +347,7 @@ public class GameActivity extends Activity {
         Log.d("Group Click", "New Button Pressed");
         dlog = new android.app.Dialog(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth);
         dlog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        dlog.setContentView(R.layout.home_fragment_new_game_dialog);
-
-        // Hook up single player button
-        View singlePlayerButton = dlog.findViewById(R.id.singlePlayer);
-//        singlePlayerButton.setOnClickListener(viewListener);
-
-        View randomOpponentButton = dlog.findViewById(R.id.randomOpponentButton);
-//        randomOpponentButton.setOnClickListener(viewListener);
-
-        View challengeFriendButton = dlog.findViewById(R.id.challengeButton);
-//        challengeFriendButton.setOnClickListener(viewListener);
+        dlog.setContentView(R.layout.dialog_level_end_singleplayer);
 
         dlog.show();
     }
