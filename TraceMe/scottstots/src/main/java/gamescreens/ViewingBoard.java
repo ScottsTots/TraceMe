@@ -1,6 +1,5 @@
 package gamescreens;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -8,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -54,6 +54,7 @@ public class ViewingBoard extends View {
     int height;
     int frameBufferWidth;
     int frameBufferHeight;
+    private Handler handler;
 
     // The current point of a path being drawn.
     DataPoint point;
@@ -235,11 +236,13 @@ public class ViewingBoard extends View {
         // TODO call the end game dialog here. Maybe set up a handler so we can call back UI or use a static method..
         // There is no need to save any game state or anything at this point.. just show the end game results, etc etc.
 
-         ((Activity)getContext()).finish();
+        handler.sendEmptyMessage(6000);
+//         ((Activity)getContext()).finish();
     }
 
 
-    public void startDrawing() {
+    public void startDrawing(Handler handler) {
+        this.handler = handler;
         previous = System.currentTimeMillis();
         paths = GameActivity.pathsArray;
         postInvalidate();
