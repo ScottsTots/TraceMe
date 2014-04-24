@@ -136,9 +136,7 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
                     public void done(ParseException e) {
                         if (e == null) {
                             Log.d("REMOVING..", "Attempting to remove the object from the list.");
-                            listDataChild.get(listDataHeader.get(groupPosition)).remove(childPosition);
-                            expListView.invalidateViews();
-                            listAdapter.notifyDataSetChanged();
+                            listAdapter.delete(groupPosition, childPosition);
 
                             Log.d("getWaitingOpponentListener", "game cancelled successfully");
                             Toast.makeText(getActivity(),

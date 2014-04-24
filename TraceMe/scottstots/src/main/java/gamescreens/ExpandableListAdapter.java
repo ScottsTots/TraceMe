@@ -165,10 +165,11 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = infalInflater.inflate(R.layout.list_group_view, null);
             }
+            assert convertView != null;
             TextView lblListHeader = (TextView) convertView
                     .findViewById(R.id.lblListHeader);
-            lblListHeader.setTypeface(roboto_medium);
-            lblListHeader.setText(headerTitle);
+//            lblListHeader.setTypeface(roboto_medium);
+//            lblListHeader.setText(headerTitle);
 
         }
 
@@ -414,5 +415,10 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                         Toast.LENGTH_LONG).show();
             }
         };
+    }
+
+    public void delete(int group, int child) {
+        _listDataChild.get(_listDataHeader.get(group)).remove(child);
+        notifyDataSetChanged();
     }
 }
