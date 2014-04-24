@@ -122,8 +122,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 //            txtListSubtext.setTextColor(_context.getResources().getColor(R.color.black));
 //        }
         // Super duper cool animation
-        Animation animation = AnimationUtils.loadAnimation(_context, R.anim.fadein);
-        convertView.startAnimation(animation);
+//        Animation animation = AnimationUtils.loadAnimation(_context, R.anim.fadein);
+//        convertView.startAnimation(animation);
 
         return convertView;
     }
@@ -416,5 +416,10 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                         Toast.LENGTH_LONG).show();
             }
         };
+    }
+
+    public void delete(int group, int child) {
+        _listDataChild.get(_listDataHeader.get(group)).remove(child);
+        notifyDataSetChanged();
     }
 }
