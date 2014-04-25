@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
@@ -35,7 +34,6 @@ import java.util.TimerTask;
 import helperClasses.CustomPath;
 import helperClasses.Game;
 import helperClasses.Level;
-import scotts.tots.traceme.MainScreen;
 import scotts.tots.traceme.R;
 import scotts.tots.traceme.TraceMeApplication;
 
@@ -352,7 +350,7 @@ public class GameActivity extends Activity {
             if(msg.what == 5000) {
                 endGame(); // shows viewingboard
             } else if ( msg.what == 6000){
-                showDialog(); // shows end game results dialog
+                showResultsDialog(); // shows end game results dialog, which is after the viewingBoard
             }
         }
     };
@@ -423,7 +421,7 @@ public class GameActivity extends Activity {
     }
 
 
-    public void showDialog() {
+    public void showResultsDialog() {
         Log.d("Group Click", "New Button Pressed");
         dlog = new android.app.Dialog(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth);
         dlog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));

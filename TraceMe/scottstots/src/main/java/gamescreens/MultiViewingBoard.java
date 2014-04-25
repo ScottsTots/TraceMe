@@ -136,7 +136,7 @@ import helperClasses.Game;
             mPaint.setColor(0xff003f43);
             playerOne.updatePlayerData(canvas,mPaint);
         if(!playerTwo.isFinished())
-            mPaint.setColor(0xfffc5628);
+            mPaint.setColor(0xfffc5628); //TODO have separate paint for each player
             playerTwo.updatePlayerData(canvas,mPaint);
         // If animation for both players is done.
         if(playerOne.isFinished() && playerTwo.isFinished()) {
