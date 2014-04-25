@@ -356,7 +356,7 @@ public class GameActivity extends Activity {
         TextView title = (TextView) dlog.findViewById(R.id.single_player_dialog_title);
         ImageView medal = (ImageView) dlog.findViewById(R.id.medalDrawable);
         TextView drawScore = (TextView) dlog.findViewById(R.id.single_player_raw_score);
-        TextView timeScore = (TextView) dlog.findViewById(R.id.single_player_time_score);
+//        TextView timeScore = (TextView) dlog.findViewById(R.id.single_player_time_score);
         TextView inkScore = (TextView) dlog.findViewById(R.id.single_player_ink_score);
         TextView totalScore = (TextView) dlog.findViewById(R.id.single_player_total_score);
         ImageView homeButton = (ImageView) dlog.findViewById(R.id.dialogHomeButton);
