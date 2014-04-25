@@ -191,6 +191,13 @@ public class Game extends ParseObject {
         }
     }
 
+    public boolean isCanceled() {
+        if(playerOneData.size() == 0 && playerTwoData.size() == 0) {
+            return true;
+        }
+        return false;
+
+    }
 
     public void notifyOpponent() {
         ParseUser opponent = getOpponent();

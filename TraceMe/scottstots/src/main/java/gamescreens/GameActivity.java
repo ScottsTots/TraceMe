@@ -286,7 +286,9 @@ public class GameActivity extends Activity {
         super.onPause();
         if(game.isMultiplayer()) {
             game.updateState();
-            game.saveInBackground();
+            if(!game.isCanceled()) {
+                game.saveInBackground();
+            }
         }
         gameLoop.stopThread();
         finish();
@@ -295,6 +297,7 @@ public class GameActivity extends Activity {
     // Warn user game will be lost
     @Override
     public void onBackPressed() {
+
         if (game.isMultiplayer() && !game.isComplete()) {
             Button dismissDialog = (Button) warningDialog.findViewById(R.id.dlogWarningDismissButton);
             dismissDialog.setOnClickListener(new View.OnClickListener() {
