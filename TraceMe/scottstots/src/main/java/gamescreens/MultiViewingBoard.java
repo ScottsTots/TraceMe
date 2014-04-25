@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -42,6 +43,7 @@ import helperClasses.Game;
         int frameBufferHeight;
     Player playerOne;
     Player playerTwo;
+    private Handler handler;
 
 
     public MultiViewingBoard(Context c, AttributeSet attrs) {
@@ -79,7 +81,6 @@ import helperClasses.Game;
                     / width;
             scaleY = (float) frameBufferHeight
                     / height;
-
 
             mBitmap = Bitmap.createBitmap(frameBufferWidth, frameBufferHeight, Bitmap.Config.ARGB_8888);
             mCanvas = new Canvas(mBitmap);
@@ -128,24 +129,26 @@ import helperClasses.Game;
         }
         */
 
-        // If animation for both players is done.
-        if(playerOne.isFinished() && playerTwo.isFinished()) {
-            endReplay();
-        }
+
 
         // keep updating the ones that haven't finished.
         if(!playerOne.isFinished())
             playerOne.updatePlayerData(canvas);
-        if(!playerOne.isFinished())
+        if(!playerTwo.isFinished())
             playerTwo.updatePlayerData(canvas);
-        postInvalidate(); //force a redraw
+        // If animation for both players is done.
+        if(playerOne.isFinished() && playerTwo.isFinished()) {
+            endReplay();
+        } else {
+            postInvalidate(); //force a redraw
+        }
     }
 
 
     public void endReplay() {
         // TODO show endGame dialog / results here.. no need to mess with any gamestate or save anything at this point.
 
-        ((Activity)getContext()).finish();
+        handler.sendEmptyMessage(6000);
     }
     private static final float TOUCH_TOLERANCE = 4;
 
@@ -154,7 +157,8 @@ import helperClasses.Game;
         return true;
     }
 
-    public void startDrawing() {
+    public void startDrawing(Handler handler) {
+        this.handler = handler;
         postInvalidate();
     }
 
@@ -179,8 +183,9 @@ import helperClasses.Game;
         Bitmap mBitmap2;
         Canvas mCanvas2;
         private Path mPath;
-
+        private Paint textPaint;
         private boolean animFinished;
+        int currScore;
 
         float scaleX, scaleY, translateX, translateY;
         public Player(ArrayList<CustomPath> p, float scaleX, float scaleY, float translateX, float translateY) {
@@ -197,9 +202,15 @@ import helperClasses.Game;
             this.translateX = translateX;
             this.translateY = translateY;
             animFinished = false;
+
+
+            textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            textPaint.setColor(Color.BLACK);
+            textPaint.setTextSize(30);
         }
 
         public void updatePlayerData(Canvas canvas) {
+
             // If we still have paths to draw
             if(currPathNumber < paths.size()) {
                 // Retrieve the current path
@@ -237,7 +248,13 @@ import helperClasses.Game;
                 mBitmap2.eraseColor(Color.TRANSPARENT);
                 animFinished = true;
             }
+
             canvas.drawBitmap(mBitmap2, 0, 0, mBitmapPaint);
+            if(point == null) {
+                canvas.drawText("Score: " + 0, 20, 120, textPaint);
+            } else {
+                canvas.drawText("Score: " + point.score, 20, 120, textPaint);
+            }
             canvas.drawPath(mPath, mPaint);
         }
 

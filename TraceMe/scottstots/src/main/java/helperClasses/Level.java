@@ -73,7 +73,7 @@ public class Level{
     private int currentTrace = 0;
     private float pathLength;
     private float maxPathLength;
-
+    private int levelNum;
     private final double DEPLETION_RATE = .10;
 
     Context ctx;
@@ -97,7 +97,7 @@ public class Level{
         // trace1.txt 5 seconds    normal
         // trace2.txt 10 seconds   disappearing
         // trace3.txt 6 seconds    blinking
-
+        this.levelNum = levelNum;
         this.view = v;
         this.ctx = ctx;
         this.handler = handler;
@@ -106,6 +106,10 @@ public class Level{
         traceBitmaps = new ArrayList<Bitmap>();
         maxPathLength = 0;
         pathLength = 0;
+    }
+
+    public int getLevelNumber() {
+        return levelNum;
     }
 
     String message;
@@ -128,12 +132,15 @@ public class Level{
         }
     }
 
+
     public void getNextTrace() {
         updateMessage(scoreManager.traceData.size());
+        scoreManager.addInkBonus((int)(maxPathLength - pathLength));
+        // TODO maybe display the ink bonus on the score, like the feedback. We can show a bigger number
         if(currentTrace + 1 < TOTAL_TRACES) {
             currentTrace++;
             // Update the scoremanager with the new set of datapoints to score from.
-            scoreManager.traceData = traceArray.get(currentTrace).points;
+            scoreManager.setData(traceArray.get(currentTrace).points);
 
             // Removed saved paths.
             pathsBitmap.eraseColor(Color.TRANSPARENT);
@@ -151,6 +158,10 @@ public class Level{
 
     public int getScore() {
         return scoreManager.getScore();
+    }
+
+    public int getInkBonus() {
+        return scoreManager.getInkBonus();
     }
 
     public int getCombo() {
@@ -217,7 +228,9 @@ public class Level{
     public void drawGameOver() {
     }
 
-
+    public double getTotalPercentage() {
+        return scoreManager.getTotalPercentage();
+    }
 
     /******************************** INPUT DRAWING  ********************************************/
     // Used for drawing past paths into a buffer/pathsBitmap
@@ -461,6 +474,7 @@ public class Level{
                     point.put("x", (int)(points.get(j).x));
                     point.put("y", (int)(points.get(j).y));
                     point.put("time", 0);
+                    point.put("score", points.get(j).score);
                     jsonPoints.put(j, point);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -577,8 +591,9 @@ public class Level{
                     int x = jsonPoint.getInt("x");
                     int y = jsonPoint.getInt("y");
                     int time = jsonPoint.getInt("time");
+                    int score = jsonPoint.getInt("score");
                     // Add this datapoint to our pointsarray for this trace
-                    tracePoints.add(new DataPoint(x, y, time));
+                    tracePoints.add(new DataPoint(x, y, time, score));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

@@ -290,7 +290,6 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
         query.whereNotEqualTo("player_one", ParseUser.getCurrentUser());
         query.whereNotEqualTo("blocked", true);
         query.include("player_one");
-        query.include("multiplayer");
 
         try {
             List<Game> gameList = query.find();
@@ -428,7 +427,7 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
             FragmentTransaction nFrag = getActivity().getFragmentManager().beginTransaction();
             nFrag.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left);
             nFrag.replace(R.id.content_frame, frag);
-            // nFrag.addToBackStack(nTag);
+            nFrag.addToBackStack(nTag);
             nFrag.commit();
             chooseFriendDlog.dismiss();
         }

@@ -17,11 +17,13 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.parse.ParseException;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -178,7 +180,7 @@ public class GameActivity extends Activity {
                 flipper.setDisplayedChild(3); //gameloop is 0, viewingBoard is 1
 
                 multiViewingBoard.setGameData(game);
-                multiViewingBoard.startDrawing();
+                multiViewingBoard.startDrawing(handler);
             }
             else {
                 startCountDownTimer();
@@ -271,9 +273,9 @@ public class GameActivity extends Activity {
 
             // Handle end game message
             if(msg.what == 5000) {
-                endGame();
+                endGame(); // shows viewingboard
             } else if ( msg.what == 6000){
-                showDialog();
+                showDialog(); // shows end game results dialog
             }
         }
     };
@@ -322,7 +324,7 @@ public class GameActivity extends Activity {
             if(game.isComplete()) {
                 flipper.setDisplayedChild(3); //gameloop is 0, viewingBoard is 1
                 multiViewingBoard.setGameData(game);
-                multiViewingBoard.startDrawing();
+                multiViewingBoard.startDrawing(handler);
             }
             // Only player A has moved. Show him/her a dialog that says "We will notify you when B finishes!"
             // And his/her current score maybe?
@@ -350,6 +352,64 @@ public class GameActivity extends Activity {
         dlog = new android.app.Dialog(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth);
         dlog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dlog.setContentView(R.layout.dialog_level_end_singleplayer);
+
+        TextView title = (TextView) dlog.findViewById(R.id.single_player_dialog_title);
+        ImageView medal = (ImageView) dlog.findViewById(R.id.medalDrawable);
+        TextView drawScore = (TextView) dlog.findViewById(R.id.single_player_raw_score);
+        TextView timeScore = (TextView) dlog.findViewById(R.id.single_player_time_score);
+        TextView inkScore = (TextView) dlog.findViewById(R.id.single_player_ink_score);
+        TextView totalScore = (TextView) dlog.findViewById(R.id.single_player_total_score);
+        ImageView homeButton = (ImageView) dlog.findViewById(R.id.dialogHomeButton);
+        ImageView replayGameButton = (ImageView) dlog.findViewById(R.id.dialogReplayButton);
+        ImageView dialogNextLevelButton = (ImageView) dlog.findViewById(R.id.dialogNextLevelButton);
+
+
+        title.setText("Level " + Integer.toString(level.getLevelNumber()) + " Complete!");
+        double percent = level.getTotalPercentage();
+        Log.d("gameResult", " percent " + percent);
+        // Medal
+        if(percent >= 80) {
+            // change medal here
+            medal.setImageResource(R.drawable.gold_star);
+        } else if (percent >= 60) {
+            // change medal here
+            medal.setImageResource(R.drawable.silver_star);
+        } else {
+            // bronze medal here
+            medal.setImageResource(R.drawable.bronze_star);
+        }
+
+
+        // Score
+        DecimalFormat df = new DecimalFormat("#.##");
+        drawScore.setText(df.format(percent));
+
+        // Ink bonus
+        inkScore.setText(Integer.toString(level.getInkBonus()));
+
+        double total = percent + level.getInkBonus();
+        totalScore.setText(df.format(total));
+
+        homeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(GameActivity.this, LevelSelectFragment.class));
+            }
+        });
+
+        dialogNextLevelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        replayGameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) { // set level to new number, reload.
+                startActivity(new Intent(GameActivity.this, LevelSelectFragment.class));
+            }
+        });
 
         dlog.show();
     }

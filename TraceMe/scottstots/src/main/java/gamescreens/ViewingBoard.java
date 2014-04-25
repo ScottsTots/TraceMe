@@ -42,7 +42,8 @@ public class ViewingBoard extends View {
     private static final int secondsPerFrame = (int) (1.0 / 60.0f * 1000); // 60fps
     private final float DRAWING_SPEED = .3f; // the less, the faster the replay.
     private final boolean REPEAT_ANIM = false;
-
+    private boolean animFinished = false;
+    private boolean animCanceled = false;
     int currPathNumber;
     int currPointNumber;
     private long previous;
@@ -56,9 +57,11 @@ public class ViewingBoard extends View {
     int frameBufferHeight;
     private Handler handler;
 
+    private Paint textPaint;
+
     // The current point of a path being drawn.
     DataPoint point;
-
+    private int currScore;
 
     public ViewingBoard(Context c, AttributeSet attrs) {
         super(c, attrs);
@@ -103,6 +106,12 @@ public class ViewingBoard extends View {
             previous = System.currentTimeMillis();
             mBitmap = Bitmap.createBitmap(frameBufferWidth, frameBufferHeight, Bitmap.Config.ARGB_8888);
             mCanvas = new Canvas(mBitmap);
+
+            textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            textPaint.setColor(Color.BLACK);
+            textPaint.setTextSize(30);
+
+            currScore = 0;
         }
     }
 
@@ -169,13 +178,15 @@ public class ViewingBoard extends View {
             // mBitmap = Bitmap.createBitmap(frameBufferWidth, frameBufferHeight, Bitmap.Config.ARGB_8888);
             // Now we set this new, clear buffer to the mCanvas, which is used to draw into our bitmap.
             mBitmap.eraseColor(Color.TRANSPARENT);
-            if(!REPEAT_ANIM) {
-                endReplay();
-            }
+
+            animFinished = true;
+            endReplay();
         }
         // Draw the actual framebuffer.
         canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
-        postInvalidate(); //force a redraw
+        if(!animFinished) {
+            postInvalidate(); //force a redraw
+        }
     }
 
     /**
@@ -222,6 +233,12 @@ public class ViewingBoard extends View {
             return;
         }
         //draw path on the actual canvas.
+        if(point == null) {
+            canvas.drawText("Score: " + currScore, 20, 120, textPaint);
+        } else {
+            canvas.drawText("Score: " + point.score, 20, 120, textPaint);
+            currScore = point.score;
+        }
         canvas.drawPath(mPath, mPaint);
     }
 
@@ -229,11 +246,13 @@ public class ViewingBoard extends View {
     public boolean onTouchEvent(MotionEvent event) {
         switch(event.getActionMasked()){
             case MotionEvent.ACTION_UP:
+                animFinished = true;
                 endReplay();
                 break;
         }
         return true;
     }
+
 
     public void endReplay() {
         // TODO call the end game dialog here. Maybe set up a handler so we can call back UI or use a static method..
@@ -249,5 +268,9 @@ public class ViewingBoard extends View {
         previous = System.currentTimeMillis();
         paths = GameActivity.pathsArray;
         postInvalidate();
+    }
+
+    public void repeatAnimation() {
+        animFinished = false;
     }
 }

@@ -59,8 +59,6 @@ public class LevelSelectFragment extends Fragment {// implements View.OnClickLis
         gridview.setAdapter(adapter);
         adapter.notifyDataSetChanged();
         gridview.setOnItemClickListener(levelListener);
-
-
     }
 
 //    View.OnClickListener levelListener= new View.OnClickListener() {

@@ -34,6 +34,9 @@ public class ScoreManager {
     int errors = 0;
     ArrayList<DataPoint> traceData;
 
+    int totalPossibleScore;
+
+    int inkBonus;
 
     Handler handler;
     Message msg;
@@ -41,13 +44,15 @@ public class ScoreManager {
     public ScoreManager(TraceFile file) {
         traceData = file.getPointArray();
         totalScore = 0;
+        totalPossibleScore = 0;
         // sorts by x
      //   Collections.sort(traceData);
     }
 
     public void setData(ArrayList<DataPoint> data) {
         traceData = data;
-        Collections.sort(data);
+        //Collections.sort(data);
+        totalPossibleScore += data.size();
     }
 
     public void update(DataPoint touchPoint) {
@@ -57,7 +62,6 @@ public class ScoreManager {
         DataPoint p;
         int offset = 0;
         //Log.d("score", "tracesize " + traceData.size());
-
 
         // Naive solution for scoring
         for (int i = 0; i < traceData.size(); i++) {
@@ -139,12 +143,29 @@ public class ScoreManager {
         return totalScore;
     }
 
+    public int getTotalPossibleScore() {
+        return totalPossibleScore;
+    }
+
+    public double getTotalPercentage() {
+        double percent = (double)getScore() / (double)getTotalPossibleScore();
+        return percent * 100;
+    }
 
     public int getCombo() {
         if (combo > 62)
             combo = 20;
         return combo;
     }
+
+    public void addInkBonus(int bonus) {
+        inkBonus += bonus;
+    }
+
+    public int getInkBonus() {
+        return inkBonus;
+    }
+
 
 
 }
