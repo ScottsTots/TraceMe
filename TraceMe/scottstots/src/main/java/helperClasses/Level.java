@@ -329,8 +329,9 @@ public class Level{
         mX = x;
         mY = y;
         // This is an array of CustomPaths, which contains points for drawing animation later..
-
-        GameActivity.pathsArray.add(new CustomPath(x, y, System.currentTimeMillis() - startTime));
+        CustomPath cs = new CustomPath();
+        cs.addUserPoint(x, y, System.currentTimeMillis() - startTime, (int)scoreManager.getScore());
+        GameActivity.pathsArray.add(cs);
         startTime = System.currentTimeMillis(); // everytime we add a path we are counting how much time passed.
         Log.d("view",  "size" + GameActivity.pathsArray.size());
     }
@@ -493,7 +494,6 @@ public class Level{
 
         // Now save bitmaps for this level.
         for (int i = 0; i < traceBitmaps.size(); i++) {
-
             // Compress into PNG
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             boolean compress = traceBitmaps.get(i).compress(Bitmap.CompressFormat.PNG, 80, stream);
