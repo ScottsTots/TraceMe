@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="scotts.tots.levelcreator" >
+
+    <!-- Parse user permissions -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
+    <uses-sdk
+        android:maxSdkVersion="17"
+        android:minSdkVersion="8" />
+
+    <permission
+        android:name="scotts.tots.levelcreator.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="scotts.tots.traceme.permission.C2D_MESSAGE" />
+
+    <application
+        android:name="scotts.tots.levelcreator.TraceMeApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/traceme_logo"
+        android:label="@string/app_name"
+        android:theme="@style/MyTheme" >
+        <activity
+            android:name="scotts.tots.levelcreator.DispatchActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name="scotts.tots.levelcreator.LoginNewUserActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/NoActionBarTheme" >
+        </activity>
+        <activity
+            android:name="scotts.tots.levelcreator.MainScreen"
+            android:label="@string/title_activity_main_screen" >
+        </activity>
+        <activity
+            android:name="gamescreens.GameActivity"
+            android:label="@string/title_activity_main_screen"
+            android:screenOrientation="portrait" >
+        </activity>
+
+        <!-- Facebook Stuff -->
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/app_id" />
+
+        <activity android:name="com.facebook.LoginActivity" />
+
+        <!-- Parse push notifications -->
+        <service android:name="com.parse.PushService" />
+
+        <receiver android:name="com.parse.ParseBroadcastReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.USER_PRESENT" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.parse.GcmBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+
+                <!-- IMPORTANT: Change "com.parse.tutorials.pushnotifications" to match your app's package name. -->
+                <category android:name="scotts.tots.traceme" /> <!-- this line had pushnotifications at the end of traceme -->
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name="scotts.tots.levelcreator.Splash"
+            android:theme="@style/NoActionBarTheme" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="scotts.tots.levelcreator.LoginMenuActivity"
+            android:theme="@style/NoActionBarTheme" >
+        </activity>
+        <activity
+            android:name="scotts.tots.levelcreator.SignUpActivity"
+            android:theme="@style/NoActionBarTheme" > >
+        </activity>
+    </application>
+
+</manifest>
