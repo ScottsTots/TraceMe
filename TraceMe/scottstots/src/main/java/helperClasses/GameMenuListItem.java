@@ -19,7 +19,9 @@ public class GameMenuListItem {
     private enum Smiley {
         NONE,
         HAPPY,
-        SAD
+        SAD,
+        WAITING,
+        MOVE
     }
 
     private Game game;
@@ -42,20 +44,26 @@ public class GameMenuListItem {
             return "Preparing your data";
         }
         if (game.getInt("game_status") == GameStatus.WAITING_FOR_OPPONENT.id) {
+            this.smiley = Smiley.WAITING;
             return "Opponent will be found soon...";
         } else if (game.getInt("game_status") == GameStatus.CHALLENGED.id) {
             // This user is the one being challenged
-            if (game.getParseUser("player_one").getUsername().equals(ParseUser.getCurrentUser().getUsername()))
+            if (game.getParseUser("player_one").getUsername().equals(ParseUser.getCurrentUser().getUsername())) {
+                this.smiley = Smiley.WAITING;
                 return "Waiting for challenge response...";
-            else
+            } else {
+                this.smiley = Smiley.MOVE;
                 return "Challenged: Needs response!";
+            }
         } else if (game.getInt("game_status") == GameStatus.IN_PROGRESS.id) {
             // If the game is in progress it is either player one's turn or player two's
             try {
                 if (game.getParseUser("player_turn").fetchIfNeeded().getUsername()
                         .equals(ParseUser.getCurrentUser().getUsername())) {
+                    this.smiley = Smiley.MOVE;
                     return "Your move!";
                 } else {
+                    this.smiley = Smiley.WAITING;
                     this.isDisabled = true;
                     return "Waiting for their move...";
                 }
@@ -148,10 +156,14 @@ public class GameMenuListItem {
             case HAPPY:
                 return "C";
             case SAD:
-                return "h";
+                return "T";
+            case WAITING:
+                return "2";
+            case MOVE:
+                return "I";
             case NONE:
             default:
-                return "";
+                return "G";
         }
     }
 }
