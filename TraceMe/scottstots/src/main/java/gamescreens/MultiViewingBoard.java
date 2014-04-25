@@ -101,7 +101,8 @@ import helperClasses.Game;
         playerOne = new Player(game.playerOneData, scaleX2, scaleY2, 0, 0);
 
         // Player two's traces will be drawn on lower right
-        playerTwo = new Player(game.playerTwoData, scaleX2, scaleY2, frameBufferW2, frameBufferH2 );
+        playerTwo = new Player(game.playerTwoData, scaleX2, scaleY2, 0, frameBufferH2 );
+       // playerTwo = new Player(game.playerTwoData, scaleX2, scaleY2, frameBufferW2, frameBufferH2 );
     }
 
 
@@ -219,6 +220,7 @@ import helperClasses.Game;
                 if(currPointNumber < currentPath.size()) {        // WE'RE GOOD TO DRAW
                     // Get the latest point on this path.
                     point = currentPath.get(currPointNumber);
+                    currScore = point.score;
                     // draw all path stuff to our framebuffer: mBitmap
                     drawPath(canvas);
                     // See if enough time has passed to move on to the next point:
@@ -249,11 +251,7 @@ import helperClasses.Game;
                 animFinished = true;
             }
             canvas.drawBitmap(mBitmap2, 0, 0, mBitmapPaint);
-            if(point == null) {
-                canvas.drawText("Score: " + 0, 20, 120, textPaint);
-            } else {
-                canvas.drawText("Score: " + point.score, 20, 120, textPaint);
-            }
+            canvas.drawText("Score: " + point.score, 20 * scaleX + frameBufferWidth / 2, 120 * scaleY + translateY, textPaint);
             canvas.drawPath(mPath, mPaint);
         }
 

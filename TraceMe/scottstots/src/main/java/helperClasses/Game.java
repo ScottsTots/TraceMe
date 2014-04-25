@@ -268,8 +268,7 @@ public class Game extends ParseObject {
                 e.printStackTrace();
             }
         }
-    //TODO load all data into the local vars when we load the game... so we dont have to be calling getParseUser.. etc
-        // Add all this json data into the correct player_one_data or player_two_data slot
+       // Add all this json data into the correct player_one_data or player_two_data slot
         Log.d("parseNetwork", "aP1 " + getParseUser("player_one").getUsername() + " p2 " + getParseUser("player_two"));
         if(getParseUser("player_one").getUsername().equals(ParseUser.getCurrentUser().getUsername()))
             put("player_one_data", customPathArray);
