@@ -410,7 +410,6 @@ public class GameActivity extends Activity {
                 endTurnButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ((Activity) ctx).startActivity(new Intent((Activity) ctx, MainScreen.class));
                         endGameDlog.dismiss();
                         ((Activity) ctx).finish();
                     }
@@ -470,7 +469,8 @@ public class GameActivity extends Activity {
         homeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(GameActivity.this, MainScreen.class));
+                dlog.dismiss();
+                finish();
             }
         });
 
@@ -478,14 +478,17 @@ public class GameActivity extends Activity {
         dialogNextLevelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(GameActivity.this, MainScreen.class));
+                dlog.dismiss();
+                finish();
+
             }
         });
 
         replayGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) { // set level to new number, reload.
-                startActivity(new Intent(GameActivity.this, LevelSelectFragment.class));
+                dlog.dismiss();
+                finish();
             }
         });
 
