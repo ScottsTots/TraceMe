@@ -28,12 +28,14 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     private Context _context;
     private List<String> _listDataHeader; // header titles
     // child data in format of header title, child title
-    private HashMap<String, List<GameMenuListItem>> _listDataChild;
+    // TODO: This shouldn't be public
+    public HashMap<String, List<GameMenuListItem>> _listDataChild;
     Game game;
     Typeface roboto_light;
     Typeface roboto_regular;
     Typeface roboto_medium;
     Typeface roboto_lightitalic;
+    Typeface smiley;
 
     public ExpandableListAdapter(Context context, List<String> listDataHeader,
                                  HashMap<String, List<GameMenuListItem>> listChildData) {
@@ -45,6 +47,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         roboto_regular = Typeface.createFromAsset(context.getAssets(),"Roboto/Roboto-Regular.ttf");
         roboto_medium = Typeface.createFromAsset(context.getAssets(),"Roboto/Roboto-Medium.ttf");
         roboto_lightitalic = Typeface.createFromAsset(context.getAssets(),"Roboto/Roboto-LightItalic.ttf");
+        smiley = Typeface.createFromAsset(context.getAssets(), "smileys.ttf");
     }
 
     @Override
@@ -86,16 +89,20 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                 .findViewById(R.id.time_item);
         TextView txtListSubtext = (TextView) convertView
                 .findViewById(R.id.game_status);
+        TextView smileyTextView = (TextView) convertView
+                .findViewById(R.id.smiley_item);
         ImageView userImg = (ImageView) convertView
                 .findViewById(R.id.username_img);
 
         txtListUsername.setText(child.getUsernameString());
         txtListTime.setText(child.getLastUpdatedString());
         txtListSubtext.setText(child.getStatusString());
+        smileyTextView.setText(child.getSmileyString());
 
         txtListUsername.setTypeface(roboto_regular);
         txtListSubtext.setTypeface(roboto_lightitalic);
         txtListTime.setTypeface(roboto_lightitalic);
+        smileyTextView.setTypeface(smiley);
         userImg.setImageBitmap(child.getGameImage(_context));
 
         if(child.getUsernameString().equals("Loading...")){
