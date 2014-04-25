@@ -24,7 +24,7 @@
     </style>
 
     <style name="NoActionBarTheme" parent="@android:style/Theme.Holo.NoActionBar">
-        <item name="android:windowBackground">@color/white</item>
+        <item name="android:windowBackground">@color/transparent</item>
     </style>
 
     <style name="Widget.Custom.PtrHeader" parent="android:Widget">
