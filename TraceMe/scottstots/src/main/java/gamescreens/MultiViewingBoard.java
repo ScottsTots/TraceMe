@@ -298,12 +298,9 @@ import helperClasses.Game;
             }
         }
 
-
         public boolean isFinished() {
             return animFinished;
         }
-
-
     }
 
 }

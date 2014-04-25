@@ -140,7 +140,7 @@ public class Level{
         if(currentTrace + 1 < TOTAL_TRACES) {
             currentTrace++;
             // Update the scoremanager with the new set of datapoints to score from.
-            scoreManager.setData(traceArray.get(currentTrace).points);
+            scoreManager.setData( traceArray.get(currentTrace).points);
 
             // Removed saved paths.
             pathsBitmap.eraseColor(Color.TRANSPARENT);
@@ -474,7 +474,6 @@ public class Level{
                     point.put("x", (int)(points.get(j).x));
                     point.put("y", (int)(points.get(j).y));
                     point.put("time", 0);
-                    point.put("score", points.get(j).score);
                     jsonPoints.put(j, point);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -591,9 +590,8 @@ public class Level{
                     int x = jsonPoint.getInt("x");
                     int y = jsonPoint.getInt("y");
                     int time = jsonPoint.getInt("time");
-                    int score = jsonPoint.getInt("score");
                     // Add this datapoint to our pointsarray for this trace
-                    tracePoints.add(new DataPoint(x, y, time, score));
+                    tracePoints.add(new DataPoint(x, y, time));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
