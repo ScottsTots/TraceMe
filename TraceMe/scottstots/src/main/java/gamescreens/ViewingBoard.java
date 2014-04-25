@@ -149,6 +149,7 @@ public class ViewingBoard extends View {
             if(currPointNumber < currentPath.size()) {        // WE'RE GOOD TO DRAW
                 // Get the latest point on this path.
                 point = currentPath.get(currPointNumber);
+                currScore = point.score;
                 // draw all path stuff to our framebuffer: mBitmap
                 drawPath(canvas);
                 // See if enough time has passed to move on to the next point:
@@ -184,6 +185,11 @@ public class ViewingBoard extends View {
         }
         // Draw the actual framebuffer.
         canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
+
+        canvas.drawText("Score: " + currScore, 20, 120, textPaint);
+
+
+
         if(!animFinished) {
             postInvalidate(); //force a redraw
         }
@@ -232,13 +238,7 @@ public class ViewingBoard extends View {
             mPath.reset();
             return;
         }
-        //draw path on the actual canvas.
-        if(point == null) {
-            canvas.drawText("Score: " + currScore, 20, 120, textPaint);
-        } else {
-            canvas.drawText("Score: " + point.score, 20, 120, textPaint);
 
-        }
         canvas.drawPath(mPath, mPaint);
     }
 
