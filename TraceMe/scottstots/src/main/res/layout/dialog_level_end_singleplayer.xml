@@ -70,32 +70,32 @@
                     android:textSize="25sp"/>
                 </RelativeLayout>
 
-            <RelativeLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
+            <!--<RelativeLayout-->
+                <!--android:layout_width="fill_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:orientation="horizontal"-->
+                <!-->-->
 
-                <TextView
-                    android:id="@+id/single_player_time_score_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Time Bonus: "
-                    android:layout_gravity="left"
-                    android:textColor="@color/darker_black"
-                    android:textSize="18sp"
-                    android:layout_alignParentLeft="true"/>
+                <!--<TextView-->
+                    <!--android:id="@+id/single_player_time_score_text"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="Time Bonus: "-->
+                    <!--android:layout_gravity="left"-->
+                    <!--android:textColor="@color/darker_black"-->
+                    <!--android:textSize="18sp"-->
+                    <!--android:layout_alignParentLeft="true"/>-->
 
-                <TextView
-                    android:id="@+id/single_player_time_score"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="50"
-                    android:layout_alignParentRight="true"
-                    android:gravity="right"
-                    android:textColor="@color/darker_black"
-                    android:textSize="18sp"/>
-            </RelativeLayout>
+                <!--<TextView-->
+                    <!--android:id="@+id/single_player_time_score"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="50"-->
+                    <!--android:layout_alignParentRight="true"-->
+                    <!--android:gravity="right"-->
+                    <!--android:textColor="@color/darker_black"-->
+                    <!--android:textSize="18sp"/>-->
+            <!--</RelativeLayout>-->
 
             <RelativeLayout
                 android:layout_width="fill_parent"
