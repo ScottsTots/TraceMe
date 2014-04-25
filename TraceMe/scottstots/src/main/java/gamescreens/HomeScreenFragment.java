@@ -555,6 +555,7 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
         combinedQuery.whereNotEqualTo("game_status", GameStatus.INVALID.id);
         combinedQuery.include("player_one");
         combinedQuery.include("player_two");
+        combinedQuery.setLimit(6);
 
         combinedQuery.findInBackground(new FindCallback<Game>() {
             @Override
