@@ -192,6 +192,10 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             layout.setPadding(0, padding_in_px/3, 0, padding_in_px/3 );
             lblListHeader.setTextColor(_context.getResources().getColor(R.color.white));
 //            convertView.setPadding(0, padding_in_px, 0, padding_in_px);
+        } else {
+            layout.setBackgroundResource(R.drawable.main_screen_card_top);
+            layout.setPadding(0, padding_in_px/2, 0, padding_in_px/2);
+            lblListHeader.setTextColor(_context.getResources().getColor(R.color.black));
         }
 
 

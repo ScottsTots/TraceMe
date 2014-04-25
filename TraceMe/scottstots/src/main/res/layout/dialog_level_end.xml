@@ -11,7 +11,7 @@
         android:text="Challenge Results!"
         android:textSize="30sp"
         android:gravity="center"
-        android:id="@+id/textView"
+        android:id="@+id/challenge_dialog_title"
         android:layout_marginBottom="-3dp"
         android:padding="10dp"
         android:background="@drawable/main_screen_card_top"
@@ -21,26 +21,48 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:orientation="horizontal"
+            android:padding="20dp"
             android:gravity="center">
 
-            <TextView
-                android:id="@+id/scoreTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="You got 250 points!"
-                android:layout_marginTop="15dp"
-                android:textColor="@color/darker_black"
-                android:textSize="25sp"/>
-
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/challenge_smiley"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:text="c"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:textSize="75sp"
+                />
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Now it's player two's turn..."
-                android:textColor="@color/darker_black"
-                android:layout_marginTop="10dp"
-                android:textSize="20sp"/>
+                android:layout_weight="3"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/scoreTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="You got 250 points!"
+                    android:layout_marginTop="15dp"
+                    android:textColor="@color/darker_black"
+                    android:textSize="25sp"/>
+
+
+                <TextView
+                    android:id="@+id/challenge_subtext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Now it's player two's turn..."
+                    android:textColor="@color/darker_black"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginLeft="5dp"
+                    android:textSize="20sp"/>
+
+            </LinearLayout>
+
+
 
 
         </LinearLayout>

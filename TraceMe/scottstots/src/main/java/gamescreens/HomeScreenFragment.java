@@ -8,7 +8,6 @@ import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -238,7 +237,7 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
                     FragmentTransaction nFrag = getActivity().getFragmentManager().beginTransaction();
 
                     nFrag.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left);
-                    nFrag.add(R.id.content_frame, frag);
+                    nFrag.replace(R.id.content_frame, frag);
                     nFrag.addToBackStack(nTag);
                     nFrag.commit();
                     break;

@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -81,6 +82,12 @@ public class GameActivity extends Activity {
     private Level level;
     private Context ctx;
 
+    Typeface roboto_light;
+    Typeface roboto_regular;
+    Typeface roboto_medium;
+    Typeface roboto_lightitalic;
+    Typeface smiley;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -89,6 +96,12 @@ public class GameActivity extends Activity {
         setContentView(R.layout.game_activity);
         ctx = this;
         pathsArray = new ArrayList<CustomPath>(); //used to play animation
+
+        roboto_light = Typeface.createFromAsset(getAssets(),"Roboto/Roboto-Light.ttf");
+        roboto_regular = Typeface.createFromAsset(getAssets(),"Roboto/Roboto-Regular.ttf");
+        roboto_medium = Typeface.createFromAsset(getAssets(),"Roboto/Roboto-Medium.ttf");
+        roboto_lightitalic = Typeface.createFromAsset(getAssets(),"Roboto/Roboto-LightItalic.ttf");
+        smiley = Typeface.createFromAsset(getAssets(), "YolksEmoticons.otf");
 
 
         multiViewingBoard = (MultiViewingBoard) findViewById(R.id.view2);
@@ -105,7 +118,16 @@ public class GameActivity extends Activity {
 
         scoreText = (TextView) endGameDlog.findViewById(R.id.scoreTextView);
         endTurnButton = (Button) endGameDlog.findViewById(R.id.endTurnButton);
+        TextView title = (TextView) endGameDlog.findViewById(R.id.challenge_dialog_title);
+        TextView dialog_smiley = (TextView) endGameDlog.findViewById(R.id.challenge_smiley);
+        TextView subtext = (TextView) endGameDlog.findViewById(R.id.challenge_subtext);
 
+
+        scoreText.setTypeface(roboto_regular);
+        title.setTypeface(roboto_medium);
+        dialog_smiley.setTypeface(smiley);
+        endTurnButton.setTypeface(roboto_regular);
+        subtext.setTypeface(roboto_lightitalic);
 
         game = ((TraceMeApplication)this.getApplicationContext()).getGame();
         Log.d("parseNetwork", " game is multiplayerrrrr " + game.isMultiplayer());
@@ -333,9 +355,9 @@ public class GameActivity extends Activity {
                 endTurnButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ((Activity)ctx).startActivity(new Intent((Activity)ctx, MainScreen.class));
+                        ((Activity) ctx).startActivity(new Intent((Activity) ctx, MainScreen.class));
                         endGameDlog.dismiss();
-                        ((Activity)ctx).finish();
+                        ((Activity) ctx).finish();
                     }
                 });
                 endGameDlog.show();
