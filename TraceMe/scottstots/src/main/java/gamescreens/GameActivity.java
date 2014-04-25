@@ -13,11 +13,14 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
@@ -110,17 +113,55 @@ public class GameActivity extends Activity {
         round_text = (TextView) findViewById(R.id.round_text);
 
 
+
         endGameDlog = new android.app.Dialog(this,
                 android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth);
         endGameDlog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         endGameDlog.setContentView(R.layout.dialog_level_end);
         endGameDlog.setCanceledOnTouchOutside(false);
 
+
+        //Loading Fonts
         scoreText = (TextView) endGameDlog.findViewById(R.id.scoreTextView);
         endTurnButton = (Button) endGameDlog.findViewById(R.id.endTurnButton);
         TextView title = (TextView) endGameDlog.findViewById(R.id.challenge_dialog_title);
         TextView dialog_smiley = (TextView) endGameDlog.findViewById(R.id.challenge_smiley);
         TextView subtext = (TextView) endGameDlog.findViewById(R.id.challenge_subtext);
+
+        FrameLayout multiplayer_frame = (FrameLayout) findViewById(R.id.multi_player_frame);
+
+        setFont(multiplayer_frame,roboto_light);
+
+
+//        TextView multiplayer1_title = (TextView) findViewById(R.id.multi_player1_title);
+//        TextView multiplayer2_title = (TextView) findViewById(R.id.multi_player2_title);
+//        TextView multiplayer1_raw_score = (TextView) findViewById(R.id.multi_player1_raw_score);
+//        TextView multiplayer2_raw_score = (TextView) findViewById(R.id.multi_player2_raw_score);
+//        TextView multiplayer1_raw_score_text = (TextView) findViewById(R.id.multi_player1_raw_score_text);
+//        TextView multiplayer2_raw_score_text = (TextView) findViewById(R.id.multi_player2_raw_score_text);
+//        TextView multiplayer1_total_score = (TextView) findViewById(R.id.multi_player1_total_score);
+//        TextView multiplayer2_total_score = (TextView) findViewById(R.id.multi_player2_total_score);
+//        TextView multiplayer1_total_score_text = (TextView) findViewById(R.id.multi_player1_total_score_text);
+//        TextView multiplayer2_total_score_text = (TextView) findViewById(R.id.multi_player2_total_score_text);
+//        TextView multiplayer1_ink_score = (TextView) findViewById(R.id.multi_player1_ink_score);
+//        TextView multiplayer2_ink_score = (TextView) findViewById(R.id.multi_player2_ink_score);
+//        TextView multiplayer1_ink_text = (TextView) findViewById(R.id.multi_player1_ink_score_text);
+//        TextView multiplayer2_ink_text = (TextView) findViewById(R.id.multi_player2_ink_score_text);
+
+        TextView multiplayer1_title = (TextView) findViewById(R.id.multi_player1_title);
+        TextView multiplayer2_title = (TextView) findViewById(R.id.multi_player2_title);
+        TextView multiplayer1_smiley = (TextView) findViewById(R.id.player1_smiley);
+        TextView multiplayer2_smiley = (TextView) findViewById(R.id.player2_smiley);
+        TextView multiplayer1_winner_text = (TextView) findViewById(R.id.winner_text1);
+        TextView multiplayer2_winner_text = (TextView) findViewById(R.id.winner_text2);
+        multiplayer1_title.setTypeface(roboto_medium);
+        multiplayer2_title.setTypeface(roboto_medium);
+        multiplayer1_winner_text.setTypeface(roboto_regular);
+        multiplayer2_winner_text.setTypeface(roboto_regular);
+        multiplayer1_smiley.setTypeface(smiley);
+        multiplayer2_smiley.setTypeface(smiley);
+
+
 
 
         scoreText.setTypeface(roboto_regular);
@@ -155,6 +196,17 @@ public class GameActivity extends Activity {
     }
 
 
+    public void setFont(ViewGroup group, Typeface font) {
+        int count = group.getChildCount();
+        View v;
+        for (int i = 0; i < count; i++) {
+            v = group.getChildAt(i);
+            if (v instanceof TextView || v instanceof EditText || v instanceof Button) {
+                ((TextView) v).setTypeface(font);
+            } else if (v instanceof ViewGroup)
+                setFont((ViewGroup) v, font);
+        }
+    }
 
     private class LoadTask extends AsyncTask<String, Integer, Void> {
         @Override

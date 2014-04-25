@@ -1,6 +1,5 @@
 package gamescreens;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -55,7 +54,7 @@ import helperClasses.Game;
             mPaint = new Paint();
             mPaint.setAntiAlias(true);
             mPaint.setDither(true);
-            mPaint.setColor(0xFF000000);
+            mPaint.setColor(0xff003f43);
             mPaint.setStyle(Paint.Style.STROKE);
             mPaint.setStrokeJoin(Paint.Join.ROUND);
             mPaint.setStrokeCap(Paint.Cap.ROUND);
@@ -134,12 +133,14 @@ import helperClasses.Game;
 
         // keep updating the ones that haven't finished.
         if(!playerOne.isFinished())
-            playerOne.updatePlayerData(canvas);
+            mPaint.setColor(0xff003f43);
+            playerOne.updatePlayerData(canvas,mPaint);
         if(!playerTwo.isFinished())
-            playerTwo.updatePlayerData(canvas);
+            mPaint.setColor(0xfffc5628);
+            playerTwo.updatePlayerData(canvas,mPaint);
         // If animation for both players is done.
         if(playerOne.isFinished() && playerTwo.isFinished()) {
-            endReplay();
+//            endReplay();
         } else {
             postInvalidate(); //force a redraw
         }
@@ -210,7 +211,7 @@ import helperClasses.Game;
             textPaint.setTextSize(30);
         }
 
-        public void updatePlayerData(Canvas canvas) {
+        public void updatePlayerData(Canvas canvas, Paint paint) {
 
             // If we still have paths to draw
             if(currPathNumber < paths.size()) {
@@ -252,7 +253,7 @@ import helperClasses.Game;
             }
             canvas.drawBitmap(mBitmap2, 0, 0, mBitmapPaint);
             canvas.drawText("Score: " + point.score, 20 * scaleX + frameBufferWidth / 2, 120 * scaleY + translateY, textPaint);
-            canvas.drawPath(mPath, mPaint);
+            canvas.drawPath(mPath, paint);
         }
 
         // Draw this player's bitmap

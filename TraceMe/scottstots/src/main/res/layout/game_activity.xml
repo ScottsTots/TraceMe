@@ -90,45 +90,328 @@
 
         </FrameLayout>
 
-
-        <gamescreens.MultiViewingBoard
-            android:id="@+id/view2"
+        <FrameLayout
+            android:id="@+id/multi_player_frame"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/darker_blue"
-         />
+            android:layout_height="match_parent">
+
+            <gamescreens.MultiViewingBoard
+                android:id="@+id/view2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/grey"
+                />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="2"/>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="3"
+                        android:orientation="vertical"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:id="@+id/multi_player1_title"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="Player 1"
+                            android:textSize="30sp"/>
+
+                        <RelativeLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:id="@+id/player1_smiley"
+                                android:layout_width="wrap_content"
+                                android:layout_height="fill_parent"
+                                android:layout_weight="1"
+                                android:layout_alignParentRight="true"
+                                android:text="b"
+                                android:textColor="@color/dark_grey"
+                                android:gravity="center"
+                                android:textSize="125sp"/>
+
+                            <LinearLayout
+                                android:layout_width="180dp"
+                                android:layout_height="fill_parent"
+                                android:layout_weight="2"
+                                android:layout_alignParentLeft="true"
+                                android:orientation="vertical"
+                                android:gravity="center_vertical">
+
+                                <RelativeLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    >
+
+                                    <TextView
+                                        android:id="@+id/multi_player1_raw_score_text"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Score:"
+                                        android:layout_gravity="left"
+                                        android:textColor="@color/darker_black"
+                                        android:layout_alignParentLeft="true"
+                                        android:textSize="25sp"/>
+
+                                    <TextView
+                                        android:id="@+id/multi_player1_raw_score"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="250"
+                                        android:layout_alignParentRight="true"
+                                        android:gravity="right"
+                                        android:textColor="@color/darker_black"
+                                        android:textSize="25sp"/>
+                                </RelativeLayout>
+
+
+                                <RelativeLayout
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    >
+
+                                    <TextView
+                                        android:id="@+id/multi_player1_ink_score_text"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Ink Bonus: "
+                                        android:layout_gravity="left"
+                                        android:textColor="@color/darker_black"
+                                        android:textSize="18sp"
+                                        android:layout_alignParentLeft="true"/>
+
+                                    <TextView
+                                        android:id="@+id/multi_player1_ink_score"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="50"
+                                        android:layout_alignParentRight="true"
+                                        android:gravity="right"
+                                        android:textColor="@color/darker_black"
+                                        android:textSize="18sp"/>
+                                </RelativeLayout>
+
+                                <RelativeLayout
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    >
+
+                                    <TextView
+                                        android:id="@+id/multi_player1_total_score_text"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Total: "
+                                        android:layout_gravity="left"
+                                        android:textColor="@color/darker_black"
+                                        android:textSize="24sp"
+                                        android:layout_alignParentLeft="true"/>
+
+                                    <TextView
+                                        android:id="@+id/multi_player1_total_score"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="300"
+                                        android:layout_alignParentRight="true"
+                                        android:gravity="right"
+                                        android:textColor="@color/darker_black"
+                                        android:textSize="24sp"/>
+                                </RelativeLayout>
+
+                                </LinearLayout>
+
+                            </RelativeLayout>
+
+                        <TextView
+                            android:id="@+id/winner_text1"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:text="You Win!"
+                            android:textSize="30sp"
+                            android:gravity="center"/>
+                        </LinearLayout>
+
+                    </LinearLayout>
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/dark_grey"/>
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="2"/>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="3"
+                        android:orientation="vertical"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:id="@+id/multi_player2_title"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="Player 2"
+                            android:textSize="30sp"/>
+
+                        <RelativeLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:id="@+id/player2_smiley"
+                                android:layout_width="wrap_content"
+                                android:layout_height="fill_parent"
+                                android:layout_weight="1"
+                                android:text="x"
+                                android:layout_alignParentRight="true"
+                                android:textColor="@color/dark_grey"
+                                android:gravity="center"
+                                android:textSize="125sp"/>
+
+                            <LinearLayout
+                                android:layout_width="180dp"
+                                android:layout_height="fill_parent"
+                                android:layout_weight="2"
+                                android:layout_alignParentLeft="true"
+                                android:orientation="vertical"
+                                android:gravity="center_vertical">
+
+                                <RelativeLayout
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    >
+
+                                    <TextView
+                                        android:id="@+id/multi_player2_raw_score_text"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Score:"
+                                        android:layout_gravity="left"
+                                        android:textColor="@color/darker_black"
+                                        android:layout_alignParentLeft="true"
+                                        android:textSize="25sp"/>
+
+                                    <TextView
+                                        android:id="@+id/multi_player2_raw_score"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="250"
+                                        android:layout_alignParentRight="true"
+                                        android:gravity="right"
+                                        android:textColor="@color/darker_black"
+                                        android:textSize="25sp"/>
+                                </RelativeLayout>
+
+
+                                <RelativeLayout
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    >
+
+                                    <TextView
+                                        android:id="@+id/multi_player2_ink_score_text"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Ink Bonus: "
+                                        android:layout_gravity="left"
+                                        android:textColor="@color/darker_black"
+                                        android:textSize="18sp"
+                                        android:layout_alignParentLeft="true"/>
+
+                                    <TextView
+                                        android:id="@+id/multi_player2_ink_score"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="50"
+                                        android:layout_alignParentRight="true"
+                                        android:gravity="right"
+                                        android:textColor="@color/darker_black"
+                                        android:textSize="18sp"/>
+                                </RelativeLayout>
+
+                                <RelativeLayout
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    >
+
+                                    <TextView
+                                        android:id="@+id/multi_player2_total_score_text"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Total: "
+                                        android:layout_gravity="left"
+                                        android:textColor="@color/darker_black"
+                                        android:textSize="24sp"
+                                        android:layout_alignParentLeft="true"/>
+
+                                    <TextView
+                                        android:id="@+id/multi_player2_total_score"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="300"
+                                        android:layout_alignParentRight="true"
+                                        android:gravity="right"
+                                        android:textColor="@color/darker_black"
+                                        android:textSize="24sp"/>
+                                </RelativeLayout>
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
+
+                        <TextView
+                            android:id="@+id/winner_text2"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Loser!"
+                            android:textSize="30sp"
+                            android:gravity="center"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+
+                </LinearLayout>
+
+            </FrameLayout>
 
     </ViewFlipper>
 
-
-
-    <!--<Button-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="Done"-->
-        <!--android:padding="10dp"-->
-        <!--android:background="@drawable/login_selector"-->
-        <!--android:id="@+id/playButton"-->
-        <!--android:textColor="@color/white"-->
-        <!--android:layout_marginBottom="10dp"-->
-        <!--android:layout_marginRight="10dp"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:layout_alignParentEnd="true" />-->
-
-   <!-- <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Save Trace"
-        android:id="@+id/saveTraceButton"
-        android:padding="10dp"
-        android:textColor="@color/white"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="10dp"
-        android:background="@drawable/sign_up_selector"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
--->
 
 </RelativeLayout>
