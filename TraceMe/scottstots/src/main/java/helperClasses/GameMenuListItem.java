@@ -16,16 +16,25 @@ import scotts.tots.traceme.R;
  */
 
 public class GameMenuListItem {
+    private enum Smiley {
+        NONE,
+        HAPPY,
+        SAD
+    }
+
     private Game game;
+    private Smiley smiley;
     public boolean isDisabled;
 
     public GameMenuListItem(){
         //Empty Constructor
         this.isDisabled = true;
+        this.smiley = Smiley.NONE;
     }
     public GameMenuListItem(Game game) {
         this.game = game;
         this.isDisabled = false;
+        this.smiley = Smiley.NONE;
     }
 
     public String getStatusString() {
@@ -57,18 +66,24 @@ public class GameMenuListItem {
              if (game.getParseUser("player_one").getUsername()
                      .equals(ParseUser.getCurrentUser().getUsername())) {
                 // Current user is player one
-                if (game.getString("winner").equals("player_one"))
+                if (game.getString("winner").equals("player_one")) {
+                    this.smiley = Smiley.HAPPY;
                     return "Aww yeah! You won!";
-                else if (game.getString("winner").equals("player_two"))
+                }
+                else if (game.getString("winner").equals("player_two")) {
+                    this.smiley = Smiley.SAD;
                     return "You lost. Better luck next time..";
-
+                }
              } else if (game.getParseUser("player_two").getUsername()
                      .equals(ParseUser.getCurrentUser().getUsername())) {
                 // current user is player two
-                 if (game.getString("winner").equals("player_two"))
+                 if (game.getString("winner").equals("player_two")) {
+                     this.smiley = Smiley.HAPPY;
                      return "Aww yeah! You won!";
-                 else if (game.getString("winner").equals("player_one"))
+                 } else if (game.getString("winner").equals("player_one")) {
+                     this.smiley = Smiley.SAD;
                      return "You lost. Better luck next time..";
+                 }
              }
 
             return "Game Over";
@@ -126,5 +141,17 @@ public class GameMenuListItem {
 
     public Game getGameParseObject() {
         return game;
+    }
+
+    public String getSmileyString() {
+        switch (this.smiley) {
+            case HAPPY:
+                return "C";
+            case SAD:
+                return "h";
+            case NONE:
+            default:
+                return "";
+        }
     }
 }

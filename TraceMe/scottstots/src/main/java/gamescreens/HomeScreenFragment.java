@@ -500,13 +500,15 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
             new AsyncTask<Void, Void, Void>() {
                 @Override
                 protected Void doInBackground(Void... params) {
-                    // Whoops
+                    prepareListData();
                     return null;
                 }
 
                 @Override
                 protected void onPostExecute(Void result) {
                     super.onPostExecute(result);
+                    listAdapter._listDataChild = listDataChild;
+                    listAdapter.notifyDataSetChanged();
                     mPullToRefreshLayout.setRefreshComplete();
                     Toast.makeText(getActivity(),
                             "Done refreshing.",
