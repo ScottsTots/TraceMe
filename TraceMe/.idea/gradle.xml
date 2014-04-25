@@ -8,9 +8,9 @@
         <option name="modules">
           <set>
             <option value="C:\Users\Aaron\TraceMe\TraceMe\TraceMe\TraceMe" />
+            <option value="C:\Users\Aaron\TraceMe\TraceMe\TraceMe\TraceMe\levelcreator" />
             <option value="C:\Users\Aaron\TraceMe\TraceMe\TraceMe\TraceMe\libraries" />
             <option value="C:\Users\Aaron\TraceMe\TraceMe\TraceMe\TraceMe\libraries\facebook" />
-            <option value="C:\Users\Aaron\TraceMe\TraceMe\TraceMe\TraceMe\scottstots" />
           </set>
         </option>
       </GradleProjectSettings>
