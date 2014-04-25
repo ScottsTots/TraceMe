@@ -237,7 +237,7 @@ public class ViewingBoard extends View {
             canvas.drawText("Score: " + currScore, 20, 120, textPaint);
         } else {
             canvas.drawText("Score: " + point.score, 20, 120, textPaint);
-            currScore = point.score;
+
         }
         canvas.drawPath(mPath, mPaint);
     }

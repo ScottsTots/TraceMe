@@ -248,7 +248,6 @@ import helperClasses.Game;
                 mBitmap2.eraseColor(Color.TRANSPARENT);
                 animFinished = true;
             }
-
             canvas.drawBitmap(mBitmap2, 0, 0, mBitmapPaint);
             if(point == null) {
                 canvas.drawText("Score: " + 0, 20, 120, textPaint);

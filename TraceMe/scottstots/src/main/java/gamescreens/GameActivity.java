@@ -393,14 +393,15 @@ public class GameActivity extends Activity {
         homeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(GameActivity.this, LevelSelectFragment.class));
+                startActivity(new Intent(GameActivity.this, MainScreen.class));
             }
         });
 
+        // TODO change to next level. change level object and reload
         dialogNextLevelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                startActivity(new Intent(GameActivity.this, MainScreen.class));
             }
         });
 
