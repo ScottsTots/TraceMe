@@ -2,88 +2,59 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
     android:background="@drawable/game_select_menu" >
 
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Level Results"
-        android:textSize="30sp"
-        android:id="@+id/textView"
-        android:textColor="@color/darker_black"
-        android:gravity="fill_vertical"
-        android:layout_gravity="center" />
-
-    <LinearLayout
-        android:id="@+id/singlePlayer"
         android:layout_width="fill_parent"
-        android:layout_height="200dp"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:text="Challenge Results!"
+        android:textSize="30sp"
+        android:gravity="center"
+        android:id="@+id/textView"
+        android:layout_marginBottom="-3dp"
+        android:padding="10dp"
+        android:background="@drawable/main_screen_card_top"
+        android:textColor="@color/darker_blue" />
+
 
         <LinearLayout
-            android:layout_width="50dp"
-            android:layout_height="fill_parent"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_weight="4"
-            android:gravity="center"
-            android:paddingLeft="0dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="You got"
-                android:textAlignment="center"
-                android:textColor="@color/darker_black"
-                android:textSize="25sp"/>
+            android:gravity="center">
 
             <TextView
                 android:id="@+id/scoreTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""
+                android:text="You got 250 points!"
+                android:layout_marginTop="15dp"
                 android:textColor="@color/darker_black"
-                android:textSize="18sp"/>
+                android:textSize="25sp"/>
+
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="points!"
+                android:text="Now it's player two's turn..."
                 android:textColor="@color/darker_black"
-                android:paddingTop="30sp"
-                android:textSize="25sp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="It's player two's turn!"
-                android:textColor="@color/darker_black"
-                android:paddingTop="30sp"
-                android:textSize="25sp"/>
-
-
-
-        </LinearLayout>
+                android:layout_marginTop="10dp"
+                android:textSize="20sp"/>
 
 
         </LinearLayout>
         <Button
         android:id="@+id/endTurnButton"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:paddingBottom="20dp"
-        android:paddingTop="20dp"
-        android:paddingLeft="25dp"
-        android:paddingRight="25dp"
+        android:paddingBottom="15dp"
+        android:paddingTop="15dp"
+        android:layout_marginTop="20dp"
         android:text="End Turn"
         android:layout_gravity="center"
         android:textColor="@color/white"
+        android:textSize="25sp"
         android:background="@drawable/sign_up_selector"
         />
 

@@ -329,7 +329,7 @@ public class GameActivity extends Activity {
             // Only player A has moved. Show him/her a dialog that says "We will notify you when B finishes!"
             // And his/her current score maybe?
             else {
-                scoreText.setText(Integer.toString(level.getScore()));
+                scoreText.setText("You got " + Integer.toString(level.getScore()) + " points!");
                 endTurnButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -356,7 +356,7 @@ public class GameActivity extends Activity {
         TextView title = (TextView) dlog.findViewById(R.id.single_player_dialog_title);
         ImageView medal = (ImageView) dlog.findViewById(R.id.medalDrawable);
         TextView drawScore = (TextView) dlog.findViewById(R.id.single_player_raw_score);
-        TextView timeScore = (TextView) dlog.findViewById(R.id.single_player_time_score);
+//        TextView timeScore = (TextView) dlog.findViewById(R.id.single_player_time_score);
         TextView inkScore = (TextView) dlog.findViewById(R.id.single_player_ink_score);
         TextView totalScore = (TextView) dlog.findViewById(R.id.single_player_total_score);
         ImageView homeButton = (ImageView) dlog.findViewById(R.id.dialogHomeButton);

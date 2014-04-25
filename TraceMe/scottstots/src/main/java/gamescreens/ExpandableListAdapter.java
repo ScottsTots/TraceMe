@@ -78,7 +78,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             int padding_in_dp = 20;  // 6 dps
             final float scale = _context.getResources().getDisplayMetrics().density;
             int padding_in_px = (int) (padding_in_dp * scale + 0.5f);
-            convertView.setPadding(0, 0, 0, padding_in_px);
+//            convertView.setPadding(0, 0, 0, padding_in_px);
         } else {
             convertView.setPadding(0, 0, 0, 0);
             convertView.setBackgroundResource(R.drawable.main_screen_card_middle);
@@ -182,14 +182,14 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         final float scale = _context.getResources().getDisplayMetrics().density;
         int padding_in_px = (int) (padding_in_dp * scale + 0.5f);
 
-        if(getChildrenCount(groupPosition) == 0){
-            convertView.setPadding(0, padding_in_px, 0, 0);
-        }
+
+        convertView.setPadding(0, padding_in_px, 0, 0);
+
 
         if (headerTitle.equals("New Game!")){
 //            lblListHeader.setBackgroundResource(R.drawable.sign_up_selector);
             layout.setBackgroundResource(R.drawable.new_game_selector);
-            layout.setPadding(0, padding_in_px/2, 0, padding_in_px/2 );
+            layout.setPadding(0, padding_in_px/3, 0, padding_in_px/3 );
             lblListHeader.setTextColor(_context.getResources().getColor(R.color.white));
 //            convertView.setPadding(0, padding_in_px, 0, padding_in_px);
         }
