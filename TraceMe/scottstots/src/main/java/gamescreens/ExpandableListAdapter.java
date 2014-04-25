@@ -47,7 +47,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         roboto_regular = Typeface.createFromAsset(context.getAssets(),"Roboto/Roboto-Regular.ttf");
         roboto_medium = Typeface.createFromAsset(context.getAssets(),"Roboto/Roboto-Medium.ttf");
         roboto_lightitalic = Typeface.createFromAsset(context.getAssets(),"Roboto/Roboto-LightItalic.ttf");
-        smiley = Typeface.createFromAsset(context.getAssets(), "smileys.ttf");
+        smiley = Typeface.createFromAsset(context.getAssets(), "YolksEmoticons.otf");
     }
 
     @Override
