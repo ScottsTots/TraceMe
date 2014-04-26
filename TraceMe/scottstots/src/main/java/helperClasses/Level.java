@@ -68,9 +68,9 @@ public class Level{
     ArrayList<String> drawings;
     ScoreManager scoreManager;
     Bitmap traceBitmap;
-    public static int TOTAL_TRACES = 8;
+    public static int totalTraces;
 
-    private int currentTrace = 0;
+    private int currentTrace;
     private float pathLength;
     private float maxPathLength;
     private int levelNum;
@@ -106,6 +106,7 @@ public class Level{
         traceBitmaps = new ArrayList<Bitmap>();
         maxPathLength = 0;
         pathLength = 0;
+        this.levelNum = levelNum;
     }
 
     public int getLevelNumber() {
@@ -137,7 +138,7 @@ public class Level{
         updateMessage(scoreManager.traceData.size());
         scoreManager.addInkBonus((int)(maxPathLength - pathLength));
         // TODO maybe display the ink bonus on the score, like the feedback. We can show a bigger number
-        if(currentTrace + 1 < TOTAL_TRACES) {
+        if(currentTrace + 1 < totalTraces) {
             currentTrace++;
             // Update the scoremanager with the new set of datapoints to score from.
             scoreManager.setData( traceArray.get(currentTrace).points);
@@ -533,7 +534,7 @@ public class Level{
         levelObject.put("trace_array", levelTraces); // this is a JSON array(traces) of JSONArrays(datapoints for each trace) that contain JSON objects with x and y keys(point coords for each datapoint)
         levelObject.put("time_allowed", 20);
         levelObject.put("level_number", 1);
-        levelObject.put("number_traces", TOTAL_TRACES);
+        levelObject.put("number_traces", totalTraces);
         levelObject.saveInBackground();
     }
 
@@ -541,7 +542,7 @@ public class Level{
     /** Loading from online **/
     public void loadLevelFromParse() {
         ParseQuery<ParseObject> levelQuery = ParseQuery.getQuery("Level");
-        levelQuery.whereEqualTo("level_number", 1);
+        levelQuery.whereEqualTo("level_number", levelNum);
         levelQuery.setLimit(1);
         try {
             retrievedLevel = levelQuery.getFirst();
@@ -551,15 +552,15 @@ public class Level{
 
         // STEP 1: Retrieve images ----------------------------
         ArrayList<ParseFile> files = new ArrayList<ParseFile>();
-        int totalImages = retrievedLevel.getInt("number_traces");
-        for(int i = 0; i < totalImages; i++) {
+        totalTraces = retrievedLevel.getInt("number_traces");
+        for(int i = 0; i < totalTraces; i++) {
             files.add(retrievedLevel.getParseFile("trace" + Integer.toString(i)));
         }
 
         // Retrieve parsefile bytes and turn them into bitmaps.
         traceBitmaps = new ArrayList<Bitmap>();
         Bitmap bmp;
-        for (int j = 0; j < totalImages; j++) {
+        for (int j = 0; j < totalTraces; j++) {
             try {
                 byte[] data = files.get(j).getData();
                 bmp = BitmapFactory.decodeByteArray(data, 0, data.length);

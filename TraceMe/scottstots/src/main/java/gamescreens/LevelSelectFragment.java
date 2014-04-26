@@ -79,7 +79,7 @@ public class LevelSelectFragment extends Fragment {// implements View.OnClickLis
         public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
             switch(pos){
                 case 0:
-                    game.setLevel(1);
+                    game.setLevel(10);
                     startActivity(new Intent(getActivity(), GameActivity.class));
                     break;
             }

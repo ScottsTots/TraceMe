@@ -116,8 +116,11 @@ public class Game extends ParseObject {
     }
 
     public void setLevel(int num) {
-        levelNum = num;
         put("level", num);
+    }
+
+    public int getLevel() {
+        return getInt("level");
     }
 
     public void setMultiplayer(boolean b) {

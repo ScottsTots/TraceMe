@@ -224,18 +224,18 @@ public class GameActivity extends Activity {
             if (params[0].equals("load")) {
                 gameLoop = (GameLoop) findViewById(R.id.surfaceView);
                 // Will send a message when all images are uploaded
-                level = new Level(1, ctx, gameLoop, handler);
+                level = new Level(game.getLevelNum(), ctx, gameLoop, handler);
                 // Loads each trace
-                for(int i = 0; i < level.TOTAL_TRACES; i++) {
+                for(int i = 0; i < level.totalTraces; i++) {
                     level.loadTrace();
-                    publishProgress((int) (((i+1) / (double)level.TOTAL_TRACES) * 100));
+                    publishProgress((int) (((i+1) / (double)level.totalTraces) * 100));
                 }
                 gameLoop.setLevel(level);
                // level.createLevel();
             }
             else if(params[0].equals("loadOnline")) {
                 gameLoop = (GameLoop) findViewById(R.id.surfaceView);
-                level = new Level(1, ctx, gameLoop, handler);
+                level = new Level(game.getLevelNum(), ctx, gameLoop, handler);
                 level.loadLevelFromParse();
                 gameLoop.setLevel(level);
                 try {
@@ -299,7 +299,6 @@ public class GameActivity extends Activity {
     // Warn user game will be lost
     @Override
     public void onBackPressed() {
-
         if (game.isMultiplayer() && !game.isComplete()) {
             Button dismissDialog = (Button) warningDialog.findViewById(R.id.dlogWarningDismissButton);
             dismissDialog.setOnClickListener(new View.OnClickListener() {
