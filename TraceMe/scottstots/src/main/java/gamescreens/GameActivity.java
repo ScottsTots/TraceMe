@@ -89,6 +89,12 @@ public class GameActivity extends Activity {
     Typeface roboto_lightitalic;
     Typeface smiley;
 
+    TextView multiplayer1_raw_score;
+    TextView multiplayer2_raw_score;
+    TextView multiplayer1_ink_score;
+    TextView multiplayer2_ink_score;
+    TextView multiplayer1_title;
+    TextView multiplayer2_title;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -131,18 +137,18 @@ public class GameActivity extends Activity {
         setFont(multiplayer_frame,roboto_light);
 
 
-//        TextView multiplayer1_title = (TextView) findViewById(R.id.multi_player1_title);
-//        TextView multiplayer2_title = (TextView) findViewById(R.id.multi_player2_title);
-//        TextView multiplayer1_raw_score = (TextView) findViewById(R.id.multi_player1_raw_score);
-//        TextView multiplayer2_raw_score = (TextView) findViewById(R.id.multi_player2_raw_score);
+        multiplayer1_title = (TextView) findViewById(R.id.multi_player1_title);
+        multiplayer2_title = (TextView) findViewById(R.id.multi_player2_title);
+        multiplayer1_raw_score = (TextView) findViewById(R.id.multi_player1_raw_score);
+        multiplayer2_raw_score = (TextView) findViewById(R.id.multi_player2_raw_score);
 //        TextView multiplayer1_raw_score_text = (TextView) findViewById(R.id.multi_player1_raw_score_text);
 //        TextView multiplayer2_raw_score_text = (TextView) findViewById(R.id.multi_player2_raw_score_text);
 //        TextView multiplayer1_total_score = (TextView) findViewById(R.id.multi_player1_total_score);
 //        TextView multiplayer2_total_score = (TextView) findViewById(R.id.multi_player2_total_score);
 //        TextView multiplayer1_total_score_text = (TextView) findViewById(R.id.multi_player1_total_score_text);
 //        TextView multiplayer2_total_score_text = (TextView) findViewById(R.id.multi_player2_total_score_text);
-//        TextView multiplayer1_ink_score = (TextView) findViewById(R.id.multi_player1_ink_score);
-//        TextView multiplayer2_ink_score = (TextView) findViewById(R.id.multi_player2_ink_score);
+        multiplayer1_ink_score = (TextView) findViewById(R.id.multi_player1_ink_score);
+        multiplayer2_ink_score = (TextView) findViewById(R.id.multi_player2_ink_score);
 //        TextView multiplayer1_ink_text = (TextView) findViewById(R.id.multi_player1_ink_score_text);
 //        TextView multiplayer2_ink_text = (TextView) findViewById(R.id.multi_player2_ink_score_text);
 
@@ -249,10 +255,8 @@ public class GameActivity extends Activity {
 
             // If we already have everything we need, start the whole animation with the 2 players.
             if(game.isMultiplayer() && game.isComplete()) {
-                flipper.setDisplayedChild(3); //gameloop is 0, viewingBoard is 1
+                showMultiplayerResults();
 
-                multiViewingBoard.setGameData(game);
-                multiViewingBoard.startDrawing(handler);
             }
             else {
                 startCountDownTimer();
@@ -381,7 +385,7 @@ public class GameActivity extends Activity {
         @Override
         protected Void doInBackground(Game... params) {
             Game game = params[0];
-            game.saveUserDrawings(pathsArray); //TODO save this pathsArray somewhere else..
+            game.saveUserData(pathsArray); //TODO save this pathsArray somewhere else..
             game.updateState();
             try {
                 game.save();
@@ -397,9 +401,7 @@ public class GameActivity extends Activity {
             loadingDialog.dismiss();
             // Both players done, show final end game stuff.
             if(game.isComplete()) {
-                flipper.setDisplayedChild(3); //gameloop is 0, viewingBoard is 1
-                multiViewingBoard.setGameData(game);
-                multiViewingBoard.startDrawing(handler);
+                showMultiplayerResults();
             }
             // Only player A has moved. Show him/her a dialog that says "We will notify you when B finishes!"
             // And his/her current score maybe?
@@ -426,7 +428,6 @@ public class GameActivity extends Activity {
         dlog = new android.app.Dialog(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth);
         dlog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dlog.setContentView(R.layout.dialog_level_end_singleplayer);
-
         TextView title = (TextView) dlog.findViewById(R.id.single_player_dialog_title);
         ImageView medal = (ImageView) dlog.findViewById(R.id.medalDrawable);
         TextView drawScore = (TextView) dlog.findViewById(R.id.single_player_raw_score);
@@ -452,18 +453,14 @@ public class GameActivity extends Activity {
             // bronze medal here
             medal.setImageResource(R.drawable.bronze_star);
         }
-
-
         // Score
         DecimalFormat df = new DecimalFormat("#.##");
         drawScore.setText(df.format(percent));
-
         // Ink bonus
         inkScore.setText(Integer.toString(level.getInkBonus()));
 
         double total = percent + level.getInkBonus();
         totalScore.setText(df.format(total));
-
         homeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -489,11 +486,18 @@ public class GameActivity extends Activity {
                 finish();
             }
         });
-
         dlog.show();
     }
 
-
+    public void showMultiplayerResults() {
+        multiplayer1_ink_score.setText(Integer.toString(game.getPlayerOneBonus()));
+        multiplayer2_ink_score.setText(Integer.toString(game.getPlayerTwoBonus()));
+        multiplayer1_title.setText(game.getPlayerOne().getUsername());
+        multiplayer2_title.setText(game.getPlayerTwo().getUsername());
+        multiViewingBoard.setGameData(game, multiplayer1_raw_score, multiplayer2_raw_score);
+        flipper.setDisplayedChild(3); //gameloop is 0, viewingBoard is 1
+        multiViewingBoard.startDrawing(handler);
+    }
 
 
 

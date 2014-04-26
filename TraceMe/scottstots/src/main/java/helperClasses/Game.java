@@ -125,6 +125,14 @@ public class Game extends ParseObject {
         put("multiplayer", b);
     }
 
+    public int getPlayerOneBonus() {
+        return getInt("player_one_bonus");
+    }
+
+    public int getPlayerTwoBonus() {
+        return getInt("player_one_bonus");
+    }
+
     public void setPlayerTurn(ParseUser user) {
         put("player_turn", user);
     }
@@ -161,13 +169,6 @@ public class Game extends ParseObject {
             } else {
                 put("winner", "player_two");
             }
-        }
-
-        // Set the score for current user
-        if(ParseUser.getCurrentUser().getUsername().equals(getPlayerOne().getUsername())) {
-            put("player_one_score", level.getScore());
-        } else {
-            put("player_two_score", level.getScore());
         }
 
         // Check whose turn it is -----------------------
@@ -233,12 +234,22 @@ public class Game extends ParseObject {
             }
         }
         // Other notification conditions...
-
-
     }
 
-    /** Converts the current user's path data to json to be stored in parse **/
-    public void saveUserDrawings(ArrayList<CustomPath> userPaths) {
+
+    /** Converts the current user's path data to json to be stored in parse, also saves score and ink bonus **/
+    public void saveUserData(ArrayList<CustomPath> userPaths) {
+        // Save score data
+        if(ParseUser.getCurrentUser().getUsername().equals(getPlayerOne().getUsername())) {
+            put("player_one_score", level.getScore());
+            put("player_one_bonus", level.getInkBonus());
+        } else {
+            put("player_two_score", level.getScore());
+            put("player_two_bonus", level.getInkBonus());
+        }
+
+
+        // Start saving user paths
         if(getParseUser("player_one") != null && getParseUser("player_one").getUsername().equals(ParseUser.getCurrentUser().getUsername()))
             playerOneData = userPaths;
         else {

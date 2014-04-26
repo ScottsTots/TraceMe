@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -43,6 +44,12 @@ import helperClasses.Game;
     Player playerOne;
     Player playerTwo;
     private Handler handler;
+
+    TextView score1;
+    TextView score2;
+
+
+
 
 
     public MultiViewingBoard(Context c, AttributeSet attrs) {
@@ -83,13 +90,20 @@ import helperClasses.Game;
 
             mBitmap = Bitmap.createBitmap(frameBufferWidth, frameBufferHeight, Bitmap.Config.ARGB_8888);
             mCanvas = new Canvas(mBitmap);
+
+
+
+
+
+
         }
 
     }
 
-    public void setGameData(Game game) {
+    public void setGameData(Game game, TextView score1, TextView score2) {
         // shrink it even smaller to 1/4 of current framebuffer screen.
-
+        this.score1 = score1;
+        this.score2 = score2;
         // Player one's traces will be drawn on upper left.
         float frameBufferW2 = 480 / 2;
         float frameBufferH2 = 800 / 2;
@@ -97,10 +111,10 @@ import helperClasses.Game;
         float scaleY2 = (float) frameBufferH2 / frameBufferHeight;
 
 
-        playerOne = new Player(game.playerOneData, scaleX2, scaleY2, 0, 0);
+        playerOne = new Player(game.playerOneData, scaleX2, scaleY2, 0, 0, score1);
 
         // Player two's traces will be drawn on lower right
-        playerTwo = new Player(game.playerTwoData, scaleX2, scaleY2, 0, frameBufferH2 );
+        playerTwo = new Player(game.playerTwoData, scaleX2, scaleY2, 0, frameBufferH2, score2 );
        // playerTwo = new Player(game.playerTwoData, scaleX2, scaleY2, frameBufferW2, frameBufferH2 );
     }
 
@@ -146,10 +160,8 @@ import helperClasses.Game;
         }
     }
 
-
     public void endReplay() {
         // TODO show endGame dialog / results here.. no need to mess with any gamestate or save anything at this point.
-
         handler.sendEmptyMessage(6000);
     }
     private static final float TOUCH_TOLERANCE = 4;
@@ -163,6 +175,7 @@ import helperClasses.Game;
         this.handler = handler;
         postInvalidate();
     }
+
 
 
     /** Each player will maintain it's own bitmap, and drawing data.
@@ -188,9 +201,10 @@ import helperClasses.Game;
         private Paint textPaint;
         private boolean animFinished;
         int currScore;
+        TextView scoreText;
 
         float scaleX, scaleY, translateX, translateY;
-        public Player(ArrayList<CustomPath> p, float scaleX, float scaleY, float translateX, float translateY) {
+        public Player(ArrayList<CustomPath> p, float scaleX, float scaleY, float translateX, float translateY, TextView scoreText) {
             paths = p;
             mCanvas2 = new Canvas();
             mBitmap2 = Bitmap.createBitmap(frameBufferWidth, frameBufferHeight, Bitmap.Config.ARGB_8888);
@@ -205,7 +219,7 @@ import helperClasses.Game;
             this.translateY = translateY;
             animFinished = false;
 
-
+            this.scoreText = scoreText;
             textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
             textPaint.setColor(Color.BLACK);
             textPaint.setTextSize(30);
@@ -252,7 +266,8 @@ import helperClasses.Game;
                 animFinished = true;
             }
             canvas.drawBitmap(mBitmap2, 0, 0, mBitmapPaint);
-            canvas.drawText("Score: " + point.score, 20 * scaleX + frameBufferWidth / 2, 120 * scaleY + translateY, textPaint);
+            scoreText.setText(Integer.toString(point.score));
+            //canvas.drawText("Score: " + point.score, 20 * scaleX + frameBufferWidth / 2, 120 * scaleY + translateY, textPaint);
             canvas.drawPath(mPath, paint);
         }
 
