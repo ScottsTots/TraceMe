@@ -27,8 +27,10 @@ public class DispatchActivity extends Activity {
 
 
         // Check if there is current user info
-        if (ParseUser.getCurrentUser() != null && TraceMeApplication.preferences.getBoolean("notifications", true)) {
-            PushService.subscribe(this, ParseUser.getCurrentUser().getUsername(), DispatchActivity.class);
+        if (ParseUser.getCurrentUser() != null) {
+            if(TraceMeApplication.preferences.getBoolean("notifications", true)) {
+                PushService.subscribe(this, ParseUser.getCurrentUser().getUsername(), DispatchActivity.class);
+            }
             // Start an intent for the logged in activity
             Log.d("parseNetwork", "user" + ParseUser.getCurrentUser().getUsername());
             startActivity(new Intent(this, MainScreen.class));

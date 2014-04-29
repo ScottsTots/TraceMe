@@ -175,6 +175,7 @@ public class GameActivity extends Activity {
         subtext.setTypeface(roboto_lightitalic);
 
         game = ((TraceMeApplication)this.getApplicationContext()).getGame();
+        Log.d("level", "loading level " + game.getLevelNum());
         Log.d("parseNetwork", " game is multiplayerrrrr " + game.isMultiplayer());
         loadingDialog = new ProgressDialog(GameActivity.this);
         loadingDialog.setMessage("Loading...");
@@ -235,6 +236,7 @@ public class GameActivity extends Activity {
             }
             else if(params[0].equals("loadOnline")) {
                 gameLoop = (GameLoop) findViewById(R.id.surfaceView);
+
                 level = new Level(game.getLevelNum(), ctx, gameLoop, handler);
                 level.loadLevelFromParse();
                 gameLoop.setLevel(level);

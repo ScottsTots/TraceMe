@@ -598,8 +598,27 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
     @Override
     public void onResume() {
         super.onResume();
-//        prepareListData();
+        //    prepareListData();
         mPullToRefreshLayout.setRefreshing(true);
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                prepareListData();
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void result) {
+                super.onPostExecute(result);
+                listAdapter._listDataChild = listDataChild;
+                listAdapter.notifyDataSetChanged();
+                mPullToRefreshLayout.setRefreshComplete();
+//                Toast.makeText(getActivity(),
+//                        "Done refreshing.",
+//                        Toast.LENGTH_LONG).show();
+            }
+        }.execute();
+
     }
 
     @Override

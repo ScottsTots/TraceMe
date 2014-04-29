@@ -542,7 +542,7 @@ public class Level{
     /** Loading from online **/
     public void loadLevelFromParse() {
         ParseQuery<ParseObject> levelQuery = ParseQuery.getQuery("Level");
-        levelQuery.whereEqualTo("level_number", levelNum);
+        levelQuery.whereEqualTo("level_number", 1); //TODO change to levelnum
         levelQuery.setLimit(1);
         try {
             retrievedLevel = levelQuery.getFirst();
