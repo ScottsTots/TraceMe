@@ -22,7 +22,7 @@ import helperClasses.ParseLevel;
  */
 public class TraceMeApplication extends Application {
     public static Game game;
-    private static SharedPreferences preferences;
+    public static SharedPreferences preferences;
     @Override
     public void onCreate() {
         super.onCreate();

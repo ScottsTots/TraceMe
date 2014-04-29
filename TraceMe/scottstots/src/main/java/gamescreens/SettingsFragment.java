@@ -47,6 +47,7 @@ import helperClasses.GameStatus;
 import helperClasses.UsefulMethods;
 import scotts.tots.traceme.MainScreen;
 import scotts.tots.traceme.R;
+import scotts.tots.traceme.TraceMeApplication;
 
 /**
  * Fragment that appears in the "content_frame". This fragment shows the game lobbies, and
@@ -59,6 +60,8 @@ public class SettingsFragment extends Fragment {// implements View.OnClickListen
     Button saveSettingsButton;
     ImageButton profilePictureButton;
     Bitmap newImage;
+
+    public static boolean notificationsEnabled;
 
     boolean notifications_on;
     boolean picture_changed;
@@ -122,6 +125,8 @@ public class SettingsFragment extends Fragment {// implements View.OnClickListen
         }
 
         notifications_on = !notifications_on;
+        notificationsEnabled = notifications_on;
+        TraceMeApplication.preferences.edit().putBoolean("notifications", notifications_on).commit();
     }
     View.OnClickListener saveListener = new View.OnClickListener() {
         @Override

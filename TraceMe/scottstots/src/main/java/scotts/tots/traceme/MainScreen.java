@@ -312,10 +312,9 @@ public class MainScreen extends Activity {
     public void onPause() {
         super.onPause();
         // Subscribe to notifications when app is gone from view.
-        if(ParseUser.getCurrentUser() != null)
+        if(ParseUser.getCurrentUser() != null && TraceMeApplication.preferences.getBoolean("notifications", true))
             PushService.subscribe(this, ParseUser.getCurrentUser().getUsername(), DispatchActivity.class);
         //ParseInstallation.getCurrentInstallation().saveEventually();
-
     }
 
     @Override
@@ -325,5 +324,4 @@ public class MainScreen extends Activity {
         // No notifications received while user is using the app. Uncomment to see notifications at all times.
         PushService.unsubscribe(this, ParseUser.getCurrentUser().getUsername());
     }
-
 }
