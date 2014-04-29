@@ -390,11 +390,8 @@
                                         android:textColor="@color/darker_black"
                                         android:textSize="24sp"/>
                                 </RelativeLayout>
-
                             </LinearLayout>
-
                         </RelativeLayout>
-
                         <TextView
                             android:id="@+id/winner_text2"
                             android:layout_width="fill_parent"
@@ -403,15 +400,8 @@
                             android:textSize="30sp"
                             android:gravity="center"/>
                     </LinearLayout>
-
                 </LinearLayout>
-
-
-                </LinearLayout>
-
-            </FrameLayout>
-
+            </LinearLayout>
+        </FrameLayout>
     </ViewFlipper>
-
-
 </RelativeLayout>

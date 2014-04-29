@@ -598,7 +598,8 @@ public class HomeScreenFragment extends Fragment {// implements View.OnClickList
     @Override
     public void onResume() {
         super.onResume();
-        prepareListData();
+//        prepareListData();
+        mPullToRefreshLayout.setRefreshing(true);
     }
 
     @Override
